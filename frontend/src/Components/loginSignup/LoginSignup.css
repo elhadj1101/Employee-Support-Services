@@ -4,7 +4,7 @@
     flex-direction: column; 
     padding-bottom: 50px;
     margin: auto;
-    margin-top: 200px;
+    margin-top: 100px;
     width: 600px;
 
 }
@@ -49,6 +49,9 @@
     display: flex;
     margin-bottom: 10px;
 }
+.checking span{
+    color: rgb(99, 99, 236);
+}
 .inscri{
     display: flex;
     background-color:blue ;
@@ -60,12 +63,40 @@
     justify-content: center;
     width: 500px;
     height: 40px;
+    margin-right: 10px;
     
 }
 .connecter{
     margin-top: 10px;
 }
 .connecter span{
+    font-weight: 500;
+    color: blue;
+    cursor: pointer;
+    border-bottom: 1px solid;
+}
+.resetpass{
+    display: flex;
+    align-items: center;
+    margin: auto;
+}
+.loginbtn{
+    display: flex;
+    align-items: center;
+    margin: auto;
+}
+.loginbtn img{
+    color: white;
+}
+.register{
+        display: flex;
+        align-items: center;
+        margin: auto;
+        margin-top: 10px;
+
+
+}
+.register span{
     font-weight: 500;
     color: blue;
     cursor: pointer;
