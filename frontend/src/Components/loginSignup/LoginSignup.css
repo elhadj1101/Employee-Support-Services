@@ -79,6 +79,7 @@
     display: flex;
     align-items: center;
     margin: auto;
+    cursor: pointer;
 }
 .loginbtn{
     display: flex;
@@ -101,5 +102,11 @@
     color: blue;
     cursor: pointer;
     border-bottom: 1px solid;
+}
+.error{
+    
+    color: red;
+    font-weight: 300;
+    margin-bottom: 10px;
 }
 
