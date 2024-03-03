@@ -13,14 +13,12 @@ const SignUpForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
         // Validate email
         if (!email.trim()) {
             setEmailError('Email is required.');
         } else {
             setEmailError('');
         }
-
         // Validate telephone
         if (!tel.trim()) {
             setTelError('Phone number is required.');
@@ -51,7 +49,7 @@ const SignUpForm = () => {
                 <div className="logo">
                     <img src={esi} alt="icon" />
                 </div>
-                <div className="text">Merci d'entrer vos informations de connexion</div>
+                <div className="text ">Merci d'entrer vos informations de connexion</div>
             </div>
             <div className="inputes">
                 <div className="input">

@@ -3,10 +3,9 @@ import esi from'../Assets/esi sba 3.png'
 import './EmailVerifactionForm.css'
 const Reset = () => {
      const [email, setEmail] = useState('');
-        const [emailError, setEmailError] = useState('');
-          const handleSubmit = (e) => {
+     const [emailError, setEmailError] = useState('');
+     const handleSubmit = (e) => {
         e.preventDefault();
-
         // Validate email
         if (!email.trim()) {
             setEmailError('Email is required.');
