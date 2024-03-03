@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./SignUpForm.css";
-import esi from "../Assets/esi sba 3.png";
 const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [tel, setTel] = useState("");
@@ -55,7 +54,7 @@ const SignUpForm = () => {
     <div className="Container">
       <div className="header">
         <div className="logo">
-          <img src={esi} alt="icon" />
+        <img src='./assets/esi sba 3.png' alt="icon" />
         </div>
         <div className="text ">
           Merci d'entrer vos informations de connexion

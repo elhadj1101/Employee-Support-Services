@@ -1,6 +1,5 @@
 import React,{useState} from 'react';
 import'./ResetPass.css'
-import esi from '../Assets/esi sba 3.png'
 
 const ResetPass = () => {
      const [pass, setPass] = useState('');
@@ -28,7 +27,7 @@ const ResetPass = () => {
         <div className='Container'>
          <div className="header">
                 <div className="logo">
-                    <img src={esi} alt="icon" />
+                <img src='./assets/esi sba 3.png' alt="icon" />
                 </div>
                 <div className="text">Merci d'entrer un nouveau mot de passe</div>
             </div>
