@@ -1,13 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import SignUpForm from './Components/signUpForm/SignUpForm';
-import LoginForm from './Components/loginForm/LoginForm';
+import LoginPage from './Components/loginForm/LoginForm'
+import ResetPass from './Components/ResetPass/ResetPass';
+import EmailVerificationForm from'./Components/emailVerificationForm/EmailVerificationForm'
 
 function App() {
   return (
     <div>
-      <LoginForm/>
+     <SignUpForm/>
+     <LoginPage/>
+     <EmailVerificationForm/>
+     <ResetPass/>
+
+
+    
     </div>
 
     

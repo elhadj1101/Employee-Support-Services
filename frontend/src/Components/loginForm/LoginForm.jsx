@@ -1,6 +1,7 @@
 import React ,{useState} from 'react'
 import esi from '../Assets/esi sba 3.png'
 import './LoginForm.css';
+import vector from '../Assets/icons8-right-arrow-32(1).png'
 
 
 const LoginForm = () => {
@@ -8,7 +9,8 @@ const LoginForm = () => {
          const [pass, setPass] = useState('');
          const [emailError, setEmailError] = useState('');
          const [passError, setPassError] = useState('');
-          const handleSubmit = (e) => {
+
+        const handleSubmit = (e) => {
         e.preventDefault();
 
         // Validate email
@@ -22,6 +24,7 @@ const LoginForm = () => {
         } else {
             setPassError('');
         }
+        }
 
     return (
         <div className='Container'>
@@ -31,13 +34,13 @@ const LoginForm = () => {
                 </div>
                 <div className="text">Merci d'entrer vos informations de connexion</div>
             </div>
-            <div className="inputes">
+                <div className="inputes">
 
-                <div className="input">
-                    <div className="text">Address e-mail</div>
-                    <input type='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder={'email'} style={{ borderColor: emailError ? 'red' : '' }} />
-                    {emailError && <div className="error">{emailError}</div>}
-                </div>
+                    <div className="input">
+                        <div className="text">Address e-mail</div>
+                        <input type='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder={'email'} style={{ borderColor: emailError ? 'red' : '' }} />
+                        {emailError && <div className="error">{emailError}</div>}
+                    </div>
                  <div className="input">
 
                     <>
@@ -49,11 +52,16 @@ const LoginForm = () => {
 
 
                 </div>
+                <div className='resetpass'>Mot de passe oublié ?</div>
+                <div className="inscri" onClick={handleSubmit}>Se connecte <img src={vector} alt="vector" /></div> 
+                <div className="register">Vous n’avez pas de compte ?<span >Créer un compte</span> </div>
+                
             </div>
             
         </div>
+        
     );
 }
-}
+
 
 export default LoginForm;

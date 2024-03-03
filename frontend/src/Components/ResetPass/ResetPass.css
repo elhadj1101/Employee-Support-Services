@@ -1,0 +1,21 @@
+.Modifier{
+      display: flex;
+    background-color:blue ;
+    align-items: center;
+    color: aliceblue;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 500;
+    justify-content: center;
+    width: 500px;
+    height: 40px;
+    margin-right: 10px;
+    margin: auto;
+}
+.retour{
+    display: flex;
+    margin: auto;
+    margin-top: 10px;
+    color: rgb(72, 72, 235);
+    cursor: pointer;
+}

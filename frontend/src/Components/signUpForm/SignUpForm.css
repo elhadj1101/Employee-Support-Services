@@ -6,7 +6,6 @@
     margin: auto;
     margin-top: 100px;
     width: 600px;
-
 }
 .header{
     display: flex;
@@ -32,7 +31,10 @@
 }
 .input{
     display: flex;
-    flex-direction: column;
+    margin: auto;
+}
+.input .text{
+    padding-bottom: 10px;
 }
 .input  input{
     background: transparent;
@@ -45,13 +47,7 @@
     font-size: 18px;
 
 }
-.checking{
-    display: flex;
-    margin-bottom: 10px;
-}
-.checking span{
-    color: rgb(99, 99, 236);
-}
+
 .inscri{
     display: flex;
     background-color:blue ;
@@ -67,6 +63,8 @@
     
 }
 .connecter{
+    display: flex;
+    margin: auto;
     margin-top: 10px;
 }
 .connecter span{
@@ -74,6 +72,7 @@
     color: blue;
     cursor: pointer;
     border-bottom: 1px solid;
+    margin-left: 5px;
 }
 
 .error{
@@ -82,4 +81,23 @@
     font-weight: 300;
     margin-bottom: 10px;
 }
+.checkbox-container {
+  display: flex;
+  margin: auto;
+  margin-bottom: 10px;
+}
+.checkbox-container  input{
+    margin-left: -300px;
+    margin-right: -130px;
+}
+.checkbox-container div{
+    margin-left: -90px;
+}
+.checkbox-container span{
+    color: blue;
+}
+
+
+
+
 

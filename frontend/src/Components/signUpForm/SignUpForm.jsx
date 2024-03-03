@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import "./SignUpForm.css"
 import esi from '../Assets/esi sba 3.png'
-import vector from '../Assets/icons8-right-arrow-32(1).png'
-
-const LoginSignup = () => {
+const SignUpForm = () => {
     const [email, setEmail] = useState('');
     const [tel, setTel] = useState('');
     const [pass, setPass] = useState('');
@@ -90,20 +88,22 @@ const LoginSignup = () => {
                         </>
                     
                 </div>
-                <div className="checking">
-
-                     <><input type="checkbox" name="" id="" /><div>j'accepte <span>les termes et les conditions d'utilisation.</span></div></> 
-                        
+               
+                <div className="checkbox-container">
+                    <input type="checkbox" id="myCheckbox" />
+                    <div>j'accepte <span>les termes et les conditions d'utilisation.</span></div>
                 </div>
+
+               
                 
                     <div className="inscri" onClick={handleSubmit}>s'inscrire</div> 
                    
                
-                    <div className="connecter">Vous possédez déjà un compte? <span >Se connecter</span></div> :
+                    <div className="connecter">Vous possédez déjà un compte? <span >Se connecter</span></div> 
             </div>
         </div>
     );
 }
 
-export default LoginSignup;
+export default SignUpForm;
 
