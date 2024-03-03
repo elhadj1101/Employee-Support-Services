@@ -1,12 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import LoginSignup from './Components/loginSignup/LoginSignup';
+import SignUpForm from './Components/signUpForm/SignUpForm';
+import LoginForm from './Components/loginForm/LoginForm';
 
 function App() {
   return (
     <div>
-      <LoginSignup/>
+      <LoginForm/>
     </div>
 
     

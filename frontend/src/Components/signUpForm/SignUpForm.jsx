@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "./LoginSignup.css"
+import "./SignUpForm.css"
 import esi from '../Assets/esi sba 3.png'
 import vector from '../Assets/icons8-right-arrow-32(1).png'
 
@@ -25,7 +25,7 @@ const LoginSignup = () => {
 
         // Validate telephone
         if (!tel.trim()) {
-            setTelError('Telephone number is required.');
+            setTelError('Phone number is required.');
         } else {
             setTelError('');
         }
@@ -47,13 +47,6 @@ const LoginSignup = () => {
         }
     };
 
-    const [showFields, setShowFields] = useState(true);
-    const handleSeConnecterClick = () => {
-        setShowFields(false);
-    };
-
-
-
     return (
         <div className="Container">
             <div className="header">
@@ -69,13 +62,13 @@ const LoginSignup = () => {
                     {emailError && <div className="error">{emailError}</div>}
                 </div>
                 <div className="input">
-                    {showFields &&
+                    
                         <>
                             <div className="text">Num Téléphone</div>
                             <input type="tel" value={tel} onChange={(e) => setTel(e.target.value)} style={{ borderColor: telError ? 'red' : '' }} />
                             {telError && <div className="error">{telError}</div>}
                         </>
-                    }
+                    
                 </div>
                 <div className="input">
 
@@ -89,27 +82,24 @@ const LoginSignup = () => {
 
                 </div>
                 <div className="input">
-                    {showFields &&
+                    
                         <>
                             <div className="text">Confirmer mot de passe</div>
                             <input type="password" value={confpass} onChange={(e) => setConfpass(e.target.value)} placeholder='**************' style={{ borderColor: confpassError ? 'red' : '' }} />
                             {confpassError && <div className="error">{confpassError}</div>}
                         </>
-                    }
+                    
                 </div>
                 <div className="checking">
 
-                    {showFields ? <><input type="checkbox" name="" id="" /><div>j'accepte <span>les termes et les conditions d'utilisation.</span></div></> :
-                        <div className='resetpass' >Mot de passe oublié ?</div>}
+                     <><input type="checkbox" name="" id="" /><div>j'accepte <span>les termes et les conditions d'utilisation.</span></div></> 
+                        
                 </div>
-                {showFields ?
-                    <div className="inscri" onClick={handleSubmit}>s'inscrire</div> :
-                    <div className='loginbtn'>
-                        <div className="inscri" onClick={handleSubmit}>Se connecter  <img src={vector} /></div>
-                    </div>}
-                {showFields ?
-                    <div className="connecter">Vous possédez déjà un compte? <span onClick={handleSeConnecterClick}>Se connecter</span></div> :
-                    <div className="register">Vous n’avez pas de compte ?<span onClick={() => setShowFields(true)}>Créer un compte</span> </div>}
+                
+                    <div className="inscri" onClick={handleSubmit}>s'inscrire</div> 
+                   
+               
+                    <div className="connecter">Vous possédez déjà un compte? <span >Se connecter</span></div> :
             </div>
         </div>
     );

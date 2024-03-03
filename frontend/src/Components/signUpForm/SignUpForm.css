@@ -75,34 +75,7 @@
     cursor: pointer;
     border-bottom: 1px solid;
 }
-.resetpass{
-    display: flex;
-    align-items: center;
-    margin: auto;
-    cursor: pointer;
-}
-.loginbtn{
-    display: flex;
-    align-items: center;
-    margin: auto;
-}
-.loginbtn img{
-    color: white;
-}
-.register{
-        display: flex;
-        align-items: center;
-        margin: auto;
-        margin-top: 10px;
 
-
-}
-.register span{
-    font-weight: 500;
-    color: blue;
-    cursor: pointer;
-    border-bottom: 1px solid;
-}
 .error{
     
     color: red;
