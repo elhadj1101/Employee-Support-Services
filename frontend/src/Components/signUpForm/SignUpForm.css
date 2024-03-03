@@ -12,6 +12,7 @@
 .text{
     font-weight: 500;
     gap: 40px;
+    padding-bottom: 5px;
 }
 .inputes{
     display: flex;
@@ -25,15 +26,14 @@
 .input .text{
     padding-bottom: 7px;
 }
-.input  input{
+input{
     background: transparent;
     border:1px solid gainsboro;
     outline: none;
     height: 45px;
     border-radius: 9px;
-    padding: 0 10px;
-    margin-bottom: 20px;
-    font-size: 18px;
+    padding: 0px 10px;
+    font-size: 15px;
 
 }
 
@@ -49,6 +49,7 @@
     width: 500px;
     height: 40px;
     margin-right: 10px;
+    margin-top: 20px;
     
 }
 .connecter{
@@ -65,27 +66,12 @@
 }
 
 .error{
-    
     color: red;
     font-weight: 300;
-    margin-bottom: 10px;
+    font-size: 13px;
+    height: 7px;
+    margin-bottom: 7px;
 }
-.checkbox-container {
-  display: flex;
-  margin: auto;
-  margin-bottom: 10px;
-}
-.checkbox-container  input{
-    margin-left: -300px;
-    margin-right: -130px;
-}
-.checkbox-container div{
-    margin-left: -90px;
-}
-.checkbox-container span{
-    color: blue;
-}
-
 
 
 
