@@ -1,9 +1,9 @@
 import './App.css';
 import Login from './pages/Login';
 import  Signup from './pages/Signup'
-import Dashboard from './pages/Dashboard'
-
+import Dashboard from './pages/admin/Dashboard'
 import { Route , Routes } from 'react-router-dom';
+
 function App() {
   return (
     <main className='h-screen w-full'>
