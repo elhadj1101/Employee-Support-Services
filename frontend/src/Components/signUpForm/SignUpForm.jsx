@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./SignUpForm.css";
 const SignUpForm = () => {
   const [email, setEmail] = useState("");
@@ -117,7 +118,7 @@ const SignUpForm = () => {
         </button>
 
         <div className="connecter">
-          Vous possédez déjà un compte? <span>Se connecter</span>
+          Vous possédez déjà un compte? <Link to='/' > <span>Se connecter</span> </Link>
         </div>
       </form>
     </div>

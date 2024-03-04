@@ -1,9 +1,9 @@
 import React from 'react'
-
-export default function login() {
+import LoginForm from '../Components/loginForm/LoginForm'
+export default function Login() {
   return (
-    <div>
-      test
-    </div>
+    <section className='h-screen w-full  flex items-center justify-center'>
+    <LoginForm />
+  </section>
   )
 }
