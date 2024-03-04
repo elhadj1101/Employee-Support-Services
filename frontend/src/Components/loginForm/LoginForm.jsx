@@ -1,7 +1,5 @@
 import React ,{useState} from 'react'
-import esi from '../Assets/esi sba 3.png'
 import './LoginForm.css';
-import vector from '../Assets/icons8-right-arrow-32(1).png'
 
 
 const LoginForm = () => {
@@ -30,7 +28,7 @@ const LoginForm = () => {
         <div className='Container'>
              <div className="header">
                 <div className="logo">
-                    <img src={esi} alt="icon" />
+                <img src='./assets/esi sba 3.png' alt="icon" />
                 </div>
                 <div className="text">Merci d'entrer vos informations de connexion</div>
             </div>
@@ -53,7 +51,7 @@ const LoginForm = () => {
 
                 </div>
                 <div className='resetpass'>Mot de passe oublié ?</div>
-                <div className="inscri" onClick={handleSubmit}>Se connecte <img src={vector} alt="vector" /></div> 
+                <div className="inscri" onClick={handleSubmit}>Se connecte <img src='./assets/icons8-right-arrow-32(1).png' alt="vector" /></div> 
                 <div className="register">Vous n’avez pas de compte ?<span >Créer un compte</span> </div>
                 
             </div>
