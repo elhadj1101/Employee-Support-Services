@@ -1,7 +1,7 @@
 import * as React from "react";
 import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Button } from "../../../ui/button";
-import { Checkbox } from "../../../ui/checkbox";
+import { Button } from "../../ui/button";
+import { Checkbox } from "../../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../ui/dropdown-menu";
+} from "../../ui/dropdown-menu";
 
 export const columns = [
   {

@@ -9,14 +9,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Button } from "../../../ui/button";
+import { Button } from "../../ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "../../../ui/dropdown-menu";
-import { Input } from "../../../ui/input";
+} from "../../ui/dropdown-menu";
+import { Input } from "../../ui/input";
 import {
   Table,
   TableBody,
@@ -24,7 +24,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../ui/table";
+} from "../../ui/table";
 import { data } from "./data";
 import { columns } from "./columns";
 
