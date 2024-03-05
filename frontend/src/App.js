@@ -1,15 +1,17 @@
 import './App.css';
-import LoginPage from './Components/loginForm/LoginForm'
-import Dashboard from './pages/Dashboard';
-import  Login  from './pages/Login';
+import Login from './pages/Login';
 import  Signup from './pages/Signup'
+import Dashboard from './pages/admin/Dashboard'
+import { Route , Routes } from 'react-router-dom';
 
 function App() {
   return (
     <main className='h-screen w-full'>
-      <Dashboard />
-     <Signup />
-     <Login />
+     <Routes>
+         <Route exact path='/' element={<Login />} />
+         <Route path='/signup' element={<Signup />} />
+         <Route path='/dashboard' element={<Dashboard />} />
+       </Routes>
     </main>
 
     
