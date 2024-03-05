@@ -16,8 +16,13 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
+<<<<<<< HEAD
 import { Button } from "../../../Components/ui/button"
 import { Checkbox } from "../../../Components/ui/checkbox"
+=======
+import { Button } from "../../../shadcnComponents/ui/button"
+import { Checkbox } from "../../../shadcnComponents/ui/checkbox"
+>>>>>>> b992bc10d307482cd6126fe92d06ca92aa605c04
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -26,8 +31,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+<<<<<<< HEAD
 } from "../../../Components/ui/dropdown-menu"
 import { Input } from "../../../Components/ui/input"
+=======
+} from "../../../shadcnComponents/ui/dropdown-menu"
+import { Input } from "../../../shadcnComponents/ui/input"
+>>>>>>> b992bc10d307482cd6126fe92d06ca92aa605c04
 import {
   Table,
   TableBody,
@@ -35,7 +45,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+<<<<<<< HEAD
 } from "../../../Components/ui/table"
+=======
+} from "../../../shadcnComponents/ui/table"
+>>>>>>> b992bc10d307482cd6126fe92d06ca92aa605c04
 
 const data = [
   {

@@ -17,9 +17,12 @@ module.exports = {
       },
     },
     extend: {
+<<<<<<< HEAD
       colors:{
         "lightgray":"#F5F5F5"
       },
+=======
+>>>>>>> b992bc10d307482cd6126fe92d06ca92aa605c04
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
