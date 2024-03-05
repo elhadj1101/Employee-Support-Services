@@ -1,15 +1,17 @@
 import { useState } from "react";
 import Error from "./Error";
-
+import { toast } from "sonner";
 function RecordForm({ onSubmitHandler = null, customclassName = "" }) {
-  const [title, setTitle] = useState("test");
-  const [type, setType] = useState("Income");
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState("");
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("0");
-  const [date, setDate] = useState("2024-01-29");
-  const [description, setDescription] = useState("hello test");
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
   const [results, setResults] = useState("");
+  
   const handleSubmit = async (event) => {
+    toast.error('My first toast')
     event.preventDefault();
     // Add your form submission logic here
 
@@ -29,7 +31,6 @@ function RecordForm({ onSubmitHandler = null, customclassName = "" }) {
         description: description,
       }),
     });
-    console.log(resp);
 
     if (resp.status == 200) {
       setResults("Successfully created the record");
@@ -44,9 +45,10 @@ function RecordForm({ onSubmitHandler = null, customclassName = "" }) {
 
   return (
     <div className={"max-w-[550px]  bg-white px-6 py-8 " + customclassName}>
-      {results !== "" && (
+      {/* {results !== "" && (
         <Error type={"Success"} message={results} err={false} />
-      )}
+      )} */}
+
       <h1 className="text-3xl font-bold text-center mb-4">Add Record</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">

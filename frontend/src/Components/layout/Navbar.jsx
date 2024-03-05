@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Navbar() {
+function Navbar({path}) {
   const [isAdmin, setIsAdmin] = useState(true);
   return (
     <div className="h-[60px] w-full bg-[white]   py-4 px-6">
@@ -20,7 +20,7 @@ function Navbar() {
           </>
         ) : (
           <>
-            <div className="text-baseText text-lg font-bold">Utilisateurs</div>
+            <div className="text-baseText text-lg font-bold"> {path}</div>
           </>
         )}
         <img src="./icons/notifications.svg" alt="" />
