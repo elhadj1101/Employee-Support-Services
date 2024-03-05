@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../shadcnComponents/ui/table";
+} from "../../../ui/table";
 
 export function DataTable({ columns, data }) {
   const table = useReactTable({
