@@ -4,7 +4,6 @@ module.exports = {
   content: [
     './pages/**/*.{js,jsx}',
     './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
     './src/**/*.{js,jsx}',
   ],
   prefix: "",
@@ -17,6 +16,9 @@ module.exports = {
       },
     },
     extend: {
+      colors: {
+        "lightgray":"#f5f5f5"
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
