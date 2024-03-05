@@ -6,7 +6,11 @@ import TestTable from "../../Components/Admin/UsersTable/TestTable";
 function Dashboard() {
   return (
     <>
+<<<<<<< HEAD
+      <Navbar path={"Utilisateurs"} />
+=======
       <Navbar />
+>>>>>>> b992bc10d307482cd6126fe92d06ca92aa605c04
       <div className="w-full h-screen    bg-lightgray">
         <div className="px-6 py-2">
           <h1 className="text-3xl text-black font-bold">
