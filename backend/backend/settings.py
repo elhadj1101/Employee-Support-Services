@@ -132,4 +132,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_USER_MODEL = 'authentication.User'
+DEFAULT_USER_MODEL = 'authentication.Employee'

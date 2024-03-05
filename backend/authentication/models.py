@@ -14,25 +14,12 @@ note : this is the only solution that I found , feel free to change if you have 
 
 
 
-class Admin(AbstractUser):
-    username = models.CharField(max_length = 255)
-    password = models.CharField(max_length = 255)
-    
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='admin_groups' 
-    )
-    
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name= 'admins',
-    )
-    
 class Request(models.Model):
     pass
 
 class Employee(AbstractUser):
-    
+    is_admin = models.BooleanField(default = False)
+    # is_admin= False
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='user_groups' 

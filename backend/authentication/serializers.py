@@ -22,6 +22,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
                 'role',
                 'phone_number',
                 'is_created',
+                'is_admin'
             ]
 
             
