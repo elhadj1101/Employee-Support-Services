@@ -25,51 +25,53 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="Container">
+    <div >
       <div className="header">
         <div className="logo">
           <img src="./assets/esi sba 3.png" alt="icon" />
         </div>
-        <div className="text">Merci d'entrer vos informations de connexion</div>
+        <div className="text text-center my-4 sm:mx-auto sm:min-w-full">Merci d'entrer vos informations de connexion</div>
       </div>
-      <div className="inputes">
-        <div className="input">
-          <div className="text">Address e-mail</div>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={"email"}
-            style={{ borderColor: emailError ? "red" : "" }}
-          />
-          {emailError && <div className="error">{emailError}</div>}
+      <form  >
+        <label htmlFor="email" className="text flex  mx-auto sm: w-full sm:mx-auto ">Address e-mail</label>
+        <input
+          className="  w-full   sm:flex sm:mx-auto sm:w-96  "
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={"email"}
+          style={{ borderColor: emailError ? "red" : "" }}
+        />
+        <p className="error max-w-xs flex mx-auto sm:min-w-full">{emailError}</p>
+        <label htmlFor="password" className="text flex mx-auto ">Mot de passe</label>
+        <input
+          className=" w-full  sm:flex sm:mx-auto sm:min-w-full"
+          type="password"
+          value={pass}
+          onChange={(e) => setPass(e.target.value)}
+          placeholder="**************"
+          style={{ borderColor: passError ? "red" : "" }}
+        />
+        <p className="error max-w-xs flex mx-auto sm:min-w-full">{emailError}</p>
+        <div className="resetpass justify-center">
+          <Link to={"/email"}>Mot de passe oublié ?</Link>
         </div>
-        <div className="input">
-          <>
-            <div className="text">Mot de passe</div>
-            <input
-              type="password"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              placeholder="**************"
-              style={{ borderColor: passError ? "red" : "" }}
-            />
-            {passError && <div className="error">{passError}</div>}
-          </>
-        </div>
-        <div className="resetpass">Mot de passe oublié ?</div>
-        <div className="inscri" onClick={handleSubmit}>
-          Se connecte{" "}
+        <div className="inscri flex mx-auto max-w-xs  sm:min-w-full sm:mx-auto" onClick={handleSubmit}>
+          Se connecte
           <img src="./assets/icons8-right-arrow-32(1).png" alt="vector" />
         </div>
-        <div className="register">
+        <div className="register flex mx-auto ">
           Vous n’avez pas de compte ?
           <span>
             {" "}
             <Link to={"/signup"}>Créer un compte</Link>
           </span>{" "}
         </div>
-      </div>
+
+      </form>
+
+
+
     </div>
   );
 };
