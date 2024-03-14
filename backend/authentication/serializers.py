@@ -1,10 +1,8 @@
 from rest_framework import serializers
 from .models import Employee, options_role
 from .utils import is_digits
-# this serializer was created just for testing the add user endpoint with mysql database 
 
 class EmployeeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Employee
         fields = [
@@ -61,4 +59,10 @@ class EmployeeSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance     
+
+class SignupSerializer(serializers.Serializer):
+    email = serializers.EmailField(required = True)
+    password = serializers.CharField(required = True)
+    password2 = serializers.CharField(required = True)
+    
 
