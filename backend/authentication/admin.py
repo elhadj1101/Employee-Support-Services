@@ -2,7 +2,6 @@ from django.contrib import admin
 from .models import Employee
 from django.contrib.auth.admin import UserAdmin
 from django.forms import  Textarea
-from django import forms
 from django.db import models
 
 
@@ -16,9 +15,9 @@ class UserAdminConfig(UserAdmin):
                     'is_superuser', 'is_staff')
     fieldsets = (
         ("Auth", {'fields': ('email',)}),
-        ("Personal", {'fields':( 'first_name','last_name','phone_number',
+        ("Personal", {'fields':( 'id_number','first_name','last_name','phone_number',
                         'birth_date', 'sexe', 'martial_situation',)}),
-        ("Money", {'fields':('salary','rip', 'bank_name', 'bank_rib')}),
+        ("Money", {'fields':('salary','rip', 'bank_rib')}),
         ('Permissions', {'fields': ('role','is_staff', 'is_active')}),
         ('Requests', {'fields': ('requests',)}),
     )
@@ -28,9 +27,9 @@ class UserAdminConfig(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2',
+            'fields': ('email', 'password1', 'password2', 'id_number',
                        'is_active', 'is_staff','first_name','last_name','phone_number',
-                        'birth_date', 'sexe', 'martial_situation','salary','rip',  'bank_name', 'bank_rib',
+                        'birth_date', 'sexe', 'martial_situation','salary','rip',  'bank_rib',
                         'role','requests')}
          ),
     )
