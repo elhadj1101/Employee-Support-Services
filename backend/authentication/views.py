@@ -4,13 +4,14 @@ from .serializers import EmployeeSerializer, SignupSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from .permissions import IsAdmin
 from rest_framework.views import APIView
 
 # this is just for testing our add user enpoint 
 class CreateUserView(generics.CreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin]
     def post(self, request, format='json'):
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():
