@@ -79,6 +79,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length = 255)
     last_name = models.CharField(max_length = 255)
     birth_date = models.DateField()
+    birth_adress = models.CharField(max_length = 255)
     salary = models.CharField(max_length = 255 )
     martial_situation = models.CharField(max_length = 100 , choices = options_familliale)
     sexe = models.CharField(max_length = 100 ,  choices = options_sexe)
