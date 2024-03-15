@@ -12,7 +12,7 @@ class CreateUserView(generics.CreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
-    def post(self, request, format='json'):
+    def post(self, request):
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
