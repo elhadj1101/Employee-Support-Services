@@ -37,15 +37,15 @@ class EmployeeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"phone_number":"Phone number must be 10 digits"})
         if not(is_digits(data.get('rip',None))):
                 raise serializers.ValidationError({"rip":"RIP must contain only digits"})
-        if len(is_digits(data.get('rip',None))) != 20:
+        if len(data.get('rip',None)) != 20:
                 raise serializers.ValidationError({"rip":"RIP must be 20 digits"})
         if not(is_digits(data.get('bank_rib',None))):
                 raise serializers.ValidationError({"bank_rib":"RIB must contain only digits"})
-        if len(is_digits(data.get('bank_rib',None))) != 20:
+        if len(data.get('bank_rib',None)) != 20:
                 raise serializers.ValidationError({"bank_rib":"RIB must be 20 digits"})
         if not(is_digits(data.get('id_number',None))):
                 raise serializers.ValidationError({"id_number":"Id number must contain only digits"})
-        if len(is_digits(data.get('id_number',None))) != 18:
+        if len(data.get('id_number',None)) != 18:
                 raise serializers.ValidationError({"id_number":"Id number must be 18 digits"})
         if not(is_digits(data.get('salary',None))):
                 raise serializers.ValidationError({"salary":"Salary must contain only digits"})
