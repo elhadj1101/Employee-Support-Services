@@ -28,7 +28,10 @@ const signUp = async (email, password) => {
    console.log(response);
     // return response.data;
   } catch (error) {
-     throw error.response;
+    // ki tjik response b status code 400 wla rah td5l hna manupiliha
+
+    // throw error.response;
+     console.log(error.response["data"]);
   }
 };
 

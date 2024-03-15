@@ -89,7 +89,7 @@ const SignUpForm = () => {
         </div>
       </div>
       <form className=" ">
-        <lablel for="email" className="text  max-w-xs mx-auto flex  sm:min-w-full">
+        <lablel htmlFor="email" className="text  max-w-xs mx-auto flex  sm:min-w-full">
           Address e-mail
         </lablel>
         <input
@@ -103,7 +103,7 @@ const SignUpForm = () => {
         />
         <p className="error max-w-xs flex mx-auto sm:min-w-full ">{emailError}</p>
 
-        {/* <label for="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
+        {/* <label htmlFor="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Num Téléphone
         </label>
         <input
@@ -118,7 +118,7 @@ const SignUpForm = () => {
         />
         <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div> */}
 
-        <label for="password" className="text max-w-xs mx-auto flex  sm:min-w-full">
+        <label htmlFor="password" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Mot de passe
         </label>
         <input
@@ -131,8 +131,8 @@ const SignUpForm = () => {
           style={{ borderColor: passError ? "red" : "" }}
         />
         <div className="error max-w-xs flex mx-auto sm:min-w-full">{passError}</div>
-        <label for="confirm-password" className="text max-w-xs mx-auto flex  sm:min-w-full">
-          Confirmer mot de passe
+        <label htmlFor="confirm-password" className="text max-w-xs mx-auto flex  sm:min-w-full">
+          Confirmer mot de passez
         </label>
         <input
           className="max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full"
