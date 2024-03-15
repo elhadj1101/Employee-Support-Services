@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./SignUpForm.css";
+import { signUp } from "api/auth";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
 const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [tel, setTel] = useState("");
@@ -10,52 +14,75 @@ const SignUpForm = () => {
   const [telError, setTelError] = useState("");
   const [passError, setPassError] = useState("");
   const [confpassError, setConfpassError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
+    let correct = true;
     e.preventDefault();
     // Validate email
     if (!email.trim()) {
-      setEmailError("Email is required.");
+      setEmailError("L'email est requis.");
+      correct = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError("Invalid email format.");
+      setEmailError("Format d'email invalide.");
+      correct = false;
     } else {
       setEmailError("");
     }
 
     // Validate telephone
     if (!tel.trim()) {
-      setTelError("Phone number is required.");
+      setTelError("Le numéro de téléphone est requis.");
+      correct = false;
     } else if (!/^\d{10}$/.test(tel)) {
-      setTelError("Invalid phone number format.");
+      setTelError("Format de numéro de téléphone invalide.");
+      correct = false;
     } else {
       setTelError("");
     }
 
     // Validate password
     if (!pass.trim()) {
-      setPassError("Password is required.");
+      setPassError("Le mot de passe est requis.");
+      correct = false;
     } else if (pass.length < 8) {
-      setPassError("Password must be at least 8 characters long.");
+      setPassError("Le mot de passe doit contenir au moins 8 caractères.");
+      correct = false;
     } else {
       setPassError("");
     }
 
     // Validate confirmation password
     if (!confpass.trim()) {
-      setConfpassError("The confirmation is required.");
+      setConfpassError("La confirmation est requise.");
+      correct = false;
     } else if (confpass !== pass) {
-      setConfpassError("Passwords do not match.");
+      setConfpassError("Les mots de passe ne correspondent pas.");
+      correct = false;
     } else {
       setConfpassError("");
     }
-  };
+    if (!correct) {
+      return;
+    }
+    // If all validations pass, submit the form
+    try {
+      const response = signUp(email, pass);
+      if (response.success) {
+        toast.success(response.success);
 
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div >
       <div className="header">
         <div className="logo">
-          <img src='./assets/esi sba 3.png' alt="icon" />
+          <img src="./assets/esi sba 3.png" alt="icon" />
         </div>
         <div className=" my-4 px-5 sm:px-10  ">
           Merci d'entrer vos informations de connexion

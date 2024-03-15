@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 function Navbar({ path }) {
   const [isAdmin, setIsAdmin] = useState(true);
+  const location = useLocation();
   return (
-    <div className="h-[60px] w-full bg-[white]   py-4 px-6">
+    <div className="z-50 h-[60px] sticky top-0 w-full bg-[white]   py-4 px-6">
       <div className=" justify-between h-full items-center w-full flex gap-x-5 pr-3">
         {!isAdmin ? (
           <>
@@ -20,7 +22,12 @@ function Navbar({ path }) {
           </>
         ) : (
           <>
-            <div className="text-baseText text-lg font-bold">{path}</div>
+            <div className="text-baseText text-lg font-bold">{
+           location.pathname.replace('/', '')
+           .split('/')
+           .map(path => path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' '))
+           .join(' > ')
+         }</div>
           </>
         )}
         <img src="./icons/notifications.svg" alt="" />
