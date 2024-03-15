@@ -1,6 +1,5 @@
 import { DatePickerDemo } from "Components/ui/DatePiker";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Select,
@@ -10,11 +9,12 @@ import {
   SelectValue,
 } from "../../Components/ui/select";
 import useStore from "../../store/index.js";
+import { createUser } from "api/auth";
 export default function AddUser() {
   const { AddUserData, setAddUserData } = useStore();
   const [newErrors, setNewErrors] = useState({});
 
-  const handleChange = (e) => {
+  const handleChange =  (e) => {
     const { name, value } = e.target;
     console.log(name, value);
     sessionStorage.setItem(`form/${name}`, value);
@@ -23,7 +23,7 @@ export default function AddUser() {
     console.log(sessionStorage);
   };
 
-  const handleSubmit = (e, formData) => {
+  const handleSubmit = async (e, formData) => {
     e.preventDefault();
 
     let newErrors = {};
@@ -43,9 +43,9 @@ export default function AddUser() {
 
     // Validate RIB length
     if (
-      !formData.bank_rib.trim() ||
+      formData.bank_rib.trim() &&
       formData.bank_rib.trim().length !== 20 ||
-      isNaN(Number(formData.bank_rib))
+      formData.bank_rib.trim() && isNaN(Number(formData.bank_rib))
     ) {
       newErrors.bank_rib = "Le RIB doit comporter exactement 20 chiffres.";
     }
@@ -56,7 +56,8 @@ export default function AddUser() {
       formData.phone_number.trim().length !== 10 ||
       isNaN(Number(formData.phone_number))
     ) {
-      newErrors.phone_number = "Le numéro de téléphone doit comporter exactement 10 chiffres.";
+      newErrors.phone_number =
+        "Le numéro de téléphone doit comporter exactement 10 chiffres.";
     }
 
     // Validate RIP length
@@ -69,14 +70,12 @@ export default function AddUser() {
     }
 
     // Validate ID number length
-    if (
-      !formData.id_number.trim() ||
-      formData.id_number.trim().length !== 18
-    ) {
-      newErrors.id_number = "Le numéro d'identification doit comporter exactement 18 caractères.";
+    if (!formData.id_number.trim() || formData.id_number.trim().length !== 18) {
+      newErrors.id_number =
+        "Le numéro d'identification doit comporter exactement 18 caractères.";
     }
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
+      if (!formData[key] && key !== "is_active") {
         newErrors[key] = `${key} est requis.`;
       }
     });
@@ -89,11 +88,14 @@ export default function AddUser() {
       return;
     }
 
-    // If no errors, submit the form
-    console.log("Form submitted:", formData);
-  };
-
-
+    
+try {
+  const newUser = await  createUser(AddUserData);
+  console.log(newUser);
+} catch (error) {
+  console.log(error);
+}
+  }
 
   return (
     <div className="w-full flex-grow flex flex-col  bg-lightgray">
@@ -146,10 +148,9 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.first_name
-                     ? "red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
-                 
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3 ">
                   {newErrors?.first_name}
@@ -167,11 +168,10 @@ export default function AddUser() {
                   className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.last_name}
                   onChange={(e) => handleChange(e)}
-                 
                   style={{
                     borderColor: newErrors?.last_name
                       ? "red"
-                      : " rgb(229 231 235 / var(--tw-border-opacity))"  ,
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -193,10 +193,9 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.id_number
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
-                
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.id_number}
@@ -216,8 +215,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.email
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -238,8 +237,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.phone_number
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -260,8 +259,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.password
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -274,7 +273,6 @@ export default function AddUser() {
                 </label>
 
                 <Select
-                
                   name="role"
                   onValueChange={(value) => {
                     sessionStorage.setItem(`form/role`, value);
@@ -305,7 +303,7 @@ export default function AddUser() {
                   {newErrors?.role}
                 </p>
               </div>
-              <div className="flex flex-col gap-1">
+              {/* <div className="flex flex-col gap-1">
                 <label htmlFor="upload" className="mb-2">
                   Photo de l'utilisateur
                   <span style={{ color: "red" }}> * </span>
@@ -342,7 +340,7 @@ export default function AddUser() {
                     <input id="dropzone-file" type="file" className="hidden" />
                   </label>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold py-2 mb-2 mt-4 border-l-4 border-light-blue px-3 bg-[#e2e8ff] text-light-blue text-lg  ">
@@ -363,8 +361,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.birth_adress
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -385,8 +383,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.rip
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -403,11 +401,10 @@ export default function AddUser() {
                   className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.bank_rib}
                   onChange={(e) => handleChange(e)}
-                 
                   style={{
                     borderColor: newErrors?.bank_rib
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -487,8 +484,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.birth_adress
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -497,7 +494,15 @@ export default function AddUser() {
               </div>
               <div className="flex flex-col gap-1">
                 <label htmlFor="birth_date">
-                  Date de naissance<span style={{ color:" rgb(229 231 235 / var(--tw-border-opacity))" }}> * </span>
+                  Date de naissance
+                  <span
+                    style={{
+                      color: " rgb(229 231 235 / var(--tw-border-opacity))",
+                    }}
+                  >
+                    {" "}
+                    *{" "}
+                  </span>
                 </label>
                 {/* Replace DatePickerDemo with your actual component */}
                 <DatePickerDemo

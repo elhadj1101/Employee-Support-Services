@@ -27,7 +27,7 @@ Axios.interceptors.response.use(
         return Promise.reject(error);
       }
       try {
-        const response = await Axios.post('/auth/token/refresh/', { refresh: refreshToken });
+        const response = await Axios.post('/token-refresh/', { refresh: refreshToken });
         const newAccessToken = response.data.access;
         localStorage.setItem('access_token', newAccessToken);
         originalRequest.headers['Authorization'] = `JWT ${newAccessToken}`;

@@ -16,7 +16,7 @@ const SignUpForm = () => {
   const [confpassError, setConfpassError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     let correct = true;
     e.preventDefault();
     // Validate email
@@ -67,7 +67,7 @@ const SignUpForm = () => {
     }
     // If all validations pass, submit the form
     try {
-      const response = signUp(email, pass);
+      const response = await signUp(email, pass);
       if (response.success) {
         toast.success(response.success);
 

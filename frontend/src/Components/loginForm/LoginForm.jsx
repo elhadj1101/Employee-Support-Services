@@ -41,17 +41,19 @@ const LoginForm = () => {
     }
 
     try {
-      const response = login(email, pass);
-      if (response.success) {
-        navigate("/dashboard");
-        toast.success(response.success);
+      const response = await  login(email, pass);
+      console.log(response);
+      if (response) {
+        
+        toast.success("login success");
         localStorage.setItem("access_token", response.access);
         localStorage.setItem("refresh_token", response.refresh);
         Axios.defaults.headers["Authorization"] =
           "JWT " + localStorage.getItem("access_token");
-
+        navigate("/dashboard");
         try {
-          const user = await getUserData();
+          // const user = await getUserData();
+          const user = {role:'admin'}
           setUser(user);
         } catch (error) {
           console.error(error);

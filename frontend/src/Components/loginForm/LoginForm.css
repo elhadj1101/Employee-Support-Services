@@ -6,13 +6,7 @@
    align-items: center;
  }
 
- /* .logo{
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0;
-    width: 222px;
-    height: 222px;
-} */
+
  .text {
    font-weight: 500;
    gap: 40px;
@@ -25,14 +19,14 @@
    padding-top: 25px;
  }
 
- /* 
+
  .input {
    display: flex;
  
    margin-bottom: 10px;
- } */
+ } 
 
- /*  .input input {
+ .input input {
    background: transparent;
    border: 1px solid gainsboro;
    outline: none;
@@ -41,7 +35,7 @@
    padding: 0 10px;
    margin-bottom: 3px;
    font-size: 18px;
- } */
+ } 
  .email{
    width: 480px;
  }
