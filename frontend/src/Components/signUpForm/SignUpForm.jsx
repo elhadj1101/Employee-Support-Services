@@ -79,20 +79,21 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="Container">
+    <div >
       <div className="header">
         <div className="logo">
           <img src="./assets/esi sba 3.png" alt="icon" />
         </div>
-        <div className="text ">
+        <div className=" my-4 px-5 sm:px-10  ">
           Merci d'entrer vos informations de connexion
         </div>
       </div>
-      <form className="inputes">
-        <lablel for="email" className="text">
+      <form className=" ">
+        <lablel for="email" className="text  max-w-xs mx-auto flex  sm:min-w-full">
           Address e-mail
         </lablel>
         <input
+          className="  max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full  "
           name="email"
           type="email"
           value={email}
@@ -100,12 +101,13 @@ const SignUpForm = () => {
           placeholder={"email"}
           style={{ borderColor: emailError ? "red" : "" }}
         />
-        <p className="error ">{emailError}</p>
+        <p className="error max-w-xs flex mx-auto sm:min-w-full ">{emailError}</p>
 
-        <label for="phone" className="text">
+        <label for="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Num Téléphone
         </label>
         <input
+          className=" max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full"
           name="phone"
           type="text/number"
           pattern=".{10,10}"
@@ -114,12 +116,13 @@ const SignUpForm = () => {
           onChange={(e) => setTel(e.target.value)}
           style={{ borderColor: telError ? "red" : "" }}
         />
-        <div className="error">{telError}</div>
+        <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div>
 
-        <label for="password" className="text">
+        <label for="password" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Mot de passe
         </label>
         <input
+          className=" max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full"
           name="password"
           type="password"
           value={pass}
@@ -127,11 +130,12 @@ const SignUpForm = () => {
           placeholder="**************"
           style={{ borderColor: passError ? "red" : "" }}
         />
-        <div className="error">{passError}</div>
-        <label for="confirm-password" className="text">
+        <div className="error max-w-xs flex mx-auto sm:min-w-full">{passError}</div>
+        <label for="confirm-password" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Confirmer mot de passe
         </label>
         <input
+          className="max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full"
           name="confirm-password"
           type="password"
           value={confpass}
@@ -139,17 +143,13 @@ const SignUpForm = () => {
           placeholder="**************"
           style={{ borderColor: confpassError ? "red" : "" }}
         />
-        <div className="error">{confpassError}</div>
-        <button className="inscri" onClick={handleSubmit}>
+        <div className="error max-w-xs flex mx-auto sm:min-w-full  ">{confpassError}</div>
+        <button className="inscri  max-w-xs mx-11   sm:min-w-full sm:mx-auto  " onClick={handleSubmit}>
           s'inscrire
         </button>
 
-        <div className="connecter">
-          Vous possédez déjà un compte?{" "}
-          <Link to="/">
-            {" "}
-            <span>Se connecter</span>{" "}
-          </Link>
+        <div className="connecter justify-center">
+          Vous possédez déjà un compte? <Link to='/' > <span>Se connecter</span> </Link>
         </div>
       </form>
     </div>

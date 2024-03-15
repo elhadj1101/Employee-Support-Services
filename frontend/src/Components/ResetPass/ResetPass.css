@@ -1,6 +1,6 @@
-.Modifier{
+.Modifier {
     display: flex;
-    background-color:blue ;
+    background-color: blue;
     align-items: center;
     color: aliceblue;
     border-radius: 9px;
@@ -12,10 +12,19 @@
     margin-right: 10px;
     margin: auto;
 }
-.retour{
+
+.retour {
     display: flex;
     margin: auto;
     margin-top: 10px;
     color: rgb(72, 72, 235);
     cursor: pointer;
 }
+
+.error {
+    color: red;
+    font-weight: 300;
+    font-size: 13px;
+    height: 7px;
+    margin-bottom: 15px;
+  }

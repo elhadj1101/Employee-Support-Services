@@ -1,88 +1,104 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
-
-# Create your models here.
-
-'''
-for the Admin and the User model I have changed the related_name in both groups and user_permissions , because there was a conflict with 
-related_name (related_name must be unique in ManyToMany relations) 
-I believe the problem because we created two different users class that inherits from AbstractUser
-note : this is the only solution that I found , feel free to change if you have better solution
-'''
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 
 
+options_familliale = [
+        ('marie', 'marie'),  
+        ('divorce', 'divorce'),  
+        ('celibataire', 'celibataire'),  
+        ('veuf', 'veuve'),
+]
 
-class Admin(AbstractUser):
-    username = models.CharField(max_length = 255)
-    password = models.CharField(max_length = 255)
-    
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='admin_groups' 
-    )
-    
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name= 'admins',
-    )
-    
-class Request(models.Model):
-    pass
+options_sexe = [
+        ('homme' ,'homme'),
+        ('femme' , 'femme'),
+    ]
 
-class Employee(AbstractUser):
-    
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='user_groups' 
-    )
-    
-    user_permissions = models.ManyToManyField(
+options_role = [
+        ('president', 'President du Comite'),
+        ('vice_president', 'Vice-President du Comite'),
+        ('tresorier', 'Tresorier du Comite'),
+        ('membre', 'Membre du Comite'),
+        ('employe', 'Employe'),
+    ]
+
+
+class CustomAccountManager(BaseUserManager):
+
+    def create_superuser(self, email, password, **other_fields):
+
+        other_fields.setdefault('is_admin', True)
+        other_fields.setdefault('is_created', True)
+        other_fields.setdefault('is_staff', True)
+        other_fields.setdefault('is_active', True)
+        other_fields.setdefault('is_superuser', True)
         
-        'auth.Permission',
-        related_name= 'users',
-    )
-    
-    marital_situation_options = [
-        ('married' , 'married'),  
-        ('divorced' , 'divorced'),  
-        ('single' , 'single'),  
-        ('widow' , 'widow'),
-    ]
-    sexe_options = [
-        ('male' ,'male'),
-        ('female' , 'female'),
-    ]
-    role_options = [
-        ('president', 'President of the Committee'),
-        ('vice_president', 'Vice President of the Committee'),
-        ('treasurer', 'Treasurer of the Committee'),
-        ('member', 'Member of the Committee'),
-        ('employee', 'Employee'),
+        if other_fields.get('is_admin') is not True:
+            raise ValueError(
+                'Superuser must be assigned to is_admin=True.')
+        if other_fields.get('is_staff') is not True:
+            raise ValueError(
+                'Superuser must be assigned to is_staff=True.')
 
-    ]
+        if other_fields.get('is_created') is not True:
+            raise ValueError(
+                'Superuser must be assigned to is_created=True.')
 
+        return self.create_user(email, password, **other_fields)
+
+    def create_user(self, email, password, **other_fields):
+
+        if not email:
+            raise ValueError(_('You must provide an email address'))
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, **other_fields)
+        user.set_password(password)
+        user.save()
+        return user
+
+
+
+
+
+class Request(models.Model):
+    name = models.CharField(max_length = 255)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add = True)
     
+
+class Employee(AbstractBaseUser, PermissionsMixin):
+
+    objects = CustomAccountManager()
+    
+
+    # this is replaced with is_superuser
+    #is_admin = models.BooleanField(default = False)
     email = models.EmailField(max_length = 255 , unique = True)
     password = models.CharField(max_length = 255)
     first_name = models.CharField(max_length = 255)
     last_name = models.CharField(max_length = 255)
-    birth_day = models.DateField()
+    birth_date = models.DateField()
+    birth_adress = models.CharField(max_length = 255)
     salary = models.CharField(max_length = 255 )
-    marital_situation = models.CharField(max_length = 100 , choices = marital_situation_options)
-    sexe = models.CharField(max_length = 100 ,  choices = sexe_options)
+    martial_situation = models.CharField(max_length = 100 , choices = options_familliale)
+    sexe = models.CharField(max_length = 100 ,  choices = options_sexe)
     rip = models.CharField(max_length = 255)
-    bank_name = models.CharField(max_length = 255)
-    bank_num = models.CharField(max_length = 255)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add = True)
+    bank_rib = models.CharField(max_length = 255)
     id_number = models.CharField(max_length = 255)
     requests = models.ForeignKey(Request , on_delete = models.PROTECT , null = True )
-    role = models.CharField(max_length = 100 , choices = role_options )
+    role = models.CharField(max_length = 100 , choices = options_role )
     phone_number = models.CharField(max_length = 255)
-    is_created = models.BooleanField(default = False)
-    
-    USERNAME_FIELD = 'email'
+    #is_created = models.BooleanField(default = False)
     username = None
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['is_admin', 'is_created', 'birth_day']
     
     def __str__(self) -> str:
         return self.first_name + ' ' + self.last_name
