@@ -62,14 +62,6 @@ class CustomAccountManager(BaseUserManager):
 
 
 
-
-
-class Request(models.Model):
-    name = models.CharField(max_length = 255)
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add = True)
-    
-
 class Employee(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomAccountManager()
@@ -92,7 +84,6 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(auto_now_add = True)
     bank_rib = models.CharField(max_length = 255)
     id_number = models.CharField(max_length = 255)
-    requests = models.ForeignKey(Request , on_delete = models.PROTECT , null = True )
     role = models.CharField(max_length = 100 , choices = options_role )
     phone_number = models.CharField(max_length = 255)
     #is_created = models.BooleanField(default = False)
@@ -103,7 +94,11 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     def __str__(self) -> str:
         return self.first_name + ' ' + self.last_name
     
+
+class Request(models.Model):
     
+    employee = models.ForeignKey(Employee , on_delete = models.SET_NULL , null = True )
+
    
     
 

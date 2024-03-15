@@ -18,8 +18,8 @@ class UserAdminConfig(UserAdmin):
         ("Personal", {'fields':( 'id_number','first_name','last_name','phone_number',
                         'birth_date', 'sexe', 'martial_situation',)}),
         ("Money", {'fields':('salary','rip', 'bank_rib')}),
-        ('Permissions', {'fields': ('role','is_staff', 'is_active')}),
-        ('Requests', {'fields': ('requests',)}),
+        ('Permissions', {'fields': ('role','is_staff', 'is_active', 'is_superuser')}),
+        # ('Requests', {'fields': ('requests',)}),
     )
     formfield_overrides = {
         models.TextField: {'widget': Textarea(attrs={'rows': 20, 'cols': 60})},
@@ -30,7 +30,7 @@ class UserAdminConfig(UserAdmin):
             'fields': ('email', 'password1', 'password2', 'id_number',
                        'is_active', 'is_staff','first_name','last_name','phone_number',
                         'birth_date', 'sexe', 'martial_situation','salary','rip',  'bank_rib',
-                        'role','requests')}
+                        'role',)}
          ),
     )
 
