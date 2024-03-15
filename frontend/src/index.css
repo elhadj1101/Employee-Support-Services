@@ -6,3 +6,10 @@
   width: 180px;
   height: 180px;
 }
+.sidebar{
+  background-image: url('../public/assets/hexagon-side-bar.svg');
+  background-color: #4658AC;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}

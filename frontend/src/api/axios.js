@@ -1,12 +1,43 @@
 import axios from 'axios';
+import { Navigate } from 'react-router-dom';
 
 const Axios = axios.create({
-  baseURL: ' http://localhost:3000',
-  timeout: 10000, // 10 seconds timeout
+  baseURL: 'http://localhost:8000/api/',
+  timeout:5000, // 5 seconds timeout
   headers: {
     'Content-Type': 'application/json',
-    // 'Authorization': 'Bearer your-token-here'
+    'Authorization': localStorage.getItem('access_token')
+       ? "JWT " + localStorage.getItem('access_token')
+       : null
   }
 });
 
-export default instance;
+
+
+Axios.interceptors.response.use(
+  response => response,
+  async error => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (!refreshToken) {
+        Navigate('/')
+        return Promise.reject(error);
+      }
+      try {
+        const response = await Axios.post('/auth/token/refresh/', { refresh: refreshToken });
+        const newAccessToken = response.data.access;
+        localStorage.setItem('access_token', newAccessToken);
+        originalRequest.headers['Authorization'] = `JWT ${newAccessToken}`;
+        return Axios(originalRequest);
+      } catch (error) {
+        // Redirect to login or handle the refresh token failure scenario
+        return Promise.reject(error);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default Axios;

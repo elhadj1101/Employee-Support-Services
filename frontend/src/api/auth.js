@@ -1,4 +1,5 @@
-import { Axios } from "./axios";
+import Axios from "./axios";
+import { jwtDecode } from "jwt-decode";
 
 
 
@@ -20,9 +21,9 @@ const logout = async () => {
     }
   };
 
-const signUp = async (name, email, password) => {
+const signUp = async (email, password) => {
   try {
-    const response = await Axios.post('/signup', Json.stringify({ name, email, password }));
+    const response = await Axios.post('/signup', JSON.stringify({ email, password , password2 : password }));
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -34,10 +35,24 @@ const verifyEmail = async (verificationCode) =>{
     try{
      const response = await Axios.get(`/verifyemail/${verificationCode}`);
      return response.data;
-    } catch{
+    } catch(error){
         throw error.response.data;
     }
 }
- 
 
-export { login, logout , signUp , verifyEmail };
+
+const getUserData = async () => {
+  
+  const decodedToken = jwtDecode( localStorage.getItem('access_token'));
+  const userId = decodedToken.user_id;
+
+  try {
+    const response = await Axios.get(`/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+
+export { login, logout , signUp , verifyEmail ,getUserData };

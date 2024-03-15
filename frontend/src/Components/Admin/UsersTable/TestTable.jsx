@@ -54,8 +54,8 @@ export default function TestTable() {
   });
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4">
+    <div className="w-full flex flex-col flex-grow bg-white p-4 rounded-lg mt-4">
+      <div className="flex items-center py-4 ">
         <Input
           placeholder="Filtrer les emails, noms, prenoms..."
           value={table.getColumn("email")?.getFilterValue() ?? ""}
@@ -141,7 +141,7 @@ export default function TestTable() {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex mt-auto items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
