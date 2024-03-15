@@ -1,13 +1,14 @@
-import AddUser from "pages/admin/AddUser";
+import AddUser from "./pages/admin/AddUser";
 import "./App.css";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import Unauthorized from "pages/Unauthorized";
-import { Route, Routes } from "react-router-dom";
-import Users from "pages/admin/Users";
+import Unauthorized from "./pages/Unauthorized";
+import { Route, Routes, Outlet } from "react-router-dom";
+import Users from "./pages/admin/Users";
 import { Toaster } from "sonner";
-import RequireAuth from "RequireAuth";
+import RequireAuth from "./RequireAuth";
+
 function App() {
   return (
     <main className="h-screen w-full">
@@ -17,28 +18,14 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         {/* protected routes */}
-        <Route
-          element={
-            <RequireAuth requiredRoles={["any"]}>
-              <Route path="/dashboard" element={<Dashboard />}>
-                {/* admin routes */}
-                <Route
-                  element={
-                    <RequireAuth requiredRoles={["admin"]}>
-                      <Route
-                        path="utilisateurs/add-user"
-                        element={<AddUser />}
-                      />
-                      <Route path="utilisateurs" element={<Users />} />
-                    </RequireAuth>
-                  }
-                />
-
-                {/* Future employee routes */}
-              </Route>
-            </RequireAuth>
-          }
-        />
+        <Route element={<RequireAuth requiredRoles={["any"]} />}>
+          <Route path="/dashboard" element={<Dashboard />}>
+            <Route element={<RequireAuth requiredRoles={["admin"]} />}>
+              <Route path="utilisateurs/add-user" element={<AddUser />} />
+              <Route path="utilisateurs" element={<Users />} />
+            </Route>
+          </Route>
+        </Route>
 
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>

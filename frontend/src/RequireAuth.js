@@ -1,12 +1,10 @@
 import { Outlet, Navigate } from "react-router-dom";
 import useStore from "./store/index";
-import { useNavigate } from "react-router-dom";
 
 const RequireAuth = ({ requiredRoles }) => {
   const { user } = useStore();
-  const navigate = useNavigate();
 
-  if (!user) {
+  if (user=== null) {
     // navigate to login
     return <Navigate to="/" replace />;
   }
