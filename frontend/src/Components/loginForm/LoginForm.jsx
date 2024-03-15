@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 import "./LoginForm.css";
-import { getUserData, login } from "api/auth";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import Axios from "api/axios";
-import useStore from "../../store/index";
+import { Link } from "react-router-dom";
+
 const LoginForm = () => {
-  const navigate = useNavigate();
-  const { setUser } = useStore();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -16,22 +11,14 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Valider le format de l'e-mail
-    let valide = true;
+    // Validate email
     if (!email.trim()) {
-      setEmailError("L'adresse e-mail est requise.");
-      valide = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError("Format d'adresse e-mail invalide.");
-      valide = false;
+      setEmailError("Email is required.");
     } else {
       setEmailError("");
     }
-
-    // Valider le mot de passe
     if (!pass.trim()) {
-      setPassError("Le mot de passe est requis.");
-      valide = false;
+      setPassError("Password is required.");
     } else {
       setPassError("");
     }
@@ -66,47 +53,53 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="Container">
+    <div >
       <div className="header">
         <div className="logo">
           <img src="./assets/esi sba 3.png" alt="icon" />
         </div>
-        <div className="text">Merci d'entrer vos informations de connexion</div>
+        <div className="text text-center my-4 sm:mx-auto sm:min-w-full">Merci d'entrer vos informations de connexion</div>
       </div>
-      <div className="inputes">
-        <div className="input">
-          <div className="text">Address e-mail</div>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={"email"}
-            style={{ borderColor: emailError ? "red" : "" }}
-          />
-          {emailError && <div className="error">{emailError}</div>}
+      <form  >
+        <label htmlFor="email" className="text flex  mx-auto sm: w-full sm:mx-auto ">Address e-mail</label>
+        <input
+          className="  w-full   sm:flex sm:mx-auto sm:w-96  "
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={"email"}
+          style={{ borderColor: emailError ? "red" : "" }}
+        />
+        <p className="error max-w-xs flex mx-auto sm:min-w-full">{emailError}</p>
+        <label htmlFor="password" className="text flex mx-auto ">Mot de passe</label>
+        <input
+          className=" w-full  sm:flex sm:mx-auto sm:min-w-full"
+          type="password"
+          value={pass}
+          onChange={(e) => setPass(e.target.value)}
+          placeholder="**************"
+          style={{ borderColor: passError ? "red" : "" }}
+        />
+        <p className="error max-w-xs flex mx-auto sm:min-w-full">{emailError}</p>
+        <div className="resetpass justify-center">
+          <Link to={"/email"}>Mot de passe oublié ?</Link>
         </div>
-        <div className="input">
-          <>
-            <div className="text">Mot de passe</div>
-            <input
-              type="password"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              placeholder="**************"
-              style={{ borderColor: passError ? "red" : "" }}
-            />
-            {passError && <div className="error">{passError}</div>}
-          </>
-        </div>
-        <div className="resetpass">Mot de passe oublié ?</div>
-        <div className="inscri" onClick={handleSubmit}>
-          Se connecte{" "}
+        <div className="inscri flex mx-auto max-w-xs  sm:min-w-full sm:mx-auto" onClick={handleSubmit}>
+          Se connecte
           <img src="./assets/icons8-right-arrow-32(1).png" alt="vector" />
         </div>
-        <div className="register">
-          Vous n’avez pas de compte ?<Link to='/signup'><span>Créer un compte</span></Link> {" "}
+        <div className="register flex mx-auto ">
+          Vous n’avez pas de compte ?
+          <span>
+            {" "}
+            <Link to={"/signup"}>Créer un compte</Link>
+          </span>{" "}
         </div>
-      </div>
+
+      </form>
+
+
+
     </div>
   );
 };

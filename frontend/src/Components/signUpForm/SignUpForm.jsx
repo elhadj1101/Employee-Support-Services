@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./SignUpForm.css";
-import { signUp } from "api/auth";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-
 const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [tel, setTel] = useState("");
@@ -14,51 +10,42 @@ const SignUpForm = () => {
   const [telError, setTelError] = useState("");
   const [passError, setPassError] = useState("");
   const [confpassError, setConfpassError] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     let correct = true;
     e.preventDefault();
     // Validate email
     if (!email.trim()) {
-      setEmailError("L'email est requis.");
-      correct = false;
+      setEmailError("Email is required.");
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError("Format d'email invalide.");
-      correct = false;
+      setEmailError("Invalid email format.");
     } else {
       setEmailError("");
     }
 
-    // // Validate telephone
-    // if (!tel.trim()) {
-    //   setTelError("Le numéro de téléphone est requis.");
-    //   correct = false;
-    // } else if (!/^\d{10}$/.test(tel)) {
-    //   setTelError("Format de numéro de téléphone invalide.");
-    //   correct = false;
-    // } else {
-    //   setTelError("");
-    // }
+    // Validate telephone
+    if (!tel.trim()) {
+      setTelError("Phone number is required.");
+    } else if (!/^\d{10}$/.test(tel)) {
+      setTelError("Invalid phone number format.");
+    } else {
+      setTelError("");
+    }
 
     // Validate password
     if (!pass.trim()) {
-      setPassError("Le mot de passe est requis.");
-      correct = false;
+      setPassError("Password is required.");
     } else if (pass.length < 8) {
-      setPassError("Le mot de passe doit contenir au moins 8 caractères.");
-      correct = false;
+      setPassError("Password must be at least 8 characters long.");
     } else {
       setPassError("");
     }
 
     // Validate confirmation password
     if (!confpass.trim()) {
-      setConfpassError("La confirmation est requise.");
-      correct = false;
+      setConfpassError("The confirmation is required.");
     } else if (confpass !== pass) {
-      setConfpassError("Les mots de passe ne correspondent pas.");
-      correct = false;
+      setConfpassError("Passwords do not match.");
     } else {
       setConfpassError("");
     }
@@ -78,18 +65,19 @@ const SignUpForm = () => {
     }
   };
 
+
   return (
     <div >
       <div className="header">
         <div className="logo">
-          <img src="./assets/esi sba 3.png" alt="icon" />
+          <img src='./assets/esi sba 3.png' alt="icon" />
         </div>
         <div className=" my-4 px-5 sm:px-10  ">
           Merci d'entrer vos informations de connexion
         </div>
       </div>
       <form className=" ">
-        <lablel htmlFor="email" className="text  max-w-xs mx-auto flex  sm:min-w-full">
+        <lablel for="email" className="text  max-w-xs mx-auto flex  sm:min-w-full">
           Address e-mail
         </lablel>
         <input
@@ -103,7 +91,7 @@ const SignUpForm = () => {
         />
         <p className="error max-w-xs flex mx-auto sm:min-w-full ">{emailError}</p>
 
-        {/* <label htmlFor="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
+        <label for="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Num Téléphone
         </label>
         <input
@@ -116,9 +104,9 @@ const SignUpForm = () => {
           onChange={(e) => setTel(e.target.value)}
           style={{ borderColor: telError ? "red" : "" }}
         />
-        <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div> */}
+        <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div>
 
-        <label htmlFor="password" className="text max-w-xs mx-auto flex  sm:min-w-full">
+        <label for="password" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Mot de passe
         </label>
         <input
@@ -131,8 +119,8 @@ const SignUpForm = () => {
           style={{ borderColor: passError ? "red" : "" }}
         />
         <div className="error max-w-xs flex mx-auto sm:min-w-full">{passError}</div>
-        <label htmlFor="confirm-password" className="text max-w-xs mx-auto flex  sm:min-w-full">
-          Confirmer mot de passez
+        <label for="confirm-password" className="text max-w-xs mx-auto flex  sm:min-w-full">
+          Confirmer mot de passe
         </label>
         <input
           className="max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full"
