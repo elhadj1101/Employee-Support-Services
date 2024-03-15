@@ -5,7 +5,8 @@ import { jwtDecode } from "jwt-decode";
 
 const login = async (email, password) => {
   try {
-    const response = await Axios.post('/login', JSON.stringify({ email, password }));
+    const response = await Axios.post('/login/', JSON.stringify({ email, password }));
+  
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -23,10 +24,11 @@ const logout = async () => {
 
 const signUp = async (email, password) => {
   try {
-    const response = await Axios.post('/signup', JSON.stringify({ email, password , password2 : password }));
-    return response.data;
+    const response = await Axios.post('/signup/', JSON.stringify({ email, password , password2 : password }));
+   console.log(response);
+    // return response.data;
   } catch (error) {
-    throw error.response.data;
+     throw error.response;
   }
 };
 

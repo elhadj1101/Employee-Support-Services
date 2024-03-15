@@ -3,8 +3,10 @@ import { Navigate } from 'react-router-dom';
 
 const Axios = axios.create({
   baseURL: 'http://localhost:8000/api/',
-  timeout:5000, // 5 seconds timeout
+  timeout:5000, // 5 seconds timeout,
+  mode: "no-cors",
   headers: {
+    'Access-Control-Allow-Origin' : '*' ,
     'Content-Type': 'application/json',
     'Authorization': localStorage.getItem('access_token')
        ? "JWT " + localStorage.getItem('access_token')

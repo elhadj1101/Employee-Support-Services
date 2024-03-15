@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./LoginForm.css";
 import { getUserData, login } from "api/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Axios from "api/axios";
 import useStore from "../../store/index";
@@ -102,7 +102,7 @@ const LoginForm = () => {
           <img src="./assets/icons8-right-arrow-32(1).png" alt="vector" />
         </div>
         <div className="register">
-          Vous n’avez pas de compte ?<span>Créer un compte</span>{" "}
+          Vous n’avez pas de compte ?<Link to='/signup'><span>Créer un compte</span></Link> {" "}
         </div>
       </div>
     </div>

@@ -30,16 +30,16 @@ const SignUpForm = () => {
       setEmailError("");
     }
 
-    // Validate telephone
-    if (!tel.trim()) {
-      setTelError("Le numéro de téléphone est requis.");
-      correct = false;
-    } else if (!/^\d{10}$/.test(tel)) {
-      setTelError("Format de numéro de téléphone invalide.");
-      correct = false;
-    } else {
-      setTelError("");
-    }
+    // // Validate telephone
+    // if (!tel.trim()) {
+    //   setTelError("Le numéro de téléphone est requis.");
+    //   correct = false;
+    // } else if (!/^\d{10}$/.test(tel)) {
+    //   setTelError("Format de numéro de téléphone invalide.");
+    //   correct = false;
+    // } else {
+    //   setTelError("");
+    // }
 
     // Validate password
     if (!pass.trim()) {
@@ -103,7 +103,7 @@ const SignUpForm = () => {
         />
         <p className="error max-w-xs flex mx-auto sm:min-w-full ">{emailError}</p>
 
-        <label for="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
+        {/* <label for="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Num Téléphone
         </label>
         <input
@@ -116,7 +116,7 @@ const SignUpForm = () => {
           onChange={(e) => setTel(e.target.value)}
           style={{ borderColor: telError ? "red" : "" }}
         />
-        <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div>
+        <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div> */}
 
         <label for="password" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Mot de passe
