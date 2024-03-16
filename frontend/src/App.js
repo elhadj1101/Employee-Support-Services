@@ -1,5 +1,7 @@
 import AddUser from "./pages/admin/AddUser";
 import "./App.css";
+import Reset from "./pages/ResetPassword"
+import Email from "./pages/Email"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
@@ -16,6 +18,11 @@ function App() {
         {/* public routes */}
         <Route exact path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/email" element={<Email />} />
+        <Route path="/reset" element={<Reset />} />
+
+
+
 
         {/* protected routes */}
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
