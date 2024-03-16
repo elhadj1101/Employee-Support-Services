@@ -9,10 +9,10 @@ class UserAdminConfig(UserAdmin):
     model = Employee
     search_fields = ('email','first_name',)
     
-    list_filter = ('email',  'first_name', 'is_superuser', 'is_staff')
+    list_filter = ('email',  'first_name', 'role', 'is_active', 'is_superuser',)
     ordering = ('-created_at',)
-    list_display = ('email',  'first_name',
-                    'is_superuser', 'is_staff')
+    list_display = ('email',  'first_name', 'role' ,
+                    'is_active','is_superuser', )
     fieldsets = (
         ("Auth", {'fields': ('email',)}),
         ("Personal", {'fields':( 'id_number','first_name','last_name','phone_number',

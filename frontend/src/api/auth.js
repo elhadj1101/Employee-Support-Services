@@ -1,5 +1,5 @@
 import Axios from "./axios";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 
 
 
@@ -25,13 +25,12 @@ const logout = async () => {
 const signUp = async (email, password) => {
   try {
     const response = await Axios.post('/signup/', JSON.stringify({ email, password , password2 : password }));
-   console.log(response);
-    // return response.data;
+    const data = response.data[0];
+    return ["success", data['success']];
+
   } catch (error) {
-    // ki tjik response b status code 400 wla rah td5l hna manupiliha
-    //  3labali golt nsyi 9bel
-    // throw error.response;
-     console.log(error.response["data"]);
+    
+     return ["error", error.response.data];
   }
 };
 
@@ -48,11 +47,12 @@ const verifyEmail = async (verificationCode) =>{
 
 const getUserData = async () => {
   
-  const decodedToken = jwtDecode( localStorage.getItem('access_token'));
-  const userId = decodedToken.user_id;
+  // const decodedToken = jwtDecode( localStorage.getItem('access_token'));
+  // const userId = decodedToken.user_id;
 
   try {
-    const response = await Axios.get(`/user/${userId}`);
+    // ndiro /user/ drct 5atar backend mn token y3rf wchmn user dar request
+    const response = await Axios.get('/user/');
     return response.data;
   } catch (error) {
     throw error.response.data;
