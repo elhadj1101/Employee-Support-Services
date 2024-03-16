@@ -48,7 +48,15 @@ class SignupView(APIView):
             
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
+
+class ListEmployeesView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get(self, request, format=None):
+        employees = Employee.objects.all()
+        serializer = EmployeeSerializer(employees, many=True)
+        return Response(serializer.data)
+
 # {
 #     "email":"testteat@test.com",
 #     "password":"testtest",

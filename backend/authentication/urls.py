@@ -12,5 +12,6 @@ urlpatterns = [
     # endpoints for the tokens
     path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('employees/', ListEmployeesView.as_view(), name='employee-list'),
 
 ]
