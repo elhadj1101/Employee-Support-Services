@@ -69,11 +69,8 @@ const SignUpForm = () => {
       setSuccess("");
       let kys = Object.keys(res[1][0]);
 
-      if (kys[0] === "email") {
-        setEmailError(res[1][0][kys[0]]);
-      } else {
         setErr(kys[0] + ": " + res[1][0][kys[0]]);
-      }
+      
     } else {
       // showing the success message then redirect to the login page
       setErr("");

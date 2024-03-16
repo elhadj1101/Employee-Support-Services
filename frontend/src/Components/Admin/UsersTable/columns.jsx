@@ -71,7 +71,7 @@ export const columns = [
     accessorKey: "role",
     header: "Role",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("role")}</div>
+      <div className="capitalize bg-green">{row.getValue("role")}</div>
     ),
   },
   {
