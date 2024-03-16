@@ -1,6 +1,6 @@
 import Axios from "./axios";
 // import { jwtDecode } from "jwt-decode";
-
+import {  toast } from 'sonner'
 
 
 const login = async (email, password) => {
@@ -26,11 +26,21 @@ const signUp = async (email, password) => {
   try {
     const response = await Axios.post('/signup/', JSON.stringify({ email, password , password2 : password }));
     const data = response.data[0];
-    return ["success", data['success']];
-
+    toast.success(data['success']);
+    return "success";
   } catch (error) {
+    if (error.response){
+      console.log(error.response.data[0]);
+      let kys = Object.keys(error.response.data[0]);
+
+      toast.error(kys[0] + ": " + error.response.data[0][kys[0]]);  
+      return "error";
+
+    }else{
+      toast.error("Something went wrong");
+      return "error";
     
-     return ["error", error.response.data];
+    }
   }
 };
 
