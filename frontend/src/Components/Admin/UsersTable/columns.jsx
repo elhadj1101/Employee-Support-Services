@@ -10,7 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-
+const roleColors = {
+  employee: "text-green-900 bg-green-100",
+  president: "text-blue-900 bg-blue-100",
+  tresorier: "text-yellow-900 bg-yellow-100",
+  "vice president": "text-purple-900 bg-purple-100",
+  "membre commute": "text-red-900 bg-red-100",
+};
 export const columns = [
   {
     id: "select",
@@ -35,11 +41,24 @@ export const columns = [
     enableHiding: false,
   },
   {
+    accessorKey: "id",
+    header: () => <div className="text-right">ID</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="text-right font-medium">
+          {row.getValue("id")}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "nom",
     header: () => <div className="text-right">Nom</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-right font-medium">{row.getValue("nom")}</div>
+        <div className="text-right font-medium">
+          {row.getValue("nom")}
+        </div>
       );
     },
   },
@@ -48,7 +67,9 @@ export const columns = [
     header: () => <div className="text-right">Prenom</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-right font-medium">{row.getValue("prenom")}</div>
+        <div className="text-right font-medium">
+          {row.getValue("prenom")}
+        </div>
       );
     },
   },
@@ -71,7 +92,16 @@ export const columns = [
     accessorKey: "role",
     header: "Role",
     cell: ({ row }) => (
-      <div className="capitalize bg-green">{row.getValue("role")}</div>
+      <div className="capitalize w-full">
+        <div
+          className={
+            "w-fit p-2 m-1 rounded-lg " +
+            roleColors[row.getValue("role").toLowerCase()]
+          }
+        >
+          {row.getValue("role")}
+        </div>
+      </div>
     ),
   },
   {

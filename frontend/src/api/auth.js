@@ -3,6 +3,35 @@ import Axios from "./axios";
 import {  toast } from 'sonner'
 
 
+const roles ={
+  "vice_president":"Vice President",
+  "membre_commute":"Membre Commute",
+  "employe":"Employee",
+  "president":"President",
+  "tresorier":"Tresorier",
+  "":"Admin"
+
+}
+
+
+const getUsers = async () => {
+  try {
+    const response = await Axios.get('/users/');
+    const data = response.data;
+      let dat = data.map((user) => { 
+        user["nom"] = user["first_name"];
+        user["prenom"] = user["last_name"];
+        user["telephone"] = user["phone_number"];
+        user["role"] = roles[user["role"]] || "Employee";
+      return user;
+      });
+     
+     return dat;
+  } catch (error) {
+    throw error;
+  }
+
+};
 const login = async (email, password) => {
   try {
     const response = await Axios.post('/login/', JSON.stringify({ email, password }));
@@ -70,4 +99,4 @@ const getUserData = async () => {
 };
 
 
-export { login, logout , signUp , verifyEmail ,getUserData };
+export { getUsers,login, logout , signUp , verifyEmail ,getUserData };
