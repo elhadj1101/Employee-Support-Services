@@ -1,8 +1,4 @@
 import Axios from "./axios";
-<<<<<<< HEAD
-import { jwtDecode } from "jwt-decode";
-import { toast } from "sonner";
-=======
 // import { jwtDecode } from "jwt-decode";
 import {  toast } from 'sonner'
 
@@ -36,7 +32,6 @@ const getUsers = async () => {
   }
 
 };
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
 const login = async (email, password) => {
   try {
     const response = await Axios.post(
@@ -63,19 +58,6 @@ const logout = async () => {
 
 const signUp = async (email, password) => {
   try {
-<<<<<<< HEAD
-    const response = await Axios.post(
-      "/signup/",
-      JSON.stringify({ email, password, password2: password })
-    );
-    console.log(response);
-     return response.data;
-  } catch (error) {
-    // ki tjik response b status code 400 wla rah td5l hna manupiliha
-    //  3labali golt nsyi 9bel
-    // throw error.response;
-    console.log(error.response["data"]);
-=======
     const response = await Axios.post('/signup/', JSON.stringify({ email, password , password2 : password }));
     const data = response.data[0];
     toast.success(data['success']);
@@ -93,7 +75,6 @@ const signUp = async (email, password) => {
       return "error";
     
     }
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
   }
 };
 
@@ -107,14 +88,9 @@ const verifyEmail = async (verificationCode) => {
 };
 
 const getUserData = async () => {
-<<<<<<< HEAD
-  const decodedToken = jwtDecode(localStorage.getItem("access_token"));
-  const userId = decodedToken.user_id;
-=======
   
   // const decodedToken = jwtDecode( localStorage.getItem('access_token'));
   // const userId = decodedToken.user_id;
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
 
   try {
     // ndiro /user/ drct 5atar backend mn token y3rf wchmn user dar request
@@ -135,8 +111,4 @@ const createUser = async (data) => {
   }
 };
 
-<<<<<<< HEAD
-export { login, logout, signUp, verifyEmail, getUserData  , createUser};
-=======
-export { getUsers,login, logout , signUp , verifyEmail ,getUserData };
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
+export { getUsers,login, logout , signUp , verifyEmail ,getUserData , createUser };
