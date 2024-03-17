@@ -12,11 +12,6 @@ class CreateUserView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
-    def Meta (self):
-        model = Employee
-        fields = ['id','email', 'id_number','first_name','last_name','phone_number',
-                        'birth_date', 'sexe', 'martial_situation','salary','rip',  'bank_rib',
-                        'role','is_active', 'is_staff',]
     def post(self, request):
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():

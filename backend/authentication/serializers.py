@@ -6,7 +6,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = [
-            'email','password','first_name','last_name',
+            'id','email','password','first_name','last_name',
             'birth_date','birth_adress','salary','martial_situation',
             'sexe','rip','bank_rib','id_number',
             'role','phone_number','is_active','is_superuser'
