@@ -1,4 +1,9 @@
-export const data = [
+import { getUsers} from '../../../api/auth.js';
+
+
+
+export const data = await getUsers();
+const dota = [
   {
     id: "m5gr84i9",
     telephone: "+213565145689",
@@ -18,7 +23,7 @@ export const data = [
   {
     id: "derv1ws0",
     telephone: "+213565145689",
-    role: "employer",
+    role: "employee",
     email: "Monserrat44@gmail.com",
     nom: "Haddad",
     prenom: "Ilyes",
@@ -26,7 +31,7 @@ export const data = [
   {
     id: "5kma53ae",
     telephone: "+213565145689",
-    role: "employer",
+    role: "Membre Commute",
     email: "Silas22@gmail.com",
     nom: "Haddad",
     prenom: "Ilyes",
@@ -34,7 +39,7 @@ export const data = [
   {
     id: "bhqecj4p",
     telephone: "+213565145689",
-    role: "Membre Commite",
+    role: "Membre Commute",
     email: "carmella@hotmail.com",
     nom: "Haddad",
     prenom: "Ilyes",

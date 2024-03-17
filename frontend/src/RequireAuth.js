@@ -6,7 +6,8 @@ const RequireAuth = ({ requiredRoles }) => {
 
   if (user=== null) {
     // navigate to login
-    return <Navigate to="/" replace />;
+    // return <Navigate to="/" replace />;
+    return <Outlet />;
   }
 
   if (!requiredRoles.includes(user.role) && !requiredRoles.includes("any")) {
