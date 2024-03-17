@@ -1,42 +1,53 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./SignUpForm.css";
+import { signUp } from "api/auth";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 const SignUpForm = () => {
   const [email, setEmail] = useState("");
-  const [tel, setTel] = useState("");
+  // const [tel, setTel] = useState("");
+  // const [telError, setTelError] = useState("");
+
   const [pass, setPass] = useState("");
   const [confpass, setConfpass] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [telError, setTelError] = useState("");
   const [passError, setPassError] = useState("");
   const [confpassError, setConfpassError] = useState("");
-
+const navigate = useNavigate();
   const handleSubmit = async (e) => {
     let correct = true;
     e.preventDefault();
     // Validate email
     if (!email.trim()) {
+      correct = false;
       setEmailError("Email is required.");
     } else if (!/\S+@\S+\.\S+/.test(email)) {
+      correct = false;
+
       setEmailError("Invalid email format.");
     } else {
       setEmailError("");
     }
 
-    // Validate telephone
-    if (!tel.trim()) {
-      setTelError("Phone number is required.");
-    } else if (!/^\d{10}$/.test(tel)) {
-      setTelError("Invalid phone number format.");
-    } else {
-      setTelError("");
-    }
+    // // Validate telephone
+    // if (!tel.trim()) {
+    //   setTelError("Phone number is required.");
+    // } else if (!/^\d{10}$/.test(tel)) {
+    //   setTelError("Invalid phone number format.");
+    // } else {
+    //   setTelError("");
+    // }
 
     // Validate password
     if (!pass.trim()) {
       setPassError("Password is required.");
+      correct = false;
+
     } else if (pass.length < 8) {
       setPassError("Password must be at least 8 characters long.");
+      correct = false;
+
     } else {
       setPassError("");
     }
@@ -44,8 +55,12 @@ const SignUpForm = () => {
     // Validate confirmation password
     if (!confpass.trim()) {
       setConfpassError("The confirmation is required.");
+      correct = false;
+
     } else if (confpass !== pass) {
       setConfpassError("Passwords do not match.");
+      correct = false;
+
     } else {
       setConfpassError("");
     }
@@ -55,13 +70,18 @@ const SignUpForm = () => {
     // If all validations pass, submit the form
     try {
       const response = await signUp(email, pass);
+      console.log('error' , response);
+
       if (response.success) {
         toast.success(response.success);
 
         navigate("/");
       }
-    } catch (error) {
-      console.log(error);
+    }catch (response) {
+      console.log('error' , response);
+      if (response.status === 401){
+        toast.error(response.data.detail)
+      }
     }
   };
 
@@ -90,7 +110,7 @@ const SignUpForm = () => {
           style={{ borderColor: emailError ? "red" : "" }}
         />
         <p className="error max-w-xs flex mx-auto sm:min-w-full ">{emailError}</p>
-
+{/* 
         <label for="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Num Téléphone
         </label>
@@ -104,7 +124,7 @@ const SignUpForm = () => {
           onChange={(e) => setTel(e.target.value)}
           style={{ borderColor: telError ? "red" : "" }}
         />
-        <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div>
+        <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div> */}
 
         <label for="password" className="text max-w-xs mx-auto flex  sm:min-w-full">
           Mot de passe
@@ -132,7 +152,7 @@ const SignUpForm = () => {
           style={{ borderColor: confpassError ? "red" : "" }}
         />
         <div className="error max-w-xs flex mx-auto sm:min-w-full  ">{confpassError}</div>
-        <button className="inscri  max-w-xs mx-11   sm:min-w-full sm:mx-auto  " onClick={handleSubmit}>
+        <button className="inscri cursor-pointer  max-w-xs mx-11   sm:min-w-full sm:mx-auto  bg-blue-700" onClick={handleSubmit}>
           s'inscrire
         </button>
 

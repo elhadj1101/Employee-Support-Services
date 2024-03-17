@@ -1,23 +1,31 @@
 import React, { useState } from "react";
 import "./LoginForm.css";
 import { Link } from "react-router-dom";
-
+import Axios from "api/axios";
+import { login } from "api/auth";
+import useStore from "../../store/index";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 const LoginForm = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passError, setPassError] = useState("");
-
+const {setUser} = useStore()
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    let  valide =true
     // Validate email
     if (!email.trim()) {
+      valide =false
       setEmailError("Email is required.");
     } else {
       setEmailError("");
     }
     if (!pass.trim()) {
+      valide =false
+
       setPassError("Password is required.");
     } else {
       setPassError("");
@@ -29,9 +37,7 @@ const LoginForm = () => {
 
     try {
       const response = await  login(email, pass);
-      console.log(response);
-      if (response) {
-        
+      if (response) {  
         toast.success("login success");
         localStorage.setItem("access_token", response.access);
         localStorage.setItem("refresh_token", response.refresh);
@@ -47,8 +53,8 @@ const LoginForm = () => {
           setUser(null);
         }
       }
-    } catch (error) {
-      console.error(error);
+    } catch (response) {
+   
     }
   };
 
@@ -84,9 +90,8 @@ const LoginForm = () => {
         <div className="resetpass justify-center">
           <Link to={"/email"}>Mot de passe oublié ?</Link>
         </div>
-        <div className="inscri flex mx-auto max-w-xs  sm:min-w-full sm:mx-auto" onClick={handleSubmit}>
+        <div className="inscri cursor-pointer bg-blue-700 flex mx-auto max-w-xs  sm:min-w-full sm:mx-auto" onClick={handleSubmit}>
           Se connecte
-          <img src="./assets/icons8-right-arrow-32(1).png" alt="vector" />
         </div>
         <div className="register flex mx-auto ">
           Vous n’avez pas de compte ?

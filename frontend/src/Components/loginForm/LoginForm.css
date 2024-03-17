@@ -16,16 +16,6 @@
 /* .logo{
    display: flex;
    flex-direction: column;
-<<<<<<< HEAD
-   align-items: center;
- }
-
-
- .text {
-   font-weight: 500;
-   gap: 40px;
- }
-=======
    padding: 20px 0;
    width: 222px;
    height: 222px;
@@ -34,7 +24,6 @@
   font-weight: 500;
   gap: 40px;
 }
->>>>>>> 6dfb702a4d1dfb5d38fa069826b263a7877a055c
 
 .inputes {
   display: flex;
@@ -43,29 +32,6 @@
   padding-top: 25px;
 }
 
-<<<<<<< HEAD
-
- .input {
-   display: flex;
- 
-   margin-bottom: 10px;
- } 
-
- .input input {
-   background: transparent;
-   border: 1px solid gainsboro;
-   outline: none;
-   height: 50px;
-   border-radius: 9px;
-   padding: 0 10px;
-   margin-bottom: 3px;
-   font-size: 18px;
- } 
- .email{
-   width: 480px;
- }
- .pass{
-=======
 /* 
 .input {
   display: flex;
@@ -84,7 +50,6 @@
   font-size: 18px;
 } */
 .email {
->>>>>>> 6dfb702a4d1dfb5d38fa069826b263a7877a055c
   width: 480px;
 }
 

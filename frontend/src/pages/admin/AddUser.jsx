@@ -30,16 +30,20 @@ export default function AddUser() {
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(newErrors.email)delete newErrors.email;
     if (!formData.email.trim() || !emailRegex.test(formData.email)) {
       newErrors.email = "Veuillez saisir une adresse e-mail valide.";
     }
-
+   
     // Validate password strength
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+    if(newErrors.password)delete newErrors.password;
+
     if (!formData.password.trim() || !passwordRegex.test(formData.password)) {
       newErrors.password =
         "Le mot de passe doit comporter au moins 8 caractères et contenir au moins une lettre majuscule, une lettre minuscule et un chiffre.";
     }
+  if(newErrors.bank_rib)delete newErrors.bank_rib;
 
     // Validate RIB length
     if (
@@ -49,6 +53,7 @@ export default function AddUser() {
     ) {
       newErrors.bank_rib = "Le RIB doit comporter exactement 20 chiffres.";
     }
+    if(newErrors.phone_number)delete newErrors.phone_number;
 
     // Validate phone number length
     if (
@@ -59,6 +64,8 @@ export default function AddUser() {
       newErrors.phone_number =
         "Le numéro de téléphone doit comporter exactement 10 chiffres.";
     }
+        if(newErrors.rip)delete newErrors.rip;
+
 
     // Validate RIP length
     if (
@@ -68,13 +75,19 @@ export default function AddUser() {
     ) {
       newErrors.rip = "Le RIP doit comporter exactement 20 chiffres.";
     }
+    
+    if(newErrors.id_number)delete newErrors.id_number;
+
 
     // Validate ID number length
     if (!formData.id_number.trim() || formData.id_number.trim().length !== 18) {
       newErrors.id_number =
         "Le numéro d'identification doit comporter exactement 18 caractères.";
     }
+
+
     Object.keys(formData).forEach((key) => {
+      if(newErrors.key)delete newErrors.key;
       if (!formData[key] && key !== "is_active") {
         newErrors[key] = `${key} est requis.`;
       }
@@ -82,18 +95,28 @@ export default function AddUser() {
     // Check if any errors occurred
     if (Object.keys(newErrors).length !== 0) {
       setNewErrors(newErrors);
-      Object.keys(newErrors).forEach((key) => {
-        console.log(newErrors[key]);
-      });
       return;
     }
 
     
 try {
   const newUser = await  createUser(AddUserData);
-  console.log(newUser);
+  if(newUser.status ===201){
+    toast.success("Utilisateur créé avec succès")
+    Object.keys(sessionStorage).forEach(key => {
+      if (key.startsWith("form/")) {
+          sessionStorage.removeItem(key);
+      }
+  });
+  }
 } catch (error) {
-  console.log(error);
+  console.log("errror" , error.data);
+  if(error.status===400){
+    for (const key in error.data) {
+        toast.error(error.data[key][0])
+          break;
+  }
+  }
 }
   }
 
@@ -106,8 +129,8 @@ try {
           </h1>
           <div className="flex gap-2 justify-center items-center">
             <div
-              onClick={() => {
-                toast.success("Event has been created");
+              onClick={(e) => {
+                handleSubmit(e, AddUserData);
               }}
               className=" bg-light-blue cursor-pointer rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg text-white  "
             >
@@ -115,7 +138,12 @@ try {
             </div>
             <div
               onClick={() => {
-                toast.success("Event has been created");
+                Object.keys(sessionStorage).forEach(key => {
+                  if (key.startsWith("form/")) {
+                      sessionStorage.removeItem(key);
+                  }
+              });
+  
               }}
               className=" border cursor-pointer bg-white border-[#e5e4e4] rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg  "
             >
@@ -360,7 +388,7 @@ try {
                   value={AddUserData.salary}
                   onChange={(e) => handleChange(e)}
                   style={{
-                    borderColor: newErrors?.birth_adress
+                    borderColor: newErrors?.salary
                       ? "red"
                       : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
@@ -526,7 +554,11 @@ try {
               </div>
               <div
                 onClick={() => {
-                  toast.success("Event has been created");
+                  Object.keys(sessionStorage).forEach(key => {
+                    if (key.startsWith("form/")) {
+                        sessionStorage.removeItem(key);
+                    }
+                });
                 }}
                 className=" border cursor-pointer bg-white border-[#e5e4e4] rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg  "
               >

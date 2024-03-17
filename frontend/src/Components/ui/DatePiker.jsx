@@ -40,15 +40,13 @@ export function DatePickerDemo() {
               .toLocaleDateString("en-US", options)
               .split("/")
               .reverse()
-              .join("-");
-             
-            console.log(formattedDate);
-
-            const updatedUserData = { ...AddUserData, ["birth_date"]: formattedDate };
+              
+              const date = formattedDate[0] + '-'+ formattedDate[2] + '-'+ formattedDate[1] 
+            sessionStorage.setItem(`form/birth_date`, date);
+            const updatedUserData = { ...AddUserData, "birth_date": date }; 
             setAddUserData(updatedUserData);
-            console.log(updatedUserData);
 
-            setSelectedDate(new Date(e)); // Update the selectedDate state with the Date object
+            setSelectedDate(new Date(date)); // Update the selectedDate state with the Date object
           }}
           initialFocus
         />

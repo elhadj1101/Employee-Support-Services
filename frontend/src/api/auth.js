@@ -1,6 +1,6 @@
 import Axios from "./axios";
 import { jwtDecode } from "jwt-decode";
-
+import { toast } from "sonner";
 const login = async (email, password) => {
   try {
     const response = await Axios.post(
@@ -9,7 +9,10 @@ const login = async (email, password) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response;
+    console.log('eror' , error.request);
+    if (error.request.status === 401){
+      toast.error(JSON.parse(error.request.response).detail)
+    }
   }
 };
 
@@ -29,7 +32,7 @@ const signUp = async (email, password) => {
       JSON.stringify({ email, password, password2: password })
     );
     console.log(response);
-    // return response.data;
+     return response.data;
   } catch (error) {
     // ki tjik response b status code 400 wla rah td5l hna manupiliha
     //  3labali golt nsyi 9bel
