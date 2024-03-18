@@ -23,7 +23,8 @@ const getUsers = async () => {
         user["prenom"] = user["last_name"];
         user["telephone"] = user["phone_number"];
         user["role"] = roles[user["role"]] || "Employee";
-      return user;
+      
+        return user;
       });
      
      return dat;

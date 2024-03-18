@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {
   flexRender,
@@ -25,17 +26,18 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { data } from "./data";
 import { columns } from "./columns";
+import useStore from "../../../store/index.js";
 
 export default function TestTable() {
+  const { adminUsers } = useStore();
+
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-
   const table = useReactTable({
-    data,
+    data: adminUsers,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -52,7 +54,7 @@ export default function TestTable() {
       rowSelection,
     },
   });
-
+ 
   return (
     <div className="w-full flex flex-col flex-grow bg-white p-4 rounded-lg mt-4">
       <div className="flex items-center py-4 ">

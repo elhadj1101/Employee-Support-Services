@@ -9,7 +9,6 @@ export default function SideButton({ title, icon: Icon, nestedBtns }) {
   useEffect(() => {
     const isOpen = nestedBtns.some(({ path }) =>  path.split("/").pop() === location.pathname.split("/").pop());
     setOpen(isOpen);
-    console.log(location);
   }, []);
 
   return (

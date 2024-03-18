@@ -16,6 +16,7 @@ const roleColors = {
   tresorier: "text-yellow-900 bg-yellow-100",
   "vice president": "text-purple-900 bg-purple-100",
   "membre commute": "text-red-900 bg-red-100",
+  admin: "text-gray-900 bg-gray-100",
 };
 export const columns = [
   {
