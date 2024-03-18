@@ -95,12 +95,4 @@ class Employee(AbstractBaseUser, PermissionsMixin):
         return self.first_name + ' ' + self.last_name
     
 
-class Request(models.Model):
-    
-    employee = models.ForeignKey(Employee , on_delete = models.SET_NULL , null = True )
-
-   
-    
-
-    
  
