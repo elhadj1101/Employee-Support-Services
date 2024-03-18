@@ -11,7 +11,9 @@ from rest_framework.views import APIView
 class CreateUserView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
+    # permission_classes = [IsAuthenticated, IsAdmin]
+    # testing 
+    parser_classes = [AllowAny]
     def post(self, request):
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():
