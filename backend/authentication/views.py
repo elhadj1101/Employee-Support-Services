@@ -8,7 +8,7 @@ from .permissions import IsAdmin
 from rest_framework.views import APIView
 
 # this is just for testing our add user enpoint 
-class CreateUserView(generics.CreateAPIView):
+class CreateUserView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsAdmin]

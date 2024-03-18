@@ -57,7 +57,7 @@ export default function TestTable() {
     <div className="w-full flex flex-col flex-grow bg-white p-4 rounded-lg mt-4">
       <div className="flex items-center py-4 ">
         <Input
-          placeholder="Filtrer les emails, noms, prenoms..."
+          placeholder="Filtrer les emails..."
           value={table.getColumn("email")?.getFilterValue() ?? ""}
           onChange={(event) => {
             table.getColumn("email")?.setFilterValue(event.target.value);

@@ -3,7 +3,8 @@ import { Navigate } from 'react-router-dom';
 
 const Axios = axios.create({
   baseURL: 'http://localhost:8000/api/',
-  timeout:5000, // 5 seconds timeout
+  timeout:5000, // 5 seconds timeout,
+  mode: "no-cors",
   headers: {
     'Content-Type': 'application/json',
     'Authorization': localStorage.getItem('access_token')
@@ -26,7 +27,7 @@ Axios.interceptors.response.use(
         return Promise.reject(error);
       }
       try {
-        const response = await Axios.post('/auth/token/refresh/', { refresh: refreshToken });
+        const response = await Axios.post('/token-refresh/', { refresh: refreshToken });
         const newAccessToken = response.data.access;
         localStorage.setItem('access_token', newAccessToken);
         originalRequest.headers['Authorization'] = `JWT ${newAccessToken}`;

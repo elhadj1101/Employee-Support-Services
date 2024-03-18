@@ -1,14 +1,13 @@
 import { Outlet, Navigate } from "react-router-dom";
 import useStore from "./store/index";
-import { useNavigate } from "react-router-dom";
 
 const RequireAuth = ({ requiredRoles }) => {
   const { user } = useStore();
-  const navigate = useNavigate();
 
-  if (!user) {
+  if (user=== null) {
     // navigate to login
-    return <Navigate to="/" replace />;
+    // return <Navigate to="/" replace />;
+    return <Outlet />;
   }
 
   if (!requiredRoles.includes(user.role) && !requiredRoles.includes("any")) {

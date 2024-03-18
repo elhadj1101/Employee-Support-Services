@@ -1,6 +1,5 @@
 import { DatePickerDemo } from "Components/ui/DatePiker";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Select,
@@ -10,11 +9,12 @@ import {
   SelectValue,
 } from "../../Components/ui/select";
 import useStore from "../../store/index.js";
+import { createUser } from "api/auth";
 export default function AddUser() {
   const { AddUserData, setAddUserData } = useStore();
   const [newErrors, setNewErrors] = useState({});
 
-  const handleChange = (e) => {
+  const handleChange =  (e) => {
     const { name, value } = e.target;
     console.log(name, value);
     sessionStorage.setItem(`form/${name}`, value);
@@ -23,32 +23,37 @@ export default function AddUser() {
     console.log(sessionStorage);
   };
 
-  const handleSubmit = (e, formData) => {
+  const handleSubmit = async (e, formData) => {
     e.preventDefault();
 
     let newErrors = {};
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(newErrors.email)delete newErrors.email;
     if (!formData.email.trim() || !emailRegex.test(formData.email)) {
       newErrors.email = "Veuillez saisir une adresse e-mail valide.";
     }
-
+   
     // Validate password strength
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+    if(newErrors.password)delete newErrors.password;
+
     if (!formData.password.trim() || !passwordRegex.test(formData.password)) {
       newErrors.password =
         "Le mot de passe doit comporter au moins 8 caractères et contenir au moins une lettre majuscule, une lettre minuscule et un chiffre.";
     }
+  if(newErrors.bank_rib)delete newErrors.bank_rib;
 
     // Validate RIB length
     if (
-      !formData.bank_rib.trim() ||
+      formData.bank_rib.trim() &&
       formData.bank_rib.trim().length !== 20 ||
-      isNaN(Number(formData.bank_rib))
+      formData.bank_rib.trim() && isNaN(Number(formData.bank_rib))
     ) {
       newErrors.bank_rib = "Le RIB doit comporter exactement 20 chiffres.";
     }
+    if(newErrors.phone_number)delete newErrors.phone_number;
 
     // Validate phone number length
     if (
@@ -56,8 +61,11 @@ export default function AddUser() {
       formData.phone_number.trim().length !== 10 ||
       isNaN(Number(formData.phone_number))
     ) {
-      newErrors.phone_number = "Le numéro de téléphone doit comporter exactement 10 chiffres.";
+      newErrors.phone_number =
+        "Le numéro de téléphone doit comporter exactement 10 chiffres.";
     }
+        if(newErrors.rip)delete newErrors.rip;
+
 
     // Validate RIP length
     if (
@@ -67,33 +75,50 @@ export default function AddUser() {
     ) {
       newErrors.rip = "Le RIP doit comporter exactement 20 chiffres.";
     }
+    
+    if(newErrors.id_number)delete newErrors.id_number;
+
 
     // Validate ID number length
-    if (
-      !formData.id_number.trim() ||
-      formData.id_number.trim().length !== 18
-    ) {
-      newErrors.id_number = "Le numéro d'identification doit comporter exactement 18 caractères.";
+    if (!formData.id_number.trim() || formData.id_number.trim().length !== 18) {
+      newErrors.id_number =
+        "Le numéro d'identification doit comporter exactement 18 caractères.";
     }
+
+
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
+      if(newErrors.key)delete newErrors.key;
+      if (!formData[key] && key !== "is_active") {
         newErrors[key] = `${key} est requis.`;
       }
     });
     // Check if any errors occurred
     if (Object.keys(newErrors).length !== 0) {
       setNewErrors(newErrors);
-      Object.keys(newErrors).forEach((key) => {
-        console.log(newErrors[key]);
-      });
       return;
     }
 
-    // If no errors, submit the form
-    console.log("Form submitted:", formData);
-  };
-
-
+    
+try {
+  const newUser = await  createUser(AddUserData);
+  if(newUser.status ===201){
+    toast.success("Utilisateur créé avec succès")
+    Object.keys(sessionStorage).forEach(key => {
+      if (key.startsWith("form/")) {
+          sessionStorage.removeItem(key);
+      }
+  });
+  }
+} catch (error) {
+  console.log("errror" , error.data);
+  if(error.status===400){
+    for (const key in error.data) {
+        toast.error(error.data[key][0])
+          break;
+  }
+  }
+}
+  }
 
   return (
     <div className="w-full flex-grow flex flex-col  bg-lightgray">
@@ -104,8 +129,8 @@ export default function AddUser() {
           </h1>
           <div className="flex gap-2 justify-center items-center">
             <div
-              onClick={() => {
-                toast.success("Event has been created");
+              onClick={(e) => {
+                handleSubmit(e, AddUserData);
               }}
               className=" bg-light-blue cursor-pointer rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg text-white  "
             >
@@ -113,7 +138,12 @@ export default function AddUser() {
             </div>
             <div
               onClick={() => {
-                toast.success("Event has been created");
+                Object.keys(sessionStorage).forEach(key => {
+                  if (key.startsWith("form/")) {
+                      sessionStorage.removeItem(key);
+                  }
+              });
+  
               }}
               className=" border cursor-pointer bg-white border-[#e5e4e4] rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg  "
             >
@@ -146,10 +176,9 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.first_name
-                     ? "red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
-                 
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3 ">
                   {newErrors?.first_name}
@@ -167,11 +196,10 @@ export default function AddUser() {
                   className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.last_name}
                   onChange={(e) => handleChange(e)}
-                 
                   style={{
                     borderColor: newErrors?.last_name
                       ? "red"
-                      : " rgb(229 231 235 / var(--tw-border-opacity))"  ,
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -193,10 +221,9 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.id_number
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
-                
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.id_number}
@@ -216,8 +243,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.email
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -238,8 +265,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.phone_number
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -260,8 +287,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.password
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -274,7 +301,6 @@ export default function AddUser() {
                 </label>
 
                 <Select
-                
                   name="role"
                   onValueChange={(value) => {
                     sessionStorage.setItem(`form/role`, value);
@@ -305,7 +331,7 @@ export default function AddUser() {
                   {newErrors?.role}
                 </p>
               </div>
-              <div className="flex flex-col gap-1">
+              {/* <div className="flex flex-col gap-1">
                 <label htmlFor="upload" className="mb-2">
                   Photo de l'utilisateur
                   <span style={{ color: "red" }}> * </span>
@@ -342,7 +368,7 @@ export default function AddUser() {
                     <input id="dropzone-file" type="file" className="hidden" />
                   </label>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold py-2 mb-2 mt-4 border-l-4 border-light-blue px-3 bg-[#e2e8ff] text-light-blue text-lg  ">
@@ -362,9 +388,9 @@ export default function AddUser() {
                   value={AddUserData.salary}
                   onChange={(e) => handleChange(e)}
                   style={{
-                    borderColor: newErrors?.birth_adress
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                    borderColor: newErrors?.salary
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -385,8 +411,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.rip
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -403,11 +429,10 @@ export default function AddUser() {
                   className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.bank_rib}
                   onChange={(e) => handleChange(e)}
-                 
                   style={{
                     borderColor: newErrors?.bank_rib
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -487,8 +512,8 @@ export default function AddUser() {
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.birth_adress
-                     ?"red"
-                      :" rgb(229 231 235 / var(--tw-border-opacity))",
+                      ? "red"
+                      : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
@@ -497,7 +522,15 @@ export default function AddUser() {
               </div>
               <div className="flex flex-col gap-1">
                 <label htmlFor="birth_date">
-                  Date de naissance<span style={{ color:" rgb(229 231 235 / var(--tw-border-opacity))" }}> * </span>
+                  Date de naissance
+                  <span
+                    style={{
+                      color: " rgb(229 231 235 / var(--tw-border-opacity))",
+                    }}
+                  >
+                    {" "}
+                    *{" "}
+                  </span>
                 </label>
                 {/* Replace DatePickerDemo with your actual component */}
                 <DatePickerDemo
@@ -521,7 +554,11 @@ export default function AddUser() {
               </div>
               <div
                 onClick={() => {
-                  toast.success("Event has been created");
+                  Object.keys(sessionStorage).forEach(key => {
+                    if (key.startsWith("form/")) {
+                        sessionStorage.removeItem(key);
+                    }
+                });
                 }}
                 className=" border cursor-pointer bg-white border-[#e5e4e4] rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg  "
               >
