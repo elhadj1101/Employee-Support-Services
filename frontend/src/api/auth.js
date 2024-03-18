@@ -23,15 +23,22 @@ const getUsers = async () => {
         user["prenom"] = user["last_name"];
         user["telephone"] = user["phone_number"];
         user["role"] = roles[user["role"]] || "Employee";
-      return user;
+      
+        return user;
       });
      
      return dat;
   } catch (error) {
-    throw error;
-  }
+    if (error.response){
+      toast.error(error.response.data.detail);
+      return [];
+    }else{
+    toast.error("Une erreur s'est produite lors de la récupération des données.");
+    return [];
+    }
 
 };
+}
 const login = async (email, password) => {
   try {
     const response = await Axios.post(

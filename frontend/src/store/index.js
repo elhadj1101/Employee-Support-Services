@@ -19,6 +19,8 @@ const useStore = create((set) => ({
     phone_number: sessionStorage.getItem("form/phone_number") || "",
     is_active: false,
   },
+  adminUsers: [],
+  setAdminUsers: (newAdminUsers) => set({ adminUsers: [ ...newAdminUsers] }),
   setAddUserData: (newFormData) => set({ AddUserData: newFormData }),
   user: null,
   setUser: (userData) => set({ user: userData }),

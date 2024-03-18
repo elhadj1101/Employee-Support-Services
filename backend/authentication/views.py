@@ -1,6 +1,6 @@
 from rest_framework import generics
 from .models import Employee
-from .serializers import EmployeeSerializer, SignupSerializer
+from .serializers import EmployeeSerializer, SignupSerializer, EmployeeDetailsSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -12,6 +12,7 @@ class CreateUserView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
+
     def post(self, request):
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():
@@ -21,8 +22,18 @@ class CreateUserView(generics.ListCreateAPIView):
                 return Response(json, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UserDetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeDetailsSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
 
 
+class UserDataView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        serializer = EmployeeDetailsSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 class SignupView(APIView):
     permission_classes = [AllowAny]
     def post(self, request, format='json'):

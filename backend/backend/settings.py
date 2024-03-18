@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'requests',
+    'offres',
 ]
 
 MIDDLEWARE = [
@@ -181,3 +183,11 @@ SIMPLE_JWT = {
 
 ALLOWED_HOSTS = ['*']
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+
+	
+
+MEDIA_URL = '/documents/'
+MEDIA_ROOT = BASE_DIR / 'documents'
+
+CAN_PUBLISH_OFFRE = ['president' , 'vice_president']
+

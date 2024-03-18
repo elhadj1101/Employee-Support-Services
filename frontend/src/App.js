@@ -27,7 +27,7 @@ function App() {
         {/* protected routes */}
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
           <Route path="/dashboard" element={<Dashboard />}>
-            <Route element={<RequireAuth requiredRoles={["any"]} />}>
+            <Route element={<RequireAuth requiredRoles={["admin"]} />}>
               <Route path="utilisateurs/add-user" element={<AddUser />} />
               <Route path="utilisateurs" element={<Users />} />
             </Route>

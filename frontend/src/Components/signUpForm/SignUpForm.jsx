@@ -22,11 +22,11 @@ const navigate = useNavigate();
     e.preventDefault();
     // Validate email
     if (!email.trim()) {
-      correct = false;
+      
       setEmailError("Email is required.");
       return;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      correct = false;
+      
 
       setEmailError("Invalid email format.");
       return;
