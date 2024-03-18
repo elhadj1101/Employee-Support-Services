@@ -38,8 +38,8 @@ class LoanView(APIView):
         loan = Loan.objects.filter(employee = request.user).last()
         if loan: 
             if (loan.loan_status == 'waiting') or (loan.loan_status == 'approved'):
-                return Response('you can\'t apply')
-        return Response('you can apply')
+                return Response('you can\'t apply', status = status.HTTP_400_BAD_REQUEST)
+        return Response('you can apply', status = status.HTTP_200_OK)
 
 
 
@@ -50,8 +50,8 @@ class LoanHistoryView(APIView):
         loans = Loan.objects.filter(employee = request.user)
         serializer = LoanSerializer(loans , many = True)
         if loans:
-            return Response(serializer.data)
-        return Response('you don\'t have any loans')
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        return Response('you don\'t have any loans', status = status.HTTP_200_OK)
 
     
 
@@ -66,7 +66,7 @@ class UploadFileView(APIView):
         if serializer.is_valid():
             serializer.save(employee = request.user )
             return Response('file uploaded succesfully' , status = status.HTTP_200_OK )
-        return Response(serializer.errors)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
 
 
