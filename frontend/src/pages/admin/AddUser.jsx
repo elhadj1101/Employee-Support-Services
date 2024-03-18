@@ -331,7 +331,7 @@ try {
                   {newErrors?.role}
                 </p>
               </div>
-              {/* <div className="flex flex-col gap-1">
+             {/* <div className="flex flex-col gap-1"> 
                 <label htmlFor="upload" className="mb-2">
                   Photo de l'utilisateur
                   <span style={{ color: "red" }}> * </span>
