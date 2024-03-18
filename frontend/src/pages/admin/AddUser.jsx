@@ -47,19 +47,17 @@ export default function AddUser() {
 
     // Validate RIB length
     if (
-      formData.bank_rib.trim() &&
-      formData.bank_rib.trim().length !== 20 ||
-      formData.bank_rib.trim() && isNaN(Number(formData.bank_rib))
+      (formData.bank_rib.trim()) && (formData.bank_rib.trim().length !== 20) || (isNaN(Number(formData.bank_rib)))
     ) {
       newErrors.bank_rib = "Le RIB doit comporter exactement 20 chiffres.";
     }
-    if(newErrors.phone_number)delete newErrors.phone_number;
+    if(newErrors.phone_number) delete newErrors.phone_number;
 
     // Validate phone number length
     if (
-      !formData.phone_number.trim() ||
-      formData.phone_number.trim().length !== 10 ||
-      isNaN(Number(formData.phone_number))
+      (!formData.phone_number.trim()) ||
+      (formData.phone_number.trim().length !== 10) ||
+      (isNaN(Number(formData.phone_number)))
     ) {
       newErrors.phone_number =
         "Le numéro de téléphone doit comporter exactement 10 chiffres.";
@@ -69,9 +67,9 @@ export default function AddUser() {
 
     // Validate RIP length
     if (
-      !formData.rip.trim() ||
-      formData.rip.trim().length !== 20 ||
-      isNaN(Number(formData.rip))
+      (!formData.rip.trim()) ||
+      (formData.rip.trim().length !== 20) ||
+      (isNaN(Number(formData.rip)))
     ) {
       newErrors.rip = "Le RIP doit comporter exactement 20 chiffres.";
     }
@@ -110,16 +108,19 @@ try {
   });
   }
 } catch (error) {
-  console.log("errror" , error.data);
-  if(error.status===400){
+  if (error.response){
+    console.log("errror" , error.data);
+    if(error.status===400){
     for (const key in error.data) {
         toast.error(error.data[key][0])
           break;
+    }
+    }
+  }else {
+    toast.error("Une erreur s'est produite")
   }
   }
-}
   }
-
   return (
     <div className="w-full flex-grow flex flex-col  bg-lightgray">
       <div className="px-6 pb-4 flex flex-col flex-grow relative ">

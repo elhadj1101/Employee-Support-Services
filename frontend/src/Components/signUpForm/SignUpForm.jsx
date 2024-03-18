@@ -2,14 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { signUp } from "../../api/auth";
 import "./SignUpForm.css";
-<<<<<<< HEAD
-import { signUp } from "api/auth";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-=======
 import { useNavigate } from "react-router-dom";
 
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
 const SignUpForm = () => {
   // const [err, setErr] = useState("");
   // const [success, setSuccess] = useState("");
@@ -22,22 +16,16 @@ const SignUpForm = () => {
   const [emailError, setEmailError] = useState("");
   const [passError, setPassError] = useState("");
   const [confpassError, setConfpassError] = useState("");
-<<<<<<< HEAD
-const navigate = useNavigate();
-  const handleSubmit = async (e) => {
-    let correct = true;
-=======
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
     e.preventDefault();
     // Validate email
     if (!email.trim()) {
-      correct = false;
+      
       setEmailError("Email is required.");
       return;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      correct = false;
+      
 
       setEmailError("Invalid email format.");
       return;
@@ -45,7 +33,6 @@ const navigate = useNavigate();
       setEmailError("");
     }
 
-<<<<<<< HEAD
     // // Validate telephone
     // if (!tel.trim()) {
     //   setTelError("Phone number is required.");
@@ -54,35 +41,14 @@ const navigate = useNavigate();
     // } else {
     //   setTelError("");
     // }
-=======
-    // Validate telephone
-    if (!tel.trim()) {
-      setTelError("Phone number is required.");
-      return;
-    } else if (!/^\d{10}$/.test(tel)) {
-      setTelError("Invalid phone number format.");
-      return;
-    } else {
-      setTelError("");
-    }
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
 
     // Validate password
     if (!pass.trim()) {
       setPassError("Password is required.");
-<<<<<<< HEAD
-      correct = false;
-
-    } else if (pass.length < 8) {
-      setPassError("Password must be at least 8 characters long.");
-      correct = false;
-
-=======
       return;
     } else if (pass.length < 8) {
       setPassError("Password must be at least 8 characters long.");
       return;
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
     } else {
       setPassError("");
     }
@@ -90,36 +56,6 @@ const navigate = useNavigate();
     // Validate confirmation password
     if (!confpass.trim()) {
       setConfpassError("The confirmation is required.");
-<<<<<<< HEAD
-      correct = false;
-
-    } else if (confpass !== pass) {
-      setConfpassError("Passwords do not match.");
-      correct = false;
-
-    } else {
-      setConfpassError("");
-    }
-    if (!correct) {
-      return;
-    }
-    // If all validations pass, submit the form
-    try {
-      const response = await signUp(email, pass);
-      console.log('error' , response);
-
-      if (response.success) {
-        toast.success(response.success);
-
-        navigate("/");
-      }
-    }catch (response) {
-      console.log('error' , response);
-      if (response.status === 401){
-        toast.error(response.data.detail)
-      }
-    }
-=======
       return;
     } else if (confpass !== pass) {
       setConfpassError("Passwords do not match.");
@@ -148,7 +84,6 @@ const navigate = useNavigate();
   //     }, 3000);
       
   //   }
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
   };
 
   return (
@@ -178,20 +113,14 @@ const navigate = useNavigate();
           placeholder={"email"}
           style={{ borderColor: emailError ? "red" : "" }}
         />
-<<<<<<< HEAD
-        <p className="error max-w-xs flex mx-auto sm:min-w-full ">{emailError}</p>
-{/* 
-        <label for="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
-=======
         <p className="error max-w-xs flex mx-auto sm:min-w-full ">
           {emailError}
         </p>
 
-        <label
+        {/* <label
           htmlFor="phone"
           className="text max-w-xs mx-auto flex  sm:min-w-full"
         >
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
           Num Téléphone
         </label>
         <input
@@ -204,13 +133,9 @@ const navigate = useNavigate();
           onChange={(e) => setTel(e.target.value)}
           style={{ borderColor: telError ? "red" : "" }}
         />
-<<<<<<< HEAD
-        <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div> */}
-=======
         <div className="error max-w-xs flex mx-auto sm:min-w-full">
           {telError}
-        </div>
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
+        </div> */}
 
         <label
           htmlFor="password"
@@ -245,10 +170,6 @@ const navigate = useNavigate();
           placeholder="**************"
           style={{ borderColor: confpassError ? "red" : "" }}
         />
-<<<<<<< HEAD
-        <div className="error max-w-xs flex mx-auto sm:min-w-full  ">{confpassError}</div>
-        <button className="inscri cursor-pointer  max-w-xs mx-11   sm:min-w-full sm:mx-auto  bg-blue-700" onClick={handleSubmit}>
-=======
         <div className="error max-w-xs flex mx-auto sm:min-w-full  ">
           {confpassError}
         </div>
@@ -256,7 +177,6 @@ const navigate = useNavigate();
           className="inscri  max-w-xs mx-11   sm:min-w-full sm:mx-auto  "
           onClick={handleSubmit}
         >
->>>>>>> e4916c51928a5e857bbc2dab5a16bff1f9f90888
           s'inscrire
         </button>
 
