@@ -192,6 +192,3 @@ MEDIA_ROOT = BASE_DIR / 'documents'
 
 	
 
-MEDIA_URL = '/documents/'
-MEDIA_ROOT = BASE_DIR / 'documents'
-
