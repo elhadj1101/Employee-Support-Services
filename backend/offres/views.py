@@ -15,7 +15,5 @@ class OffreView(generics.ListCreateAPIView):
     
 class OffreDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Offre.objects.all()
-    serializer_class = OffresSerializer
-    lookup_field = 'slug'
-    
+    serializer_class = OffresSerializer    
     permission_classes = [IsAuthenticated, CanPublishOffre]
