@@ -7,7 +7,9 @@ export default function SideButton({ title, icon: Icon, nestedBtns }) {
   const location = useLocation();
   // Check if any child path matches the current location
   useEffect(() => {
-    const isOpen = nestedBtns.some(({ path }) =>  path.split("/").pop() === location.pathname.split("/").pop());
+    const isOpen = nestedBtns.some(
+      ({ path }) => path.split("/").pop() === location.pathname.split("/").pop()
+    );
     setOpen(isOpen);
   }, []);
 
@@ -23,7 +25,8 @@ export default function SideButton({ title, icon: Icon, nestedBtns }) {
           {Icon && <Icon className="text-lg" />}
           <p className="capitalize tracking-wide ">{title}</p>
         </div>
-        {open ? <IoIosArrowUp /> : <IoIosArrowDown />}
+        {!(nestedBtns.length === 0) &&
+          (open ? <IoIosArrowUp /> : <IoIosArrowDown />)}
       </div>
       {open & (nestedBtns.length !== 0) ? (
         <div className="px-1 pt-2 pb-3 pl-3  bg-[#3842859e] ">

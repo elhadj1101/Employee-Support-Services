@@ -1,11 +1,10 @@
-from rest_framework import generics
-from .models import Employee
-from .serializers import EmployeeSerializer, SignupSerializer, EmployeeDetailsSerializer
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .permissions import IsAdmin
 from rest_framework.views import APIView
+from .models import Employee
+from .serializers import EmployeeSerializer, SignupSerializer, EmployeeDetailsSerializer
+from .permissions import IsAdmin
 
 # this is just for testing our add user enpoint 
 class CreateUserView(generics.ListCreateAPIView):
@@ -60,6 +59,8 @@ class SignupView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
+
+
 # {
 #     "email":"testteat@test.com",
 #     "password":"testtest",

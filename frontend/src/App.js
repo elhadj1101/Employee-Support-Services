@@ -10,13 +10,14 @@ import { Route, Routes, Outlet } from "react-router-dom";
 import Users from "./pages/admin/Users";
 import { Toaster } from "sonner";
 import RequireAuth from "./RequireAuth";
+import InitialDashboard from "pages/employee/InitialDashboard";
 
 function App() {
   return (
     <main className="h-screen w-full">
       <Routes>
         {/* public routes */}
-        <Route exact path="/" element={<Login />} />
+        <Route exact path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/email" element={<Email />} />
         <Route path="/reset" element={<Reset />} />
@@ -26,14 +27,16 @@ function App() {
 
         {/* protected routes */}
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
-          <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="/" element={<Dashboard />}>
             <Route element={<RequireAuth requiredRoles={["admin"]} />}>
               <Route path="utilisateurs/add-user" element={<AddUser />} />
               <Route path="utilisateurs" element={<Users />} />
             </Route>
+            <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={["admin"]} />} >
+              <Route path="" element={<InitialDashboard />} />
+            </Route>
           </Route>
         </Route>
-
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
       <Toaster richColors closeButton position="bottom-right" />
