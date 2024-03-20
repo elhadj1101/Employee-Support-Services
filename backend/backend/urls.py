@@ -8,8 +8,8 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/' , include('authentication.urls')),
-    path('loan/',include('requests.urls')),
-    path('offres/',include('offres.urls')),
+    path('api/loan/',include('requests.urls')),
+    path('api/offres/',include('offres.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL , document_root = settings.MEDIA_ROOT)
