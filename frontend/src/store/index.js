@@ -21,6 +21,9 @@ const useStore = create((set) => ({
   },
   adminUsers: [],
   setAdminUsers: (newAdminUsers) => set({ adminUsers: [ ...newAdminUsers] }),
+  profileRequsted:sessionStorage.getItem("profileRequsted") || null,
+  setProfileRequsted: (newProfileRequsted) => set({ profileRequsted: newProfileRequsted }),
+
   setAddUserData: (newFormData) => set({ AddUserData: newFormData }),
   user: null,
   setUser: (userData) => set({ user: userData }),

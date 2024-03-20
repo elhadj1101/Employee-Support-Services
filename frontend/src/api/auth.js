@@ -26,14 +26,44 @@ const getUsers = async () => {
       
         return user;
       });
-     
+     console.log('users' , dat);
      return dat;
   } catch (error) {
     if (error.response){
       toast.error(error.response.data.detail);
       return [];
     }else{
-    toast.error("Une erreur s'est produite lors de la récupération des données.");
+    toast.error(" Une erreur s'est produite lors de la récupération des données.");
+    return [];
+    }
+
+};
+}
+const getUser = async (id) => {
+  try {
+    const response = await Axios.get(`/users/${id}`);
+  return response.data;
+  } catch (error) {
+    if (error.response){
+      toast.error(error.response.data.detail);
+      return [];
+    }else{
+    toast.error(" Une erreur s'est produite lors de la récupération des données.");
+    return [];
+    }
+
+};
+}
+const updateUser = async (data , id ) => {
+  try {
+    const response = await Axios.put(`/users/${id}/` , data);
+  return response.data;
+  } catch (error) {
+    if (error.response){
+      toast.error(error.response.data.detail);
+      return [];
+    }else{
+    toast.error(" Une erreur s'est produite lors de la récupération des données.");
     return [];
     }
 
@@ -47,6 +77,7 @@ const login = async (email, password) => {
     );
     return response.data;
   } catch (error) {
+    console.log(error);
     console.log('eror' , error.request);
     if (error.request.status === 401){
       toast.error(JSON.parse(error.request.response).detail)
@@ -78,7 +109,7 @@ const signUp = async (email, password) => {
       return "error";
 
     }else{
-      toast.error("Something went wrong");
+      toast.error("Une erreur s'est produite lors de la récupération des données.");
       return "error";
     
     }
@@ -108,6 +139,20 @@ const getUserData = async () => {
   }
 };
 
+const deleteUser = async (id) => {
+  
+  // const decodedToken = jwtDecode( localStorage.getItem('access_token'));
+  // const userId = decodedToken.user_id;
+
+  try {
+    // ndiro /user/ drct 5atar backend mn token y3rf wchmn user dar request
+    const response = await Axios.delete(`/users/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 const createUser = async (data) => {
   try {
     const response = await Axios.post("users/",data);
@@ -118,4 +163,4 @@ const createUser = async (data) => {
   }
 };
 
-export { getUsers,login, logout , signUp , verifyEmail ,getUserData , createUser };
+export { getUsers,login, logout , signUp , verifyEmail ,getUserData , createUser , deleteUser  , getUser , updateUser};

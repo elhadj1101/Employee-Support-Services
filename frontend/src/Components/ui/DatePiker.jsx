@@ -46,7 +46,7 @@ export function DatePickerDemo() {
             const updatedUserData = { ...AddUserData, "birth_date": date }; 
             setAddUserData(updatedUserData);
 
-            setSelectedDate(new Date(date)); // Update the selectedDate state with the Date object
+            setSelectedDate(new Date(formattedDate)); // Update the selectedDate state with the Date object
           }}
           initialFocus
         />

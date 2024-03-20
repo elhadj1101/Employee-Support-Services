@@ -7,9 +7,23 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter,
+} from "../../ui/dialog";
+import { useNavigate } from "react-router-dom";
+import { deleteUser, getUsers } from "../../../api/auth";
+import useStore from "../../../store/index";
+import { toast } from "sonner";
 const roleColors = {
   employee: "text-green-900 bg-green-100",
   president: "text-blue-900 bg-blue-100",
@@ -18,6 +32,50 @@ const roleColors = {
   "membre commute": "text-red-900 bg-red-100",
   admin: "text-gray-900 bg-gray-100",
 };
+
+const UserDeleteButton = ({ id }) => {
+  const { setAdminUsers } = useStore();
+
+  const handleDeleteClick = async () => {
+    try {
+      const response = await deleteUser(id);
+      console.log(response);
+      const updatedUsers = await getUsers();
+      console.log(updatedUsers);
+      setAdminUsers(updatedUsers);
+    } catch (error) {
+      if (error.detail) {
+        toast.error(error.detail);
+      } else {
+        toast.error(
+          "Une erreur s'est produite lors de la récupération des données."
+        );
+      }
+    }
+  };
+  return (
+    <Button
+      variant="danger"
+      className="hover:bg-light-blue hover:text-white border border-light-blue text-light-blue"
+      onClick={handleDeleteClick}
+    >
+      Supprimer
+    </Button>
+  );
+};
+const NavigateDropdownMenuItem = ({ id , email , text }) => {
+  const {setProfileRequsted} = useStore();
+
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    setProfileRequsted(id)
+    sessionStorage.setItem("profileRequsted" ,{id})
+    navigate(`${email}`);
+  };
+
+  return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
+};
+
 export const columns = [
   {
     id: "select",
@@ -43,34 +101,28 @@ export const columns = [
   },
   {
     accessorKey: "id",
-    header: () => <div className="text-right">ID</div>,
+    header: () => <div className="text-center">ID</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-right font-medium">
-          {row.getValue("id")}
-        </div>
+        <div className="text-center font-medium">{row.getValue("id")}</div>
       );
     },
   },
   {
     accessorKey: "nom",
-    header: () => <div className="text-right">Nom</div>,
+    header: () => <div className="text-center">Nom</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-right font-medium">
-          {row.getValue("nom")}
-        </div>
+        <div className="text-center font-medium">{row.getValue("nom")}</div>
       );
     },
   },
   {
     accessorKey: "prenom",
-    header: () => <div className="text-right">Prenom</div>,
+    header: () => <div className="text-center">Prenom</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-right font-medium">
-          {row.getValue("prenom")}
-        </div>
+        <div className="text-center font-medium">{row.getValue("prenom")}</div>
       );
     },
   },
@@ -78,25 +130,30 @@ export const columns = [
     accessorKey: "email",
     header: ({ column }) => {
       return (
-        <Button
+        <button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center mx-auto"
         >
-          Email
+          <div className="text-center">Email</div>
           <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
+        </button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => (
+      <div className="lowercase flex justify-center">
+        {row.getValue("email")}
+      </div>
+    ),
   },
   {
     accessorKey: "role",
-    header: "Role",
+    header: <div className="text-center">Role</div>,
     cell: ({ row }) => (
-      <div className="capitalize w-full">
+      <div className="capitalize w-full flex justify-center">
         <div
           className={
-            "w-fit p-2 m-1 rounded-lg " +
+            "w-fit py-1 px-3 m-1 rounded-3xl " +
             roleColors[row.getValue("role").toLowerCase()]
           }
         >
@@ -107,10 +164,10 @@ export const columns = [
   },
   {
     accessorKey: "telephone",
-    header: () => <div className="text-right">Telehone</div>,
+    header: () => <div className="text-center">Telephone</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-right font-medium">
+        <div className="text-right font-medium flex justify-center">
           {row.getValue("telephone")}
         </div>
       );
@@ -120,8 +177,6 @@ export const columns = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -132,14 +187,40 @@ export const columns = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+
+            <NavigateDropdownMenuItem
+              email={row.original.email}
+              id={row.original.id}
+              text={"Détails / Modifier"}
+            />
+
+            <Dialog>
+              <DialogTrigger style={{ width: "100%" }}>
+                <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                  Supprimer
+                </div>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>
+                    Êtes-vous sûr de supprimer cet utilisateur?
+                  </DialogTitle>
+                  <DialogDescription>
+                    <p className="mt-3">
+                      {" "}
+                      Cette action est irréversible. Elle supprimera
+                      définitivement le compte utilisateur et effacera vos
+                      données de nos serveurs.
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <UserDeleteButton id={row.original.id} />
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
       );
