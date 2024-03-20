@@ -3,7 +3,7 @@ import {  toast } from 'sonner'
 
 const getLoans = async () => {
   try {
-    const response = await Axios.get('/loan/history/');
+    const response = await Axios.get('/requests/loans/history/');
     const data = response.data;
     let dat = data.map((loan, ind) => { 
         loan["id"] = ind;
