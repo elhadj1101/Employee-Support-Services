@@ -20,6 +20,8 @@ const useStore = create((set) => ({
     is_active: false,
   },
   adminUsers: [],
+  fetchedAdminUsers: false,
+  setFetchedAdminUsers: (newState)=> set({fetchedAdminUsers: newState}),
   setAdminUsers: (newAdminUsers) => set({ adminUsers: [ ...newAdminUsers] }),
   profileRequsted:sessionStorage.getItem("profileRequsted") || null,
   setProfileRequsted: (newProfileRequsted) => set({ profileRequsted: newProfileRequsted }),
@@ -27,7 +29,19 @@ const useStore = create((set) => ({
   setAddUserData: (newFormData) => set({ AddUserData: newFormData }),
   user: null,
   setUser: (userData) => set({ user: userData }),
-  logout: () => set({ user: null }),
+  logout: () => {
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("access_token");
+    set({ user: null });
+  },
+  offres: [],
+  setOffres: (newOffres) => set({ offres: newOffres }),
+  fetchedOffres: false,
+  setFetchedOffres: (newState) => set({ fetchedOffres: newState }),
+  loans: [],
+  setLoans: (newLoans) => set({ loans: newLoans }),
+  fetchedLoans: false,
+  setFetchedLoans: (newState) => set({ fetchedLoans: newState }),
 }));
 
 export default useStore;

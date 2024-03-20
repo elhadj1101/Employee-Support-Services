@@ -79,8 +79,12 @@ const login = async (email, password) => {
   } catch (error) {
     console.log(error);
     console.log('eror' , error.request);
-    if (error.request.status === 401){
+    if (error?.request?.status === 401){
       toast.error(JSON.parse(error.request.response).detail)
+    }else {
+      toast.error("Une erreur s'est produite lors de la connexion.");
+      console.log('eror wslna' ,);
+    
     }
   }
 };

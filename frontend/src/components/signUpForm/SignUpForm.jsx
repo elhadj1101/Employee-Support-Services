@@ -79,7 +79,7 @@ const navigate = useNavigate();
       if (response.success) {
         toast.success(response.success);
 
-        navigate("/");
+        navigate("/login");
       }
     }catch (response) {
       console.log('error' , response);

@@ -1,6 +1,29 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Employee, options_role
 from .utils import is_digits
+
+    
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
+        token['role'] = user.role
+        token['is_superuser'] = user.is_superuser
+        token['is_active'] = user.is_active
+        token['sexe'] = user.sexe
+        token['birth_date'] = user.birth_date.strftime("%d-%m-%Y")
+        token['birth_adress'] = user.birth_adress
+        token['martial_situation'] = user.martial_situation
+        token['phone_number'] = user.phone_number
+        token['rip'] = user.rip
+        token['bank_rib'] = user.bank_rib
+        token['id_number'] = user.id_number
+        token['salary'] = user.salary
+        token['email'] = user.email
+        return token
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -67,7 +90,7 @@ class EmployeeDetailsSerializer(serializers.ModelSerializer):
             'id','email','first_name','last_name',
             'birth_date','birth_adress','salary','martial_situation',
             'sexe','rip','bank_rib','id_number',
-            'role','phone_number','is_active'
+            'role','phone_number','is_active','is_superuser'
         ]
     def validate(self, attrs):
         data = super().validate(attrs)

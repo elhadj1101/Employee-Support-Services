@@ -1,11 +1,12 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import  Loan 
-from .serializers import LoanSerializer , FileSerializer
+from .models import  Loan , Financial_aid
+from .serializers import LoanSerializer , FileSerializer , FinancialaidSerializer
 from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework import status
 from .permissions import IsLoanApplier
+from rest_framework import generics
 # Create your views here.
 
 
@@ -70,7 +71,16 @@ class UploadFileView(APIView):
     
 
 
-    
+class FinancialaidView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Financial_aid.objects.all()
+    serializer_class = FinancialaidSerializer
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data = request.data)
+        serializer.is_valid(raise_exception = True)
+        serializer.save(employee = request.user )
+        return Response('You applied for the financial aid successfully')
+
 
      
 

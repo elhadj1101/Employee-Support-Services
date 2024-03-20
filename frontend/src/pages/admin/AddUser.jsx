@@ -1,4 +1,4 @@
-import { DatePickerDemo } from "Components/ui/DatePiker";
+import { DatePickerDemo } from "components/ui/DatePiker";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -7,14 +7,14 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../Components/ui/select";
+} from "../../components/ui/select";
 import useStore from "../../store/index.js";
 import { createUser } from "api/auth";
 export default function AddUser() {
   const { AddUserData, setAddUserData } = useStore();
   const [newErrors, setNewErrors] = useState({});
 
-  const handleChange =  (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
     sessionStorage.setItem(`form/${name}`, value);
@@ -30,52 +30,51 @@ export default function AddUser() {
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(newErrors.email)delete newErrors.email;
+    if (newErrors.email) delete newErrors.email;
     if (!formData.email.trim() || !emailRegex.test(formData.email)) {
       newErrors.email = "Veuillez saisir une adresse e-mail valide.";
     }
-   
+
     // Validate password strength
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-    if(newErrors.password)delete newErrors.password;
+    if (newErrors.password) delete newErrors.password;
 
     if (!formData.password.trim() || !passwordRegex.test(formData.password)) {
       newErrors.password =
         "Le mot de passe doit comporter au moins 8 caractères et contenir au moins une lettre majuscule, une lettre minuscule et un chiffre.";
     }
-  if(newErrors.bank_rib)delete newErrors.bank_rib;
+    if (newErrors.bank_rib) delete newErrors.bank_rib;
 
     // Validate RIB length
     if (
-      (formData.bank_rib.trim()) && (formData.bank_rib.trim().length !== 20) || (isNaN(Number(formData.bank_rib)))
+      (formData.bank_rib.trim() && formData.bank_rib.trim().length !== 20) ||
+      isNaN(Number(formData.bank_rib))
     ) {
       newErrors.bank_rib = "Le RIB doit comporter exactement 20 chiffres.";
     }
-    if(newErrors.phone_number) delete newErrors.phone_number;
+    if (newErrors.phone_number) delete newErrors.phone_number;
 
     // Validate phone number length
     if (
-      (!formData.phone_number.trim()) ||
-      (formData.phone_number.trim().length !== 10) ||
-      (isNaN(Number(formData.phone_number)))
+      !formData.phone_number.trim() ||
+      formData.phone_number.trim().length !== 10 ||
+      isNaN(Number(formData.phone_number))
     ) {
       newErrors.phone_number =
         "Le numéro de téléphone doit comporter exactement 10 chiffres.";
     }
-        if(newErrors.rip)delete newErrors.rip;
-
+    if (newErrors.rip) delete newErrors.rip;
 
     // Validate RIP length
     if (
-      (!formData.rip.trim()) ||
-      (formData.rip.trim().length !== 20) ||
-      (isNaN(Number(formData.rip)))
+      !formData.rip.trim() ||
+      formData.rip.trim().length !== 20 ||
+      isNaN(Number(formData.rip))
     ) {
       newErrors.rip = "Le RIP doit comporter exactement 20 chiffres.";
     }
-    
-    if(newErrors.id_number)delete newErrors.id_number;
 
+    if (newErrors.id_number) delete newErrors.id_number;
 
     // Validate ID number length
     if (!formData.id_number.trim() || formData.id_number.trim().length !== 18) {
@@ -83,9 +82,8 @@ export default function AddUser() {
         "Le numéro d'identification doit comporter exactement 18 caractères.";
     }
 
-
     Object.keys(formData).forEach((key) => {
-      if(newErrors.key)delete newErrors.key;
+      if (newErrors.key) delete newErrors.key;
       if (!formData[key] && key !== "is_active") {
         newErrors[key] = `${key} est requis.`;
       }
@@ -96,31 +94,30 @@ export default function AddUser() {
       return;
     }
 
-    
-try {
-  const newUser = await  createUser(AddUserData);
-  if(newUser.status ===201){
-    toast.success("Utilisateur créé avec succès")
-    Object.keys(sessionStorage).forEach(key => {
-      if (key.startsWith("form/")) {
-          sessionStorage.removeItem(key);
+    try {
+      const newUser = await createUser(AddUserData);
+      if (newUser.status === 201) {
+        toast.success("Utilisateur créé avec succès");
+        Object.keys(sessionStorage).forEach((key) => {
+          if (key.startsWith("form/")) {
+            sessionStorage.removeItem(key);
+          }
+        });
       }
-  });
-  }
-} catch (error) {
-  if (error.response){
-    console.log("errror" , error.data);
-    if(error.status===400){
-    for (const key in error.data) {
-        toast.error(error.data[key][0])
-          break;
+    } catch (error) {
+      if (error.response) {
+        console.log("errror", error.data);
+        if (error.status === 400) {
+          for (const key in error.data) {
+            toast.error(error.data[key][0]);
+            break;
+          }
+        }
+      } else {
+        toast.error("Une erreur s'est produite");
+      }
     }
-    }
-  }else {
-    toast.error("Une erreur s'est produite")
-  }
-  }
-  }
+  };
   return (
     <div className="w-full flex-grow flex flex-col  bg-lightgray">
       <div className="px-6 pb-4 flex flex-col flex-grow relative ">
@@ -139,12 +136,11 @@ try {
             </div>
             <div
               onClick={() => {
-                Object.keys(sessionStorage).forEach(key => {
+                Object.keys(sessionStorage).forEach((key) => {
                   if (key.startsWith("form/")) {
-                      sessionStorage.removeItem(key);
+                    sessionStorage.removeItem(key);
                   }
-              });
-  
+                });
               }}
               className=" border cursor-pointer bg-white border-[#e5e4e4] rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg  "
             >
@@ -332,7 +328,7 @@ try {
                   {newErrors?.role}
                 </p>
               </div>
-             {/* <div className="flex flex-col gap-1"> 
+              {/* <div className="flex flex-col gap-1"> 
                 <label htmlFor="upload" className="mb-2">
                   Photo de l'utilisateur
                   <span style={{ color: "red" }}> * </span>
@@ -555,11 +551,11 @@ try {
               </div>
               <div
                 onClick={() => {
-                  Object.keys(sessionStorage).forEach(key => {
+                  Object.keys(sessionStorage).forEach((key) => {
                     if (key.startsWith("form/")) {
-                        sessionStorage.removeItem(key);
+                      sessionStorage.removeItem(key);
                     }
-                });
+                  });
                 }}
                 className=" border cursor-pointer bg-white border-[#e5e4e4] rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg  "
               >
