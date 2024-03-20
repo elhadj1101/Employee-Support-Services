@@ -30,7 +30,7 @@ function Navbar({ path }) {
          }</div>
           </>
         )}
-        <img src="./icons/notifications.svg" alt="" />
+        <img className=" cursor-pointer" src="./icons/notifications.svg" alt="" />
       </div>
     </div>
   );
