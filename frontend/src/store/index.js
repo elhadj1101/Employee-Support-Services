@@ -31,6 +31,14 @@ const useStore = create((set) => ({
     localStorage.removeItem("access_token");
     set({ user: null });
   },
+  offres: [],
+  setOffres: (newOffres) => set({ offres: newOffres }),
+  fetchedOffres: false,
+  setFetchedOffres: (newState) => set({ fetchedOffres: newState }),
+  loans: [],
+  setLoans: (newLoans) => set({ loans: newLoans }),
+  fetchedLoans: false,
+  setFetchedLoans: (newState) => set({ fetchedLoans: newState }),
 }));
 
 export default useStore;
