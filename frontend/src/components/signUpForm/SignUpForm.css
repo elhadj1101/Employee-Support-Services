@@ -1,0 +1,76 @@
+.Container {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  height: 100vh;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text {
+  font-weight: 500;
+  gap: 40px;
+  padding-bottom: 5px;
+}
+
+.inputes {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  padding-top: 10px;
+}
+
+.input {
+  display: flex;
+}
+
+.input .text {
+  padding-bottom: 7px;
+}
+
+input {
+  background: transparent;
+  border: 1px solid gainsboro;
+  outline: none;
+  height: 45px;
+  border-radius: 9px;
+  padding: 0px 10px;
+  font-size: 15px;
+}
+
+.inscri {
+
+  justify-content: center;
+  height: 40px;
+  align-items: center;
+  color: aliceblue;
+  border-radius: 9px;
+}
+
+
+
+.connecter {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.connecter span {
+  font-weight: 500;
+  color: blue;
+  cursor: pointer;
+  border-bottom: 1px solid;
+  margin-left: 5px;
+}
+
+.error {
+  color: red;
+  font-weight: 300;
+  font-size: 13px;
+  height: 7px;
+  margin-bottom: 15px;
+}
