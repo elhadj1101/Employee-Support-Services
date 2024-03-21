@@ -10,7 +10,20 @@ const Loan = () => {
     const [Duration, setDuration] = useState("");
     const [MontantError, setMontantError] = useState("");
     const [DurationError, setDurationError] = useState("");
-    const [ShowSideBar, setShowSideBar] = useState(false);
+    const [open, setOpen] = useState(false);
+
+
+    const toggleSidebar = () => {
+        setOpen(!open);
+    };
+ const hideSidebar = () => {
+        setOpen(false);
+    };
+
+
+
+
+
 
 
     const handleSubmit = (e) => {
@@ -32,18 +45,17 @@ const Loan = () => {
     };
     return (
         <div className=" ">
-            <div className='  hidden lg:block'>
-
+            <div className={`   ${open ? ' fixed top-0 -translate-x-full' : ' hidden  lg:block '}`}>
                 <Sidebar />
             </div>
 
-            <div className=" lg:ml-[250px] flex flex-col h-screen  ">
-                <div className=' ml-16 flex items-center cursor-pointer ml-3 '>
-                    <img className=' h-7 w-7 lg:hidden ' src="/icons/menu.png" alt="" />
+            <div className=" lg:ml-[250px] flex flex-col h-screen   ">
+                <div className=' ml-16 flex items-center cursor-pointer ml-3    '>
+                    <img className=' h-7 w-7 lg:hidden  ' src="/icons/menu.png" alt="" onClick={toggleSidebar} />
                     <Navbar />
                 </div>
 
-                <div className=' bg-slate-200 h-full'>
+                <div onClick={hideSidebar} className='  bg-slate-200 h-full'>
                     <h1 className=' ml-6 text-2xl font-medium my-2'>Demande Loan</h1>
                     <div className=' max-w-xs mx-auto sm:flex sm:justify-between sm:mx-10 sm:space-x-3 sm:max-w-full    '>
                         <Card
