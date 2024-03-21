@@ -44,13 +44,14 @@ class Financial_aid(models.Model):
         ('son', 'fils'),
         ('parent' , 'parent'), 
         ('brother' ,'frère')
+        
     ]
 
     # documents_to_upload_field
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE)
     request_created_at = models.DateField(auto_now_add = True )
-    financial_aid_type = models.CharField(max_length = 255 , choices = financial_aid_type_options)
-    family_member = models.CharField(max_length = 50 , null = True  , choices = family_member_options)
+    financial_aid_type = models.CharField(max_length = 50 , choices = financial_aid_type_options)
+    family_member =  models.CharField(max_length = 50   , choices = family_member_options , null = True)
     financial_aid_amount = models.CharField(max_length = 10)
     financial_aid_status = models.CharField(max_length = 50  , choices = financial_aid_status_options ) 
     request_response_at = models.DateField(null =True)
