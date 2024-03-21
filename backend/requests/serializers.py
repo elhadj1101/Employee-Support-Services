@@ -38,7 +38,7 @@ class FinancialaidSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         if (
-            data.get("financial_aid_type") == "family_member_death"
+            data.get("financial_aid_type", None) == "family_member_death"
             and data.get("family_member") is None
         ):
             raise serializers.ValidationError(

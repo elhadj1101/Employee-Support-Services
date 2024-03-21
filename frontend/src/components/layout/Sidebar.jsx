@@ -4,6 +4,7 @@ import { HiOutlineUserGroup, HiOutlineUserPlus } from "react-icons/hi2";
 import { FaCircleCheck } from "react-icons/fa6";
 import { FaHandsHelping, FaPiggyBank } from "react-icons/fa";
 import useStore from "../../store/index.js";
+import { Link } from "react-router-dom";
 export default function Sidebar() {
   const { user } = useStore();
   return (
@@ -29,11 +30,13 @@ export default function Sidebar() {
         )}
         {user && !user.is_superuser && (
           <>
-            <SideButton
-              title="Dashboard"
-              icon={HiOutlineUserGroup}
-              nestedBtns={[]}
-            />
+            <Link to="/">
+              <SideButton
+                title="Dashboard"
+                icon={HiOutlineUserGroup}
+                nestedBtns={[]}
+              />
+            </Link>
             <SideButton
               title="Demande Pret"
               icon={FaPiggyBank}

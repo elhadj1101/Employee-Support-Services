@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "components/layout/Sidebar";
 import { Outlet } from "react-router-dom";
@@ -8,6 +8,15 @@ import { getOffres } from "../api/offres.js";
 import { getLoans } from "../api/requests.js";
 
 function Dashboard() {
+    const [open, setOpen] = useState(false);
+
+    const toggleSidebar = () => {
+      setOpen(!open);
+    };
+    const hideSidebar = () => {
+      setOpen(false);
+    };
+
   const {
     setAdminUsers,
     user,
@@ -30,28 +39,42 @@ function Dashboard() {
     }
     async function fetchOffres() {
       const dat = await getOffres();
-      console.log("fetched offres");
       setOffres(dat);
       setFetchedOffres(true);
     }
     async function fetchLoans() {
       const dat = await getLoans();
       console.log("fetched loans");
-      console.log(dat);
 
       setLoans(dat);
       setFetchedLoans(true);
     }
     if (user && user.is_superuser && !fetchedAdminUsers) fetchUsers();
-    if (!fetchedOffres) fetchOffres();
-    if (!fetchedLoans) fetchLoans();
+    if (!fetchedOffres && !user.is_superuser) fetchOffres();
+    if (!fetchedLoans && !user.is_superuser) fetchLoans();
   }, []);
   return (
     <div className=" ">
-      <Sidebar />
-      <div className=" ml-[250px] flex flex-col h-screen ">
-        <Navbar />
-        <Outlet />
+      <div
+        className={`   ${
+          open ? "z-[99] fixed top-0 -translate-x-full" : " hidden  lg:block "
+        }`}
+      >
+        <Sidebar />
+      </div>
+      <div className=" lg:ml-[250px] flex flex-col h-screen   ">
+        <div className=" ml-16 flex items-center cursor-pointer ml-3    ">
+          <img
+            className=" h-7 w-7 lg:hidden  "
+            src="/icons/menu.png"
+            alt=""
+            onClick={toggleSidebar}
+          />
+          <Navbar />
+        </div>
+        <div onClick={hideSidebar}>
+          <Outlet />
+        </div>
       </div>
     </div>
   );

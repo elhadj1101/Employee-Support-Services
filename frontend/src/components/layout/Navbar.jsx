@@ -9,7 +9,9 @@ function Navbar({}) {
       <div className=" justify-between h-full items-center w-full flex gap-x-5 pr-3">
         {!(user && user.is_superuser) ? (
           <>
-            <h1 className="text-lg font-bold">Salut, {user && (user.first_name +" " +user.last_name)}</h1>
+            <h1 className="text-lg font-bold">
+              Salut, {user && user.first_name + " " + user.last_name}
+            </h1>
             <div className="flex py-0.5 rounded-sm duration-300 transition cursor-pointer hover:bg-custom-gray/20 px-2 items-center gap-x-4">
               <img
                 width={30}
@@ -36,10 +38,12 @@ function Navbar({}) {
                     path.slice(1).replace(/-/g, " ")
                 )
                 .join(" > ")}
+            </div>
+            <div className="flex gap-3">
+              <img src="./icons/notifications.svg" alt="" />
               <button onClick={logout}>
                 <FiLogOut className="text-2xl" />
               </button>
-              <img src="./icons/notifications.svg" alt="" />
             </div>
           </>
         )}

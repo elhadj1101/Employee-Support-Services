@@ -56,8 +56,10 @@ class LoanHistoryView(APIView):
 
     def get(self, request):
         loans = Loan.objects.filter(employee=request.user)
-        serializer = LoanSerializer(loans, many=True)
+        for l in loans :
+            print(l.loan_amount)
         if loans:
+            serializer = LoanSerializer(loans, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("you don't have any loans", status=status.HTTP_200_OK)
 

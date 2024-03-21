@@ -23,7 +23,7 @@ const useStore = create((set) => ({
   fetchedAdminUsers: false,
   setFetchedAdminUsers: (newState)=> set({fetchedAdminUsers: newState}),
   setAdminUsers: (newAdminUsers) => set({ adminUsers: [ ...newAdminUsers] }),
-  profileRequsted:sessionStorage.getItem("profileRequsted") || null,
+  profileRequsted: localStorage.getItem("profileRequsted") || null,
   setProfileRequsted: (newProfileRequsted) => set({ profileRequsted: newProfileRequsted }),
 
   setAddUserData: (newFormData) => set({ AddUserData: newFormData }),

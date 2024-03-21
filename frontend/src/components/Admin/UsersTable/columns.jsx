@@ -39,9 +39,9 @@ const UserDeleteButton = ({ id }) => {
   const handleDeleteClick = async () => {
     try {
       const response = await deleteUser(id);
-      console.log(response);
+      console.log("Response: ", response);
       const updatedUsers = await getUsers();
-      console.log(updatedUsers);
+      console.log("Updated:", updatedUsers);
       setAdminUsers(updatedUsers);
     } catch (error) {
       if (error.detail) {
@@ -63,14 +63,15 @@ const UserDeleteButton = ({ id }) => {
     </Button>
   );
 };
-const NavigateDropdownMenuItem = ({ id , email , text }) => {
-  const {setProfileRequsted} = useStore();
+const NavigateDropdownMenuItem = ({ id, email, text }) => {
+  const { setProfileRequsted } = useStore();
 
   const navigate = useNavigate();
   const handleNavigate = () => {
-    setProfileRequsted(id)
-    sessionStorage.setItem("profileRequsted" ,{id})
-    navigate(`${email}`);
+    setProfileRequsted(id);
+    localStorage.setItem("profileRequsted", id);
+
+    navigate(`${id}`);
   };
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
