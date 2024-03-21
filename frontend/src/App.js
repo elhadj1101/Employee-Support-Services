@@ -11,8 +11,6 @@ import { Route, Routes, Outlet } from "react-router-dom";
 import Users from "./pages/admin/Users";
 import { Toaster } from "sonner";
 import RequireAuth from "./RequireAuth";
-import UserProfile from "pages/admin/UserProfile";
-import InitialDashboard from "pages/employee/InitialDashboard";
 
 function App() {
   return (
@@ -23,13 +21,10 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/email" element={<Email />} />
         <Route path="/reset" element={<Reset />} />
-
-
-
-
+          <Route path="/loan" element={<LoanPage />}/>
         {/* protected routes */}
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
-          <Route path="/" element={<Dashboard />}>
+          <Route path="/dashboard" element={<Dashboard />}>
             <Route element={<RequireAuth requiredRoles={["admin"]} />}>
               <Route  path="utilisateurs/add-user" element={<AddUser />} />
               <Route path="utilisateurs" element={<Users />} />
