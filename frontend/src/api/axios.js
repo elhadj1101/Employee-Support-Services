@@ -20,10 +20,6 @@ Axios.interceptors.response.use(
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) {
-<<<<<<< HEAD
-=======
-        //Navigate('/')
->>>>>>> 6eeb6eb39dc197c91b95765c2a96dabb7214c6da
         return Promise.reject(error);
       }
       try {

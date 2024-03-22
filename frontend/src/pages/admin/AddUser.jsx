@@ -11,10 +11,11 @@ import {
 import useStore from "../../store/index.js";
 import { createUser } from "api/auth";
 import { useNavigate } from "react-router-dom";
+
 export default function AddUser() {
   const { AddUserData, setAddUserData } = useStore();
   const [newErrors, setNewErrors] = useState({});
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log(name, value);

@@ -75,6 +75,7 @@ function InitialDashboard() {
           icon={
             <img
               className="w-[90px] md:w-[130px]"
+              alt=""
               src="/assets/loan-icon.png"
             />
           }
@@ -88,6 +89,7 @@ function InitialDashboard() {
             <img
               className="w-[90px] md:w-[130px]"
               src="/assets/financial-aid.png"
+              alt=""
             />
           }
           btnText="Prend votre Aide"

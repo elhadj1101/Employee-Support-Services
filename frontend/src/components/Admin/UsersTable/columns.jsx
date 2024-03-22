@@ -39,16 +39,19 @@ const UserDeleteButton = ({ id }) => {
   const handleDeleteClick = async () => {
     try {
       const response = await deleteUser(id);
-      console.log("Response: ", response);
+      if (response.status === 200) {
+        toast.success("Le compte utilisateur a été désactivé avec succès.");
+      }
       const updatedUsers = await getUsers();
-      console.log("Updated:", updatedUsers);
       setAdminUsers(updatedUsers);
     } catch (error) {
       if (error.detail) {
         toast.error(error.detail);
+      } else if (error.error) {
+        toast.error(error.error);
       } else {
         toast.error(
-          "Une erreur s'est produite lors de la récupération des données."
+          "Une erreur s'est produite lors de desactivation du compte."
         );
       }
     }
@@ -56,10 +59,10 @@ const UserDeleteButton = ({ id }) => {
   return (
     <Button
       variant="danger"
-      className="hover:bg-light-blue hover:text-white border border-light-blue text-light-blue"
+      className="hover:bg-red-600 hover:text-white border border-red-800 text-red-800"
       onClick={handleDeleteClick}
     >
-      Supprimer
+      Désactiver
     </Button>
   );
 };
@@ -198,20 +201,18 @@ export const columns = [
             <Dialog>
               <DialogTrigger style={{ width: "100%" }}>
                 <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                  Supprimer
+                  Désactiver
                 </div>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>
-                    Êtes-vous sûr de supprimer cet utilisateur?
+                    Êtes-vous sûr de désactiver le compte de cet utilisateur?
                   </DialogTitle>
                   <DialogDescription>
                     <p className="mt-3">
                       {" "}
-                      Cette action est irréversible. Elle supprimera
-                      définitivement le compte utilisateur et effacera vos
-                      données de nos serveurs.
+                      Cette action va Désactivera le compte utilisateur et
                     </p>
                   </DialogDescription>
                 </DialogHeader>

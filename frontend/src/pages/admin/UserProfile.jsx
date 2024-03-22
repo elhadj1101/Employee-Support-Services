@@ -11,7 +11,7 @@ import {
 import useStore from "../../store/index.js";
 import {  getUser  , updateUser} from "api/auth";
 export default function UserProfile() {
-  const { UserProfileData, setProfileUserData , profileRequsted } = useStore();
+  const { UserProfileData, setProfileUserData ,AddUserData, profileRequsted } = useStore();
   const [newErrors, setNewErrors] = useState({});
   const [readOnly, setReadOnly] = useState(true);
 
