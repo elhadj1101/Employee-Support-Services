@@ -1,4 +1,4 @@
-import { DatePickerDemo } from "Components/ui/DatePiker";
+import { DatePickerDemo } from "../../components/ui/DatePikerProfile";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -7,12 +7,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../Components/ui/select";
+} from "../../components/ui/select";
 import useStore from "../../store/index.js";
 import {  getUser  , updateUser} from "api/auth";
-import { AwardIcon } from "lucide-react";
 export default function UserProfile() {
-  const { AddUserData, setAddUserData , profileRequsted } = useStore();
+  const { UserProfileData, setProfileUserData , profileRequsted } = useStore();
   const [newErrors, setNewErrors] = useState({});
   const [readOnly, setReadOnly] = useState(true);
 
@@ -22,9 +21,9 @@ export default function UserProfile() {
         console.log(profileRequsted);
         if (profileRequsted !== null) {
           const response = await getUser(profileRequsted);
-          console.log('profile data' ,response);
-          setAddUserData(response)
-          console.log(AddUserData);
+          console.log('profile data' , response);
+          setProfileUserData(response)
+          console.log(UserProfileData);
         } else {
           console.log('no profile to fetch');
         }
@@ -46,9 +45,9 @@ export default function UserProfile() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
-    sessionStorage.setItem(`form/${name}`, value);
-    const prev = { ...AddUserData, [name]: value };
-    setAddUserData(prev);
+    sessionStorage.setItem(`profile/${name}`, value);
+    const prev = { ...UserProfileData, [name]: value };
+    setProfileUserData(prev);
     console.log(sessionStorage);
   };
   const handleEdit = () => {
@@ -67,16 +66,7 @@ export default function UserProfile() {
       newErrors.email = "Veuillez saisir une adresse e-mail valide.";
     }
 
-    // Validate password strength
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-    if (newErrors.password) delete newErrors.password;
-
-    if (!formData.password.trim() || !passwordRegex.test(formData.password)) {
-      newErrors.password =
-        "Le mot de passe doit comporter au moins 8 caractères et contenir au moins une lettre majuscule, une lettre minuscule et un chiffre.";
-    }
     if (newErrors.bank_rib) delete newErrors.bank_rib;
-
     // Validate RIB length
     if (
       (formData.bank_rib.trim() && formData.bank_rib.trim().length !== 20) ||
@@ -116,7 +106,7 @@ export default function UserProfile() {
 
     Object.keys(formData).forEach((key) => {
       if (newErrors.key) delete newErrors.key;
-      if (!formData[key] && key !== "is_active") {
+      if (!formData[key] && key !== "is_active" ) {
         newErrors[key] = `${key} est requis.`;
       }
     });
@@ -125,9 +115,9 @@ export default function UserProfile() {
       setNewErrors(newErrors);
       return;
     }
-
     try {
-      const newUser = await updateUser(AddUserData , profileRequsted);
+      const newUser = await updateUser(UserProfileData , profileRequsted);
+      console.log('new' , newUser);
       if (newUser.status === 201) {
         toast.success("Utilisateur modifer avec succès");
       }
@@ -185,7 +175,7 @@ export default function UserProfile() {
                   placeholder="Nom"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.first_name}
+                  value={UserProfileData.first_name}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.first_name
@@ -208,7 +198,7 @@ export default function UserProfile() {
                   placeholder="Prénom"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.last_name}
+                  value={UserProfileData.last_name}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.last_name
@@ -232,7 +222,7 @@ export default function UserProfile() {
                   placeholder="N° Pièce d'identification"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.id_number}
+                  value={UserProfileData.id_number}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.id_number
@@ -255,7 +245,7 @@ export default function UserProfile() {
                   placeholder="Adresse e-mail"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.email}
+                  value={UserProfileData.email}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.email
@@ -278,7 +268,7 @@ export default function UserProfile() {
                   placeholder="Téléphone"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.phone_number}
+                  value={UserProfileData.phone_number}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.phone_number
@@ -290,7 +280,7 @@ export default function UserProfile() {
                   {newErrors?.phone_number}
                 </p>
               </div>
-              <div className="flex flex-col gap-1">
+              {/* <div className="flex flex-col gap-1">
                 <label htmlFor="password">
                   Mot de passe <span style={{ color: "red" }}> * </span>
                 </label>
@@ -301,7 +291,7 @@ export default function UserProfile() {
                   placeholder="mot de passe"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.password}
+                  value={UserProfileData.password}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.password
@@ -312,7 +302,7 @@ export default function UserProfile() {
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.password}
                 </p>
-              </div>
+              </div> */}
               <div className="flex flex-col gap-1">
                 <label htmlFor="role">
                   Role<span style={{ color: "red" }}> * </span>
@@ -322,18 +312,18 @@ export default function UserProfile() {
                   placeholder="Role"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.role}
+                  value={UserProfileData.role}
 
                   
                 /> : <Select
                   name="role"
                   onValueChange={(value) => {
-                    sessionStorage.setItem(`form/role`, value);
+                    sessionStorage.setItem(`profile/role`, value);
 
-                    const prev = { ...AddUserData, ["role"]: value };
-                    setAddUserData(prev);
+                    const prev = { ...UserProfileData, ["role"]: value };
+                    setProfileUserData(prev);
                   }}
-                  value={AddUserData.role}
+                  value={UserProfileData.role}
                 >
                   <SelectTrigger
                     className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
@@ -414,7 +404,7 @@ export default function UserProfile() {
                   min="0"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.salary}
+                  value={UserProfileData.salary}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.salary
@@ -437,7 +427,7 @@ export default function UserProfile() {
                   placeholder="CCP Rip"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.rip}
+                  value={UserProfileData.rip}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.rip
@@ -458,7 +448,7 @@ export default function UserProfile() {
                   placeholder="RIB Bancaire"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.bank_rib}
+                  value={UserProfileData.bank_rib}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.bank_rib
@@ -482,17 +472,17 @@ export default function UserProfile() {
                   placeholder="Sexe"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.sexe}
+                  value={UserProfileData.sexe}
 
                   
                 /> :    <Select
-                  value={AddUserData.sexe}
+                  value={UserProfileData.sexe}
                   name="sexe"
                   onValueChange={(value) => {
-                    sessionStorage.setItem(`form/sexe`, value);
+                    sessionStorage.setItem(`profile/sexe`, value);
 
-                    const prev = { ...AddUserData, ["sexe"]: value };
-                    setAddUserData(prev);
+                    const prev = { ...UserProfileData, ["sexe"]: value };
+                    setProfileUserData(prev);
                   }}
                 >
                   <SelectTrigger
@@ -519,19 +509,19 @@ export default function UserProfile() {
                   placeholder="situation ..."
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.martial_situation}
+                  value={UserProfileData.martial_situation}
 
                   
                 /> :
                 <Select
-                  value={AddUserData.martial_situation}
+                  value={UserProfileData.martial_situation}
                   onValueChange={(value) => {
-                    sessionStorage.setItem(`form/martial_situation`, value);
+                    sessionStorage.setItem(`profile/martial_situation`, value);
                     const prev = {
-                      ...AddUserData,
+                      ...UserProfileData,
                       ["martial_situation"]: value,
                     };
-                    setAddUserData(prev);
+                    setProfileUserData(prev);
                   }}
                 >
                   <SelectTrigger
@@ -562,7 +552,7 @@ export default function UserProfile() {
                   placeholder="Lieu de naissance"
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={AddUserData.birth_adress}
+                  value={UserProfileData.birth_adress}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.birth_adress
@@ -589,7 +579,7 @@ export default function UserProfile() {
                 {/* Replace DatePickerDemo with your actual component */}
                 {readOnly ? <input
                   placeholder="date"
-                  value={AddUserData.birth_date}
+                  value={UserProfileData.birth_date}
 
                   className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -598,7 +588,7 @@ export default function UserProfile() {
                 <DatePickerDemo
                   id="dateNaissance"
                   name="dateNaissance"
-                  value={AddUserData.birth_date}
+                  value={UserProfileData.birth_date}
                 />}
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
                   {newErrors?.birth_date}
@@ -608,24 +598,26 @@ export default function UserProfile() {
             <div className="flex gap-2 items-center">
               <div
                 onClick={(e) => {
-                  handleSubmit(e, AddUserData);
+                  console.log(UserProfileData);
+                  handleSubmit(e, UserProfileData);
                 }}
                 className=" bg-light-blue cursor-pointer rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg text-white  "
               >
                 <p className="capitalize">Enregister</p>
               </div>
-              <div
+              {/* <div
                 onClick={() => {
                   Object.keys(sessionStorage).forEach((key) => {
-                    if (key.startsWith("form/")) {
+                    if (key.startsWith("profile/")) {
                       sessionStorage.removeItem(key);
                     }
                   });
+                  window.location.reload();
                 }}
                 className=" border cursor-pointer bg-white border-[#e5e4e4] rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg  "
               >
                 <p className="capitalize">Annuler</p>
-              </div>
+              </div> */}
             </div>
           </form>
         </div>

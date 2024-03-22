@@ -1,19 +1,16 @@
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
 
 const Axios = axios.create({
   baseURL: 'http://localhost:8000/api/',
-  timeout:5000, // 5 seconds timeout,
+  timeout: 5000, // 5 seconds timeout
   mode: "no-cors",
   headers: {
     'Content-Type': 'application/json',
     'Authorization': localStorage.getItem('access_token')
-       ? "JWT " + localStorage.getItem('access_token')
-       : null
+      ? "JWT " + localStorage.getItem('access_token')
+      : null
   }
 });
-
-
 
 Axios.interceptors.response.use(
   response => response,
@@ -23,7 +20,6 @@ Axios.interceptors.response.use(
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) {
-        Navigate('/')
         return Promise.reject(error);
       }
       try {
@@ -34,6 +30,8 @@ Axios.interceptors.response.use(
         return Axios(originalRequest);
       } catch (error) {
         // Redirect to login or handle the refresh token failure scenario
+
+        
         return Promise.reject(error);
       }
     }

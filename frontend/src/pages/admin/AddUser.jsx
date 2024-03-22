@@ -10,10 +10,11 @@ import {
 } from "../../components/ui/select";
 import useStore from "../../store/index.js";
 import { createUser } from "api/auth";
+import { useNavigate } from "react-router-dom";
 export default function AddUser() {
   const { AddUserData, setAddUserData } = useStore();
   const [newErrors, setNewErrors] = useState({});
-
+const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -103,19 +104,18 @@ export default function AddUser() {
             sessionStorage.removeItem(key);
           }
         });
+        navigate('/utilisateurs')
       }
     } catch (error) {
+      console.log("errror", error);
       if (error.response) {
-        console.log("errror", error.data);
         if (error.status === 400) {
           for (const key in error.data) {
             toast.error(error.data[key][0]);
             break;
           }
         }
-      } else {
-        toast.error("Une erreur s'est produite");
-      }
+      } 
     }
   };
   return (
@@ -168,7 +168,7 @@ export default function AddUser() {
                   name="first_name"
                   type="text"
                   placeholder="Nom"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className=" w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.first_name}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -190,7 +190,7 @@ export default function AddUser() {
                   name="last_name"
                   type="text"
                   placeholder="Prénom"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.last_name}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -213,7 +213,7 @@ export default function AddUser() {
                   name="id_number"
                   type="text"
                   placeholder="N° Pièce d'identification"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.id_number}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -235,7 +235,7 @@ export default function AddUser() {
                   name="email"
                   type="email"
                   placeholder="Adresse e-mail"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.email}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -257,7 +257,7 @@ export default function AddUser() {
                   name="phone_number"
                   type="tel"
                   placeholder="Téléphone"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.phone_number}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -279,7 +279,7 @@ export default function AddUser() {
                   name="password"
                   type="text"
                   placeholder="mot de passe"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.password}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -307,7 +307,7 @@ export default function AddUser() {
                   }}
                   value={AddUserData.role}
                 >
-                  <SelectTrigger className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
+                  <SelectTrigger className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
                     <SelectValue placeholder="Choisir un rôle" />
                   </SelectTrigger>
                   <SelectContent>
@@ -381,7 +381,7 @@ export default function AddUser() {
                   type="number"
                   placeholder="Salaire"
                   min="0"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.salary}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -403,7 +403,7 @@ export default function AddUser() {
                   name="rip"
                   type="text"
                   placeholder="CCP Rip"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.rip}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -423,7 +423,7 @@ export default function AddUser() {
                   name="bank_rib"
                   type="text"
                   placeholder="RIB Bancaire"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.bank_rib}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -454,7 +454,7 @@ export default function AddUser() {
                     setAddUserData(prev);
                   }}
                 >
-                  <SelectTrigger className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
+                  <SelectTrigger className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
                     <SelectValue placeholder="Choisir le sexe" />
                   </SelectTrigger>
                   <SelectContent>
@@ -481,7 +481,7 @@ export default function AddUser() {
                     setAddUserData(prev);
                   }}
                 >
-                  <SelectTrigger className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
+                  <SelectTrigger className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
                     <SelectValue placeholder="Choisir la situation familiale" />
                   </SelectTrigger>
                   <SelectContent>
@@ -504,7 +504,7 @@ export default function AddUser() {
                   name="birth_adress"
                   type="text"
                   placeholder="Lieu de naissance"
-                  className="bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.birth_adress}
                   onChange={(e) => handleChange(e)}
                   style={{

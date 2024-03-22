@@ -59,7 +59,7 @@ const LoginForm = () => {
         }
       }
     } catch (error) {
-      toast.error("Une erreur s'est produite lors de la connexion.");
+      toast.error(" Une erreur s'est produite lors de la connexion.");
     }
   };
 

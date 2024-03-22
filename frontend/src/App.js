@@ -19,7 +19,7 @@ function App() {
     <main className="h-screen w-full">
       <Routes>
         {/* public routes */}
-        <Route exact path="/login" element={<Login />} />
+        <Route  path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/email" element={<Email />} />
         <Route path="/reset" element={<Reset />} />

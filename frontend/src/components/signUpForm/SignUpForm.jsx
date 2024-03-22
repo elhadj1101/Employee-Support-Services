@@ -74,18 +74,12 @@ const navigate = useNavigate();
     // If all validations pass, submit the form
     try {
       const response = await signUp(email, pass);
-      console.log('error' , response);
 
       if (response.success) {
-        toast.success(response.success);
-
-        navigate("/login");
+        navigate('/login')
       }
-    }catch (response) {
-      console.log('error' , response);
-      if (response.status === 401){
-        toast.error(response.data.detail)
-      }
+    }catch (error) {
+      console.log(error);
     }
   };
 

@@ -14,9 +14,9 @@ const getLoans = async () => {
     return dat;
   } catch (error) {
     if (error.response){
-      toast.error(error.response.data?.detail);
+      // toast.error(error.response.data?.detail);
 
-      console.log(error.response.data);
+      console.log(error.response);
       return [];
     }else{
     toast.error("Une erreur s'est produite lors de la récupération des données.");

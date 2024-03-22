@@ -11,6 +11,7 @@ function Navbar({}) {
           <>
             <h1 className="text-lg font-bold">Salut, {user && (user.first_name +" " +user.last_name)}</h1>
             <div className="flex py-0.5 rounded-sm duration-300 transition cursor-pointer hover:bg-custom-gray/20 px-2 items-center gap-x-4">
+          
               <img
                 width={30}
                 height={30}
@@ -26,7 +27,8 @@ function Navbar({}) {
           </>
         ) : (
           <>
-            <div className="text-baseText text-lg font-bold">
+            <div className="text-baseText text-lg font-bold flex justify-between w-full items-center">
+              <>
               {location.pathname
                 .replace("/", "")
                 .split("/")
@@ -36,10 +38,13 @@ function Navbar({}) {
                     path.slice(1).replace(/-/g, " ")
                 )
                 .join(" > ")}
+              </>
+              <div className="flex items-center gap-6">
+              <img src="./icons/notifications.svg" alt="" />
               <button onClick={logout}>
                 <FiLogOut className="text-2xl" />
               </button>
-              <img src="./icons/notifications.svg" alt="" />
+              </div>
             </div>
           </>
         )}
