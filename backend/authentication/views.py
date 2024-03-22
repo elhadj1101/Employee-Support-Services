@@ -25,6 +25,16 @@ class UserDetailsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeDetailsSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
+    def delete(self, request, *args, **kwargs):
+        # deactivate the account
+        user = self.get_object()
+        if (not(user.is_active)):
+            return Response({"error":"User is already deleted"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user.is_active = False
+        user.save()
+        
+        return Response({"success":"User deleted successfuly"}, status=status.HTTP_200_OK)
 
 
 class UserDataView(APIView):
