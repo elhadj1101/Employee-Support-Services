@@ -70,7 +70,7 @@ function FileInput({
               Glissez et déposez les fichiers ici
             </p>
             <p className="text-xs text-gray-500">
-              les fichiers supporter sont: {fileTypes.join(", ")}
+              les fichiers supporter sont: {fileTypes}
             </p>
           </div>
           <input
