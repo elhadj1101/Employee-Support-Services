@@ -4,15 +4,15 @@ import Reset from "./pages/ResetPassword"
 import Email from "./pages/Email"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-
+import InitialDashboard from "./pages/employee/InitialDashboard";
 import Dashboard from "./pages/Dashboard";
 import Unauthorized from "./pages/Unauthorized";
 import { Route, Routes, Outlet } from "react-router-dom";
 import Users from "./pages/admin/Users";
 import { Toaster } from "sonner";
 import RequireAuth from "./RequireAuth";
+import Loan from "pages/Loan";
 import UserProfile from "pages/admin/UserProfile";
-import InitialDashboard from "pages/employee/InitialDashboard";
 
 function App() {
   return (
@@ -23,10 +23,6 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/email" element={<Email />} />
         <Route path="/reset" element={<Reset />} />
-
-
-
-
         {/* protected routes */}
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
           <Route path="/" element={<Dashboard />}>
@@ -37,9 +33,12 @@ function App() {
             </Route>
             <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={["admin"]} />} >
               <Route path="" element={<InitialDashboard />} />
+              <Route path="demande-pret" element={<Loan />} /> 
+
             </Route>
           </Route>
           <Route element={<RequireAuth requiredRoles={["employe"]} />}>
+            <Route path="demande-pret" element={<Loan />} /> 
               <Route path="bedl hana" element={<AddUser />} />
               <Route path="bdel hana" element={<Users />} />
             </Route>

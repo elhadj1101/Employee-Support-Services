@@ -18,30 +18,30 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(profileRequsted);
-        if (profileRequsted !== null) {
+        if (profileRequsted && profileRequsted !== "[object Object]") {
           const response = await getUser(profileRequsted);
           console.log('profile data' , response);
           setProfileUserData(response)
           console.log(UserProfileData);
         } else {
-          console.log('no profile to fetch');
+          console.log(localStorage.getItem("profileRequsted"));
+          console.log("no profile to fetch");
         }
       } catch (error) {
-        if (error){
+        if (error) {
           console.log(error);
-    
-        }else{
-          toast.error("Une erreur s'est produite lors de la récupération des données.");
+        } else {
+          toast.error(
+            "Une erreur s'est produite lors de la récupération des données."
+          );
           return "error";
-        
         }
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -116,8 +116,7 @@ export default function UserProfile() {
       return;
     }
     try {
-      const newUser = await updateUser(UserProfileData , profileRequsted);
-      console.log('new' , newUser);
+      const newUser = await updateUser(AddUserData, profileRequsted);
       if (newUser.status === 201) {
         toast.success("Utilisateur modifer avec succès");
       }
@@ -173,7 +172,9 @@ export default function UserProfile() {
                   name="first_name"
                   type="text"
                   placeholder="Nom"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.first_name}
                   onChange={(e) => handleChange(e)}
@@ -196,7 +197,9 @@ export default function UserProfile() {
                   name="last_name"
                   type="text"
                   placeholder="Prénom"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.last_name}
                   onChange={(e) => handleChange(e)}
@@ -220,7 +223,9 @@ export default function UserProfile() {
                   name="id_number"
                   type="text"
                   placeholder="N° Pièce d'identification"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.id_number}
                   onChange={(e) => handleChange(e)}
@@ -243,7 +248,9 @@ export default function UserProfile() {
                   name="email"
                   type="email"
                   placeholder="Adresse e-mail"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.email}
                   onChange={(e) => handleChange(e)}
@@ -266,7 +273,9 @@ export default function UserProfile() {
                   name="phone_number"
                   type="tel"
                   placeholder="Téléphone"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.phone_number}
                   onChange={(e) => handleChange(e)}
@@ -289,7 +298,9 @@ export default function UserProfile() {
                   name="password"
                   type="text"
                   placeholder="mot de passe"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.password}
                   onChange={(e) => handleChange(e)}
@@ -328,23 +339,25 @@ export default function UserProfile() {
                   <SelectTrigger
                     className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
+                    value={AddUserData.role}
                   >
-                    <SelectValue placeholder="Choisir un rôle" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="president">
-                      Président du Comité
-                    </SelectItem>
-                    <SelectItem value="vice_president">
-                      Vice-Président du Comité
-                    </SelectItem>
-                    <SelectItem value="tresorier">
-                      Trésorier du Comité
-                    </SelectItem>
-                    <SelectItem value="membre">Membre du Comité</SelectItem>
-                    <SelectItem value="employe">Employé(e)</SelectItem>
-                  </SelectContent>
-                </Select>}
+                      <SelectValue placeholder="Choisir un rôle" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="president">
+                        Président du Comité
+                      </SelectItem>
+                      <SelectItem value="vice_president">
+                        Vice-Président du Comité
+                      </SelectItem>
+                      <SelectItem value="tresorier">
+                        Trésorier du Comité
+                      </SelectItem>
+                      <SelectItem value="membre">Membre du Comité</SelectItem>
+                      <SelectItem value="employe">Employé(e)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                }
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.role}
                 </p>
@@ -402,7 +415,9 @@ export default function UserProfile() {
                   type="number"
                   placeholder="Salaire"
                   min="0"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.salary}
                   onChange={(e) => handleChange(e)}
@@ -425,7 +440,9 @@ export default function UserProfile() {
                   name="rip"
                   type="text"
                   placeholder="CCP Rip"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.rip}
                   onChange={(e) => handleChange(e)}
@@ -446,7 +463,9 @@ export default function UserProfile() {
                   name="bank_rib"
                   type="text"
                   placeholder="RIB Bancaire"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.bank_rib}
                   onChange={(e) => handleChange(e)}
@@ -489,14 +508,16 @@ export default function UserProfile() {
                     className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                 
                   >
-                    <SelectValue placeholder="Choisir le sexe" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="homme">Homme</SelectItem>
-                    <SelectItem value="femme">Femme</SelectItem>
-                  </SelectContent>
-                </Select>}
-            
+                   
+                      <SelectValue placeholder="Choisir le sexe" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="homme">Homme</SelectItem>
+                      <SelectItem value="femme">Femme</SelectItem>
+                    </SelectContent>
+                  </Select>
+                }
+
                 <p className="text-red-500 text-[11px] font-light mb-1 h-3">
                   {newErrors?.sexe}
                 </p>
@@ -527,16 +548,19 @@ export default function UserProfile() {
                   <SelectTrigger
                     className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
+                    value={AddUserData.martial_situation}
                   >
-                    <SelectValue placeholder="Choisir la situation familiale" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="marie">Marié(e)</SelectItem>
-                    <SelectItem value="divorce">Divorcé(e)</SelectItem>
-                    <SelectItem value="celibataire">Célibataire</SelectItem>
-                    <SelectItem value="veuf">Veuf(ve)</SelectItem>
-                  </SelectContent>
-                </Select>}
+              
+                      <SelectValue placeholder="Choisir la situation familiale" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="marie">Marié(e)</SelectItem>
+                      <SelectItem value="divorce">Divorcé(e)</SelectItem>
+                      <SelectItem value="celibataire">Célibataire</SelectItem>
+                      <SelectItem value="veuf">Veuf(ve)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                }
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.martial_situation}
                 </p>
@@ -550,7 +574,9 @@ export default function UserProfile() {
                   name="birth_adress"
                   type="text"
                   placeholder="Lieu de naissance"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                  className={`bg-transparent border-1 ${
+                    readOnly ? "border-none" : "border-gray-200"
+                  } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
                   value={UserProfileData.birth_adress}
                   onChange={(e) => handleChange(e)}
