@@ -23,6 +23,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/email" element={<Email />} />
         <Route path="/reset" element={<Reset />} />
+        <Route path="/test/" element={<Dashboard />} >
+            <Route path="demande-pret" element={<Loan />} /> 
+        </Route>
         {/* protected routes */}
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
           <Route path="/" element={<Dashboard />}>

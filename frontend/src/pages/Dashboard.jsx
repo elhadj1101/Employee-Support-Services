@@ -50,8 +50,8 @@ function Dashboard() {
       setFetchedLoans(true);
     }
     if (user && user.is_superuser && !fetchedAdminUsers) fetchUsers();
-    if (!fetchedOffres && !user.is_superuser) fetchOffres();
-    if (!fetchedLoans && !user.is_superuser) fetchLoans();
+    if (!fetchedOffres && user && !user.is_superuser) fetchOffres();
+    if (!fetchedLoans && user && !user.is_superuser) fetchLoans();
   }, []);
   return (
     <div className=" ">
