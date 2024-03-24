@@ -40,9 +40,10 @@ class Financial_aid(models.Model):
         ('approved', 'approuvé')
     ]
     family_member_options = [
-        ('wife', 'spouse') , 
+        ('wife', 'epouse') , 
         ('son', 'fils'),
         ('parent' , 'parent'), 
+        # brother shoudl be removed
         ('brother' ,'frère')
         
     ]

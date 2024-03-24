@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 
 function FileInput({
-  labell = "Choisir un fichier",
+  labell = "",
   uploadInputElRef = null,
   accepts = "pdf",
   fileTypes = ["PDF"],
+  iconW = "w-20",
+  iconH = "h-20",
+  iconClass= "",
+  multpl = false,
 }) {
   const uploadInputEltest = useRef(null);
-  const [crrntFile, setCrrntFile] = useState(null);
+  const [crrntFiles, setCrrntFiles] = useState(null);
   if (!uploadInputElRef || typeof uploadInputElRef !== "object") {
     uploadInputElRef = uploadInputEltest;
   }
@@ -15,7 +19,7 @@ function FileInput({
   const handleFiles = () => {
     if (uploadInputElRef.current) {
       const { files } = uploadInputElRef.current;
-      setCrrntFile(files[0]);
+      setCrrntFiles(files);
     }
   };
 
@@ -35,18 +39,20 @@ function FileInput({
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor="upload" className="mb-2">
-        {labell}
-        <span style={{ color: "red" }}> * </span>
-      </label>
-      <div className="flex items-center justify-center w-full">
+      {labell !== "" && (
+        <label htmlFor="upload" className="">
+          {labell}
+          <span style={{ color: "red" }}> * </span>
+        </label>
+      )}
+      <div className="mt-2 flex items-center justify-center w-full">
         <label
           htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-full mx-auto h-56 border-1 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
+          className="flex  flex-col items-center justify-center w-full mx-auto h-56 border-1 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
         >
-          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+          <div className="flex flex-col items-center w-full border-dashed border-light-blue py-8 border-2 justify-center p-5 ">
             <svg
-              className="w-20 h-20 mb-4 text-darkblue"
+              className={iconH + " " + iconW + " mb-4 text-light-blue "+ iconClass }
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -61,8 +67,13 @@ function FileInput({
               />
             </svg>
             <p className="mb-2 text-gray-600">
-              {crrntFile
-                ? `Le fichier choisi: ${crrntFile.name}`
+              {crrntFiles
+                ? multpl
+                  ? `Les fichiers choisi: ${Array.from(crrntFiles).reduce(
+                      (prv, crrn) => prv + crrn.name + ", ",
+                      ""
+                    )}`
+                  : "Le fichier choisi: " + crrntFiles[0].name
                 : "Aucun fichier choisi"}
             </p>
             <p className="mb-2 text-md  text-gray-500">
@@ -73,13 +84,24 @@ function FileInput({
               les fichiers supporter sont: {fileTypes}
             </p>
           </div>
-          <input
-            id="dropzone-file"
-            ref={uploadInputElRef}
-            accept={accepts}
-            type="file"
-            className="hidden"
-          />
+          {multpl ? (
+            <input
+              id="dropzone-file"
+              ref={uploadInputElRef}
+              accept={accepts}
+              type="file"
+              className="hidden"
+              multiple
+            />
+          ) : (
+            <input
+              id="dropzone-file"
+              ref={uploadInputElRef}
+              accept={accepts}
+              type="file"
+              className="hidden"
+            />
+          )}
         </label>
       </div>
     </div>

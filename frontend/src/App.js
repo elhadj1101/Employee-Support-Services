@@ -15,6 +15,7 @@ import Loan from "pages/Loan";
 import Popup from "components/Popup";
 
 import UserProfile from "pages/admin/UserProfile";
+import FinancialAid from "pages/employee/FinancialAid";
 
 function App() {
   return (
@@ -43,7 +44,8 @@ function App() {
             </Route>
             <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={["admin"]} />} >
               <Route path="" element={<InitialDashboard />} />
-              <Route path="demande-pret" element={<Loan />} /> 
+              <Route path="demande-pret" element={<Loan />} />
+              <Route path="demande-aide-financiere" element={<FinancialAid />} />
 
             </Route>
           </Route>
