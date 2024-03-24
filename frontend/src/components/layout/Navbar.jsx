@@ -40,21 +40,13 @@ function Navbar({}) {
                     path.slice(1).replace(/-/g, " ")
                 )
                 .join(" > ")}
-<<<<<<< HEAD
               </>
               <div className="flex items-center gap-6">
-=======
-            </div>
-            <div className="flex gap-3">
->>>>>>> 6eeb6eb39dc197c91b95765c2a96dabb7214c6da
               <img src="./icons/notifications.svg" alt="" />
               <button onClick={logout}>
                 <FiLogOut className="text-2xl" />
               </button>
-<<<<<<< HEAD
               </div>
-=======
->>>>>>> 6eeb6eb39dc197c91b95765c2a96dabb7214c6da
             </div>
           </>
         )}

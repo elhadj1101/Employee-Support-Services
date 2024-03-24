@@ -116,7 +116,7 @@ export default function UserProfile() {
       return;
     }
     try {
-      const newUser = await updateUser(AddUserData, profileRequsted);
+      const newUser = await updateUser(UserProfileData, profileRequsted);
       if (newUser.status === 201) {
         toast.success("Utilisateur modifer avec succès");
       }
@@ -339,7 +339,7 @@ export default function UserProfile() {
                   <SelectTrigger
                     className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
-                    value={AddUserData.role}
+                    value={UserProfileData.role}
                   >
                       <SelectValue placeholder="Choisir un rôle" />
                     </SelectTrigger>
@@ -548,7 +548,7 @@ export default function UserProfile() {
                   <SelectTrigger
                     className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
-                    value={AddUserData.martial_situation}
+                    value={UserProfileData.martial_situation}
                   >
               
                       <SelectValue placeholder="Choisir la situation familiale" />

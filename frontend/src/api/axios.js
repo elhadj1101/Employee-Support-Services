@@ -6,8 +6,8 @@ const Axios = axios.create({
   mode: "no-cors",
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': localStorage.getItem('access_token')
-      ? "JWT " + localStorage.getItem('access_token')
+    'Authorization': sessionStorage.getItem('access_token')
+      ? "JWT " + sessionStorage.getItem('access_token')
       : null
   }
 });
@@ -18,18 +18,14 @@ Axios.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('refresh_token');
+      const refreshToken = sessionStorage.getItem('refresh_token');
       if (!refreshToken) {
-<<<<<<< HEAD
-=======
-        //Navigate('/')
->>>>>>> 6eeb6eb39dc197c91b95765c2a96dabb7214c6da
         return Promise.reject(error);
       }
       try {
         const response = await Axios.post('/token-refresh/', { refresh: refreshToken });
         const newAccessToken = response.data.access;
-        localStorage.setItem('access_token', newAccessToken);
+        sessionStorage.setItem('access_token', newAccessToken);
         originalRequest.headers['Authorization'] = `JWT ${newAccessToken}`;
         return Axios(originalRequest);
       } catch (error) {
