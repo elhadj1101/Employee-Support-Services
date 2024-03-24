@@ -4,13 +4,14 @@ import Sidebar from "components/layout/Sidebar";
 import Navbar from "components/layout/Navbar";
 import Card from "components/Card";
 import { useState } from "react";
+import Popup from "components/Popup";
 
 const Loan = () => {
   const [Montant, setMontant] = useState("");
   const [Duration, setDuration] = useState("");
   const [MontantError, setMontantError] = useState("");
   const [DurationError, setDurationError] = useState("");
-
+  const [showModal, setShowModal] = useState(false);
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!Montant.trim()) {
@@ -26,6 +27,8 @@ const Loan = () => {
       setDurationError("Invalid field format.");
     } else {
       setDurationError("");
+    } if (Montant.trim() && Duration.trim()) {
+      setShowModal(!showModal)
     }
   };
   return (
@@ -77,6 +80,12 @@ const Loan = () => {
         >
           Vérifier
         </button>
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-75 shadow-2xl">
+            <Popup
+              handleClose={handleSubmit} />
+          </div>
+        )}
       </form>
     </div>
   );

@@ -12,6 +12,8 @@ import Users from "./pages/admin/Users";
 import { Toaster } from "sonner";
 import RequireAuth from "./RequireAuth";
 import Loan from "pages/Loan";
+import Popup from "components/Popup";
+
 import UserProfile from "pages/admin/UserProfile";
 
 function App() {
@@ -23,6 +25,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/email" element={<Email />} />
         <Route path="/reset" element={<Reset />} />
+              {/*   <Route path="/pop" element={<Popup />} /> */}
+
+
+     
+
         <Route path="/test/" element={<Dashboard />} >
             <Route path="demande-pret" element={<Loan />} /> 
         </Route>
