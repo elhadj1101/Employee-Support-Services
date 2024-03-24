@@ -10,7 +10,7 @@ function Navbar({}) {
         {!(user && user.is_superuser) ? (
           <>
             <h1 className="text-lg font-bold">
-              Salut, {user && user.first_name + " " + user.last_name}
+              Salut, {user && (user.first_name + " " + user.last_name)}
             </h1>
             <div className="flex py-0.5 rounded-sm duration-300 transition cursor-pointer hover:bg-custom-gray/20 px-2 items-center gap-x-4">
           

@@ -1,13 +1,10 @@
 import React from "react";
-import Dashboard from "./Dashboard";
-import Sidebar from "components/layout/Sidebar";
-import Navbar from "components/layout/Navbar";
 import Card from "components/Card";
 import { useState } from "react";
 
 const Loan = () => {
-  const [Montant, setMontant] = useState("");
-  const [Duration, setDuration] = useState("");
+  const [Montant, setMontant] = useState(0);
+  const [Duration, setDuration] = useState(0);
   const [MontantError, setMontantError] = useState("");
   const [DurationError, setDurationError] = useState("");
 
