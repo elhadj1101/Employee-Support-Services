@@ -1,4 +1,5 @@
 function formatPrice(price, delm=".") {
+    
     let strPrice = price.toString();
     let newPrice = ""
     for (let i =strPrice.length-1; i>=0 ; i-- ){

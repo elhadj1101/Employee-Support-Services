@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 import useStore from "../store/index.js";
 import { getUsers } from "../api/auth.js";
 import { getOffres } from "../api/offres.js";
-import { getLoans } from "../api/requests.js";
+import { getLoans, getAids, getAllAids, getAllLoans } from "../api/requests.js";
 
 function Dashboard() {
     const [open, setOpen] = useState(false);
@@ -20,6 +20,15 @@ function Dashboard() {
   const {
     setAdminUsers,
     user,
+    setAllLoans,
+    fetchedAllLoans,
+    setFetchedAllLoans,
+    setAllAids,
+    fetchedAllAids,
+    setFetchedAllAids,
+    setAids,
+    fetchedAids,
+    setFetchedAids,
     setOffres,
     setFetchedOffres,
     fetchedOffres,
@@ -49,9 +58,37 @@ function Dashboard() {
       setLoans(dat);
       setFetchedLoans(true);
     }
+    async function fetchAids() {
+      const dat = await getAids();
+      console.log("fetched Aids");
+
+      setAids(dat);
+      setFetchedAids(true);
+    }
+    async function fetchAllAids() {
+      const dat = await getAllAids();
+      console.log("fetched All Aids");
+
+      setAllAids(dat);
+      setFetchedAllAids(true);
+    }
+    async function fetchAllLoans() {
+      const dat = await getAllLoans();
+      console.log("fetched All Loans");
+
+      setAllLoans(dat);
+      setFetchedAllLoans(true);
+    }
     if (user && user.is_superuser && !fetchedAdminUsers) fetchUsers();
-    if (!fetchedOffres && user && !user.is_superuser) fetchOffres();
-    if (!fetchedLoans && user && !user.is_superuser) fetchLoans();
+    if (!fetchedOffres ) fetchOffres();
+    if (!fetchedLoans ) fetchLoans();
+    if (!fetchedAids ) fetchAids();
+    if (!fetchedAllAids && user && user.role !== "employe") fetchAllAids();
+    if (!fetchedAllLoans && user && user.role !== "employe") fetchAllLoans();
+
+    //&& user && !user.is_superuser
+
+
   }, []);
   return (
     <div className=" ">

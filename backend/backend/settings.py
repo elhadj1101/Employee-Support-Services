@@ -190,4 +190,6 @@ MEDIA_URL = '/documents/'
 MEDIA_ROOT = BASE_DIR / 'documents'
 
 CAN_PUBLISH_OFFRE = ['president' , 'vice_president']
+CAN_VIEW_REQUESTS = ['president' , 'vice_president', "membre"]
+
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -9,102 +10,18 @@ import {
 import FileInput from "components/utils/FileInput";
 import { Button } from "components/ui/button";
 import { formatPrice } from "components/utils/utilFunctions";
+import { financial_aid_infos } from "api/requests";
 
 function FinancialAid() {
-  const financial_aid_infos = [
-    {
-      name: "family_member_death",
-      description: "Décès d'un membre de famille",
-      files: [
-        "Attestation de travail",
-        "Un chèque postal barré au nom du bénéficiaire",
-      ],
-      types: {
-        wife: {
-          name: "wife",
-          desc: "Épouse/Mari",
-          amount: 70000,
-          files: [
-            "Acte de décès du mari/epouse",
-            "Certificat de famille pour le travailleur",
-          ],
-        },
-        son: {
-          name: "son",
-          desc: "Fils",
-          amount: 70000,
-          files: ["Acte de décès du fils", "Acte de naissance n°12 du défunt"],
-        },
-        parent: {
-          name: "parent",
-          desc: "Parent",
-          amount: 40000,
-          files: ["Acte de décès du père", "Acte de famille du père"],
-        },
-      },
-    },
-    {
-      name: "employee_death",
-      description: "Décès de l'employé",
-      types: {
-        retired: {
-          name: "retired",
-          desc: "Retraité",
-          amount: 50000,
-        },
-        non_retarder: {
-          name: "non_retarder",
-          desc: "Non retraité",
-          amount: 100000,
-          note: "La durée pendant laquelle il doit être à la retraite est de maximum 3 ans avant le décès pour bénéficier de l'aide",
-        },
-      },
-      files: [
-        "Attestation de travail ou copie de la décision de mise en retraite",
-        "Acte de décès du travailleur",
-        "Acte de naissance n°12 pour le défunt, une copie du PT national pour le déclarant",
-        "Un chèque postal barré au nom du bénéficiaire",
-      ],
-    },
-    {
-      name: "child_birth",
-      description: "Naissance d'un fils",
-      files: ["Attestation de travail", "Acte de naissance n°12 de l'enfant"],
-      amount: 10000,
-    },
-    {
-      name: "mariage",
-      description: "Mariage",
-      files: ["Attestation de travail", "Contrat de mariage"],
-      amount: 20000,
-    },
-    {
-      name: "circumcision_newborn",
-      description: "Circoncision d'un nouveau-né",
-      files: [
-        "Attestation de travail",
-        "Certificat de circoncision d'un nouveau-né",
-      ],
-      amount: 7000,
-    },
-    {
-      name: "retirement",
-      description: "Retraite",
-      files: [
-        "Attestation de travail",
-        "Attestation de suspension de salaire",
-        "Une copie de la décision de saisine en retraite ou de la décision de rupture de contrat pour cause de départ à la retraite.",
-        "Une copie de l'attestation de notification de départ à la retraite.",
-      ],
-      amount: 70000,
-    },
-  ];
+  
 
   const typeIndMap = {};
   financial_aid_infos.forEach((aid, ind) => {
     typeIndMap[aid.name] = ind;
   });
   const [fileNames, setFileNames] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
   const filesRef = useRef(null);
   const [aidData, setAidData] = useState({
     aidType: "",
@@ -114,18 +31,37 @@ function FinancialAid() {
   const [amount, setAmount] = useState(0);
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (aidData.aidType === "") {
+      toast.error("Veuillez choisir un type d'aide");
+      return;
+    }
+    if (
+      aidData.aidType === "family_member_death" &&
+      aidData.familyMember === ""
+    ) {
+      toast.error("Veuillez choisir un membre de famille");
+      return;
+    }
+    if (aidData.aidType === "employee_death" && aidData.employeeType === "") {
+      toast.error("Veuillez choisir un type d'employer");
+      return;
+    }
+    if (uploadedFiles.length !== fileNames.length) {
+      toast.error(
+        `Veuillez ajouter tous les fichiers nécessaires, il vous manque ${Math.abs(
+          uploadedFiles.length - fileNames.length
+        )} fichier(s)`
+      );
+      return;
+    }
+
     const formData = new FormData();
     formData.append("aidType", aidData.aidType);
     formData.append("familyMember", aidData.familyMember);
     formData.append("employeeType", aidData.employeeType);
-    if (!filesRef.current) {
-      console.log("No files selected");
-      return;
-    }
-    if (filesRef.current.files.length < 1) {
-    }
-    for (let i = 0; i < filesRef.current.files.length; i++) {
-      formData.append("files[]", filesRef.current.files[i]);
+
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      formData.append("files[]", uploadedFiles[i]);
     }
     console.log(formData);
   };
@@ -135,7 +71,6 @@ function FinancialAid() {
       aidType: sessionStorage.getItem("aid/type") || "",
       familyMember: sessionStorage.getItem("aid/familyMember") || "",
       employeeType: sessionStorage.getItem("aid/employeeType") || "",
-      files: [],
     };
     if (data.aidType !== "") {
       let ff = financial_aid_infos[typeIndMap[data.aidType]].files;
@@ -149,6 +84,15 @@ function FinancialAid() {
             amnt = key[1].amount;
           }
         });
+      } else if (data.aidType === "employee_death") {
+        if (data.employeeType) {
+          amnt =
+            financial_aid_infos[typeIndMap[data.aidType]].types[
+              data.employeeType
+            ].amount;
+        } else {
+          amnt = 0;
+        }
       } else {
         amnt = financial_aid_infos[typeIndMap[data.aidType]].amount;
       }
@@ -160,7 +104,8 @@ function FinancialAid() {
   return (
     <div className="w-full h-[100vh] flex-grow flex flex-col  bg-gray-bg px-6 py-4">
       <h1 className="font-semibold text-2xl my-2">Demande d'aide financière</h1>
-      <form className="w-full" onSubmit={handleSubmit}>
+
+      <form className="" onSubmit={handleSubmit}>
         <label
           htmlFor="aidType"
           className="block mb-2  font-medium text-gray-900 dark:text-white"
@@ -173,21 +118,29 @@ function FinancialAid() {
           value={aidData.aidType}
           name="aidType"
           onValueChange={(value) => {
+            const emptyFiles = new DataTransfer();
+            filesRef.current.files = emptyFiles.files;
+            setUploadedFiles([]);
             sessionStorage.setItem(`aid/type`, value);
-            const prev = { ...aidData, ["aidType"]: value };
-            setAidData(prev);
+            setAidData((prev) => {
+              return { ...prev, ["aidType"]: value };
+            });
             let ff = financial_aid_infos[typeIndMap[value]].files;
             let fmember = sessionStorage.getItem("aid/familyMember") || "";
 
-            if (value === "family_member_death" && fmember !== "") {
-              Object.entries(
-                financial_aid_infos[typeIndMap[value]].types
-              ).forEach((key) => {
-                if (key[0] === fmember) {
-                  ff = ff.concat(key[1].files);
-                  setAmount(key[1].amount);
-                }
-              });
+            if (value === "family_member_death") {
+              if (fmember !== "") {
+                Object.entries(
+                  financial_aid_infos[typeIndMap[value]].types
+                ).forEach((key) => {
+                  if (key[0] === fmember) {
+                    ff = ff.concat(key[1].files);
+                    setAmount(key[1].amount);
+                  }
+                });
+              } else {
+                setAmount(0);
+              }
             } else if (value === "employee_death") {
               if (aidData.employeeType) {
                 setAmount(
@@ -230,7 +183,7 @@ function FinancialAid() {
               value={aidData.familyMember}
               name="familyMember"
               onValueChange={(value) => {
-                sessionStorage.setItem(`aid/familyMember`, value);
+                sessionStorage.setItem("aid/familyMember", value);
 
                 const prev = { ...aidData, ["familyMember"]: value };
                 const ff =
@@ -274,15 +227,14 @@ function FinancialAid() {
               htmlFor="employeeType"
               className="block mb-2 font-medium text-gray-900 dark:text-white"
             >
-              Le membre défunt de la famille
+              Le type de l'employer
             </label>
             <Select
               id="employeeType"
               value={aidData.employeeType}
               name="employeeType"
               onValueChange={(value) => {
-                sessionStorage.setItem(`aid/employeeType`, value);
-
+                sessionStorage.setItem("aid/employeeType", value);
                 const prev = { ...aidData, ["employeeType"]: value };
                 setAidData(prev);
                 setAmount(
@@ -312,7 +264,14 @@ function FinancialAid() {
             </Select>
           </>
         )}
-        {amount && amount !== 0 && <p>Le montant : {formatPrice(amount)}DA</p>}
+        {amount !== 0 && (
+          <p className="text-lg font-semibold">
+            Le Montant bénéficié :
+            <span className="ml-3  text-light-blue ">
+              {formatPrice(amount)}DA
+            </span>
+          </p>
+        )}
         {aidData.aidType !== "" && (
           <>
             <h2 className="font-semibold text-lg mt-4">
@@ -333,11 +292,13 @@ function FinancialAid() {
         )}
         <div className="w-full my-4 ">
           <FileInput
+            key={aidData.aidType}
             uploadInputElRef={filesRef}
+            files={uploadedFiles}
+            setFiles={setUploadedFiles}
             accepts="application/pdf"
             fileTypes="PDF"
-            iconH="h-16"
-            iconW="w-16"
+            maxFiles={fileNames.length}
             multpl={true}
           />
         </div>

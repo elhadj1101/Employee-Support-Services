@@ -36,6 +36,10 @@ const RequireAuth = ({ requiredRoles , excludedRoles=[]}) => {
     return <Navigate to="/utilisateurs" replace />;
 
   }
+  if (user && excludedRoles.includes(user.role)){
+    return <Navigate to="/unauthorized" replace />;
+
+  }
   // User is authenticated and has the required role
   return <Outlet />;
 };

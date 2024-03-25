@@ -12,7 +12,9 @@ class LoanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Loan
         fields = [
+            'id',
             "loan_amount",
+            "request_created_at",
             "loan_motivation",
             "payment_method",
             "loan_period",
@@ -31,8 +33,12 @@ class FinancialaidSerializer(serializers.ModelSerializer):
     class Meta:
         model = Financial_aid   
         fields = [
+            "id",
+            "request_created_at",
             "financial_aid_type",
             "family_member",
+            "financial_aid_status",
+            "request_response_at"
         ]
 
     def validate(self, attrs):
