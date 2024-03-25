@@ -7,16 +7,10 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from .permissions import IsLoanApplier
 from rest_framework import generics
+from .utils import calculate_max_loan
 
 # Create your views here.
 
-
-# 12 months duration
-DURATION = 12
-
-
-def calculate_max_loan(salary):
-    return float(salary) * 0.3 * DURATION
 
 
 # LoanView endpoint to create a loan with post request ,
@@ -27,18 +21,18 @@ def calculate_max_loan(salary):
 
 
 class LoanView(APIView):
-    permission_classes = [IsAuthenticated, IsLoanApplier]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = LoanSerializer(data=request.data)
         if serializer.is_valid():
-            max = calculate_max_loan(request.user.salary)
+            max = calculate_max_loan(request.user.salary, int(request.data["loan_period"]))
             loan_amount = float(request.data["loan_amount"])
             if max < loan_amount:
                 return Response(
                     "maximumn loan amount {} ".format(max),
                 )
-            serializer.save(employee=request.user, loan_status="waiting")
+            serializer.save(employee=request.user, loan_status="draft")
             return Response("loan created succefully")
         return Response(serializer.errors)
 
@@ -92,5 +86,31 @@ class FinancialaidView(generics.CreateAPIView):
             else None
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save(employee=request.user, family_member=family_member , financial_aid_status  = 'waiting')
+        serializer.save(employee=request.user, family_member=family_member , financial_aid_status  = 'draft')
         return Response("You applied for the financial aid successfully")
+
+
+# This view to get all financial aids for the employee
+    
+class FinancialaidHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self  ,request ):
+        financial_aids = Financial_aid.objects.all()
+        if financial_aids :
+            serializer = FinancialaidSerializer(financial_aids , many = True)
+            return Response(serializer)
+        return Response('you don\'t have any financial aids')
+    
+class SaveDraft(APIView ):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, request_type):
+        if request_type == 'financial_aid':
+            financial_aid = Financial_aid.objects.filter(employee= request.user , financial_aid_status='draft').last()
+            financial_aid.financial_aid_status = 'waiting' 
+            financial_aid.save()
+        elif request_type == 'loan':
+            loan = Loan.objects.filter(employee= request.user , loan_status='draft').last()
+            loan.loan_status = 'waiting'
+            loan.save()
+
+

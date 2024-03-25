@@ -6,6 +6,7 @@ from datetime import timedelta
 #Loan
 class Loan(models.Model):
     status_options = [
+        ('draft' , 'brouillon'),
         ('waiting', 'En attente'),
         ('refused', 'Rejeté'),
         ('approved', 'Approuvé'),
@@ -33,8 +34,15 @@ class Financial_aid(models.Model):
         ('employee_death', 'décès d\'un employé'),
         ('child_birth', 'naissance d\'un fils'),
         ('mariage', 'mariage'), 
+        ('circumcision_newborn' , 'Circoncision d\'un nouveau-né'),
+        ('retirement_financial_aid','Aide financière à la retraite'),
+        ('surgeries' ,'les opérations chirurgicales'),
+        ('mineral_baths','Bains minéraux'),
+        ('accident_and_disasters','Assistance en cas d\'accident Et les catastrophes'),
+        ('social_and_health_aid','Aide aux conditions sociales et sanitaires'),
     ]
     financial_aid_status_options = [
+        ('draft' , 'brouillon'),
         ('waiting', 'en attente'),
         ('refused', 'refusé'),
         ('approved', 'approuvé')
@@ -43,9 +51,6 @@ class Financial_aid(models.Model):
         ('wife', 'epouse') , 
         ('son', 'fils'),
         ('parent' , 'parent'), 
-        # brother shoudl be removed
-        ('brother' ,'frère')
-        
     ]
 
     # documents_to_upload_field
@@ -53,7 +58,6 @@ class Financial_aid(models.Model):
     request_created_at = models.DateField(auto_now_add = True )
     financial_aid_type = models.CharField(max_length = 50 , choices = financial_aid_type_options)
     family_member =  models.CharField(max_length = 50   , choices = family_member_options , null = True)
-    financial_aid_amount = models.CharField(max_length = 10)
     financial_aid_status = models.CharField(max_length = 50  , choices = financial_aid_status_options ) 
     request_response_at = models.DateField(null =True)
 
