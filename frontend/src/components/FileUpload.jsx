@@ -23,14 +23,18 @@ const FileUpload = () => {
             e.preventDefault();
             setIsDragActive(false);
             const droppedFiles = Array.from(e.dataTransfer.files);
-            setFiles([...files, ...droppedFiles]);
+            setFiles((prv) => {
+              return [...prv, ...droppedFiles];
+            });
         },
         [files]
     );
 
     const handleFileChange = useCallback((e) => {
         const selectedFiles = Array.from(e.target.files);
-        setFiles([...files, ...selectedFiles]);
+        setFiles((prv) => {
+          return [...prv, ...selectedFiles];
+        });
     }, [files]);
 
 
@@ -41,8 +45,7 @@ const FileUpload = () => {
                 onDragLeave={handleDragLeave}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
-                className={`bg-white rounded-md shadow-md p-8 border-2 border-dashed ${isDragActive ? 'border-blue-500' : 'border-gray-300'
-                    }`}
+                className={`bg-white rounded-md shadow-md p-8 border-2 border-dashed ${isDragActive ? 'border-blue-500' : 'border-gray-300'}`}
             >
                 <input
                     type="file"

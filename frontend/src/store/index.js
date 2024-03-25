@@ -59,6 +59,10 @@ const useStore = create((set) => ({
   setLoans: (newLoans) => set({ loans: newLoans }),
   fetchedLoans: false,
   setFetchedLoans: (newState) => set({ fetchedLoans: newState }),
+  aids: [],
+  setAids: (newAids) => set({ aids: newAids }),
+  fetchedAids: false,
+  setFetchedAids: (newState) => set({ fetchedAids: newState }),
 }));
 
 export default useStore;

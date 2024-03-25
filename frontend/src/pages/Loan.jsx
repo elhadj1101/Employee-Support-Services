@@ -4,28 +4,60 @@ import { useState } from "react";
 import Popup from "components/Popup";
 
 const Loan = () => {
-  const [Montant, setMontant] = useState(0);
+  const [Montant, setMontant] = useState(10000);
   const [Duration, setDuration] = useState(0);
   const [MontantError, setMontantError] = useState("");
   const [DurationError, setDurationError] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const montantRegex = /^\d{1,10}$/;
+  const durationRegex = /^\d{1,2}$/;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    let val = value;
+    if (value.trim) {
+      val = parseInt(value.replace(/[^0-9]/g, ""));
+      
+    }
+    if (name === "montant") {
+      if (!montantRegex.test(val)) {
+        setMontantError("Le montant est invalide.");
+      } else if (val <= 0) {
+        setMontantError("Le montant ne peut pas etre negatif.");
+        setMontant(1);
+        return;
+      } else {
+        setMontantError("");
+      }
+      setMontant(val);
+    } else {
+      if (val < 1 || val > 12) {
+        setDurationError("La durée doit être entre 1 et 12 mois.");
+        setDuration(12);
+        return;
+      } else {
+        setDurationError("");
+      }
+      setDuration(val);
+    }
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!Montant.trim()) {
-      setMontantError("This field is required.");
-    } else if (!/^\d{1,10}$/.test(Montant)) {
-      setMontantError("Invalid field format.");
+    if (Montant == 0) {
+      setMontantError("Veuillez entrer un montant de paiement par mois.");
+    } else if (!montantRegex.test(Montant)) {
+      setMontantError("Format invalide.(max 10 chiffres)");
     } else {
       setMontantError("");
     }
-    if (!Duration.trim()) {
-      setDurationError("This field is required.");
-    } else if (!/^\d{1,2}$/.test(Duration)) {
-      setDurationError("Invalid field format.");
+    if (Duration == 0) {
+      setDurationError("Veuillez entrer une durée.");
+    } else if (!durationRegex.test(Duration) || Duration > 12 || Duration < 1) {
+      setDurationError("Format invalide.(max 2 chiffres et entre 1 et 12)");
     } else {
       setDurationError("");
-    } if (Montant.trim() && Duration.trim()) {
-      setShowModal(!showModal)
+    }
+    if (Montant && Duration && !MontantError && !DurationError) {
+      setShowModal(!showModal);
     }
   };
   return (
@@ -49,25 +81,29 @@ const Loan = () => {
           Nouvelle demande de prét
         </span>
         <label htmlFor="Montant" className=" sm:flex  sm:mt-7 sm:mb-1    ">
-          Montant demandé
+          Montant que vous voulez payer par mois
         </label>
         <input
+          name="montant"
           className="  sm:flex   w-full   "
           value={Montant}
           type="number"
-          onChange={(e) => setMontant(e.target.value)}
+          onChange={handleChange}
           style={{ borderColor: MontantError ? "red" : "" }}
         />
         <p className="error font-light text-red-600 ">{MontantError}</p>
 
         <label htmlFor="durée" className=" sm:flex sm:mt-8  sm:mb-1  ">
-          Durée de remboursement souhaitée
+          Durée de remboursement souhaitée (en mois [1-12])
         </label>
         <input
           className="  sm:flex  w-full   "
+          name="duration"
           value={Duration}
           type="number"
-          onChange={(e) => setDuration(e.target.value)}
+          max={12}
+          min={1}
+          onChange={handleChange}
           style={{ borderColor: DurationError ? "red" : "" }}
         />
         <p className="error font-light text-red-600 ">{DurationError}</p>
@@ -79,8 +115,7 @@ const Loan = () => {
         </button>
         {showModal && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-75 shadow-2xl">
-            <Popup
-              handleClose={handleSubmit} />
+            <Popup handleClose={handleSubmit} />
           </div>
         )}
       </form>

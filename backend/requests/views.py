@@ -95,10 +95,10 @@ class FinancialaidView(generics.CreateAPIView):
 class FinancialaidHistoryView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self  ,request ):
-        financial_aids = Financial_aid.objects.all()
-        if financial_aids :
+        financial_aids = Financial_aid.objects.filter(employee = request.user)
+        if financial_aids.exists() :
             serializer = FinancialaidSerializer(financial_aids , many = True)
-            return Response(serializer)
+            return Response(serializer.data)
         return Response('you don\'t have any financial aids')
     
 class SaveDraft(APIView ):

@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 import useStore from "../store/index.js";
 import { getUsers } from "../api/auth.js";
 import { getOffres } from "../api/offres.js";
-import { getLoans } from "../api/requests.js";
+import { getLoans, getAids } from "../api/requests.js";
 
 function Dashboard() {
     const [open, setOpen] = useState(false);
@@ -20,6 +20,9 @@ function Dashboard() {
   const {
     setAdminUsers,
     user,
+    setAids,
+    fetchedAids,
+    setFetchedAids,
     setOffres,
     setFetchedOffres,
     fetchedOffres,
@@ -49,9 +52,18 @@ function Dashboard() {
       setLoans(dat);
       setFetchedLoans(true);
     }
+    async function fetchAids() {
+      const dat = await getAids();
+      console.log("fetched Aids");
+
+      setAids(dat);
+      setFetchedAids(true);
+    }
     if (user && user.is_superuser && !fetchedAdminUsers) fetchUsers();
     if (!fetchedOffres && user && !user.is_superuser) fetchOffres();
     if (!fetchedLoans && user && !user.is_superuser) fetchLoans();
+    if (!fetchedAids && user && !user.is_superuser) fetchAids();
+
   }, []);
   return (
     <div className=" ">

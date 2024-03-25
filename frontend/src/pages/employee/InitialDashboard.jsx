@@ -98,8 +98,11 @@ function InitialDashboard() {
       </div>
 
       {/* Loan table */}
-      <div className=" mx-6 my-4 flex gap-5 flex-wrap lg:flex-nowrap">
-        <RequestsTable />
+      <div className="mx-6 mt-6 font-semibold text-lg ">
+        Liste des demandes de prets
+      </div>
+      <div className=" mx-6 flex gap-5 flex-wrap lg:flex-nowrap">
+        <RequestsTable showFilter={false} />
       </div>
     </div>
   );

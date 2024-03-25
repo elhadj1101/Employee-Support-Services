@@ -12,10 +12,11 @@ import Users from "./pages/admin/Users";
 import { Toaster } from "sonner";
 import RequireAuth from "./RequireAuth";
 import Loan from "pages/Loan";
-import Popup from "components/Popup";
 
 import UserProfile from "pages/admin/UserProfile";
 import FinancialAid from "pages/employee/FinancialAid";
+import ListLoans from "pages/employee/ListLoans";
+import ListAids from "pages/employee/ListAids";
 
 function App() {
   return (
@@ -26,7 +27,6 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/email" element={<Email />} />
         <Route path="/reset" element={<Reset />} />
-              {/*   <Route path="/pop" element={<Popup />} /> */}
 
 
      
@@ -46,14 +46,12 @@ function App() {
               <Route path="" element={<InitialDashboard />} />
               <Route path="demande-pret" element={<Loan />} />
               <Route path="demande-aide-financiere" element={<FinancialAid />} />
+              <Route path="liste-demandes-pret" element={<ListLoans />} />
+              <Route path="liste-demandes-aide-financiere" element={<ListAids />} />
 
             </Route>
           </Route>
-          <Route element={<RequireAuth requiredRoles={["employe"]} />}>
-            <Route path="demande-pret" element={<Loan />} /> 
-              <Route path="bedl hana" element={<AddUser />} />
-              <Route path="bdel hana" element={<Users />} />
-            </Route>
+
         
         </Route>
         <Route path="/unauthorized" element={<Unauthorized />} />

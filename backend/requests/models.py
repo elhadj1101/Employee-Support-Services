@@ -57,9 +57,9 @@ class Financial_aid(models.Model):
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE)
     request_created_at = models.DateField(auto_now_add = True )
     financial_aid_type = models.CharField(max_length = 50 , choices = financial_aid_type_options)
-    family_member =  models.CharField(max_length = 50   , choices = family_member_options , null = True)
+    family_member =  models.CharField(max_length = 50   , choices = family_member_options , null = True, blank = True)
     financial_aid_status = models.CharField(max_length = 50  , choices = financial_aid_status_options ) 
-    request_response_at = models.DateField(null =True)
+    request_response_at = models.DateField(null =True, blank=True)
 
 # Document
 class Document(models.Model):

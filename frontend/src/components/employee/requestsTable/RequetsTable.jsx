@@ -26,30 +26,21 @@ import {
   TableHeader,
   TableRow,
 } from "components/ui/table";
-import { columns } from "./columns";
+import { loanColumns } from "../Columns/loanColumns";
+import { aidsColumns } from "../Columns/aidsColumns";
+
 import useStore from "../../../store/index.js";
 
-export default function RequestsTable() {
-  const { loans } = useStore();
-  // let data = [
-    //   {
-    //     id: 1,
-    //     type:"Loan",
-    //     start_loan_date: "2024-03-12",
-    //     loan_amount: 40000,
-    //     loan_motivation: "Hello",
-    //     loan_period: 3,
-    //     loan_status: "waiting",
-    //     payment_method: "ccp",
-    //   },
-    // ],
+export default function RequestsTable({type="loans", showFilter=true}) {
+  const { loans, aids } = useStore();
+
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
-    data: loans,
-    columns,
+    data: type=== "loans" ? loans:  aids,
+    columns: type === "loans" ? loanColumns: aidsColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -68,42 +59,44 @@ export default function RequestsTable() {
 
   return (
     <div className="w-full flex flex-col flex-grow bg-white p-4 rounded-lg mt-4">
-      <div className="flex items-center py-4 ">
-        <Input
-          placeholder="Filtrer les IDs..."
-          value={table.getColumn("id")?.getFilterValue() ?? ""}
-          onChange={(event) => {
-            table.getColumn("id")?.setFilterValue(event.target.value);
-          }}
-          className="max-w-[90%]"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      {showFilter && (
+        <div className="flex items-center py-4 ">
+          <Input
+            placeholder="Filtrer les IDs..."
+            value={table.getColumn("id")?.getFilterValue() ?? ""}
+            onChange={(event) => {
+              table.getColumn("id")?.setFilterValue(event.target.value);
+            }}
+            className="max-w-[90%]"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -144,7 +137,9 @@ export default function RequestsTable() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={
+                    type === "loans" ? loanColumns.length : aidsColumns.length
+                  }
                   className="h-24 text-center"
                 >
                   No results.
