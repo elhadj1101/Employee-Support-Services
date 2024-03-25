@@ -12,9 +12,7 @@ export default function Users() {
             Listes des utilisateurs
           </h1>
           <Link
-            onClick={() => {
-              toast.success("Event has been created");
-            }}
+      
             to={"../utilisateurs/add-user"}
             className=" bg-light-blue flex items-center justify-center  gap-2 rounded-lg   px-5 py-2 text-base  lg:px-10 lg:py-3 lg:text-lg text-white  "
           >

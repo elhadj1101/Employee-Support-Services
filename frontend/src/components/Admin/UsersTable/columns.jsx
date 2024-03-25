@@ -36,10 +36,10 @@ const roleColors = {
 const UserDeleteButton = ({ id }) => {
   const { setAdminUsers } = useStore();
 
-  const handleDeleteClick = async () => {
+  const handleDeleteClick = async (e) => {
     try {
       const response = await deleteUser(id);
-      if (response.status === 200) {
+      if (response.success) {
         toast.success("Le compte utilisateur a été désactivé avec succès.");
       }
       const updatedUsers = await getUsers();
@@ -60,7 +60,7 @@ const UserDeleteButton = ({ id }) => {
     <Button
       variant="danger"
       className="hover:bg-red-600 hover:text-white border border-red-800 text-red-800"
-      onClick={handleDeleteClick}
+      onClick={(e) => handleDeleteClick(e)}
     >
       Désactiver
     </Button>
@@ -178,6 +178,27 @@ export const columns = [
     },
   },
   {
+    accessorKey: "Statut ",
+    header: <div className="text-center">Statut</div>,
+    cell: ({ row }) => {
+      console.log("row", row);
+      return (
+        <div className="capitalize w-full flex justify-center">
+          <div
+            className={
+              "w-fit py-1 px-3 m-1 rounded-2xl " +
+              (row.original.is_active
+                ? "text-green-900 bg-green-100"
+                : "text-red-900 bg-red-100")
+            }
+          >
+            {row.original.is_active ? "Activé" : "Désactivé"}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -210,14 +231,11 @@ export const columns = [
                     Êtes-vous sûr de désactiver le compte de cet utilisateur?
                   </DialogTitle>
                   <DialogDescription>
-                    <p className="mt-3">
-                      {" "}
-                      Cette action va Désactivera le compte utilisateur et
-                    </p>
+                    Cette action va Désactivera le compte de utilisateur
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                  <DialogClose asChild>
+                  <DialogClose>
                     <UserDeleteButton id={row.original.id} />
                   </DialogClose>
                 </DialogFooter>
