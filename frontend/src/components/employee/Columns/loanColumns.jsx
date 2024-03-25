@@ -9,13 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-const statuses = {
-  finished: "text-green-900 bg-green-100",
-  approved: "text-blue-900 bg-blue-100",
-  waiting: "text-yellow-900 bg-yellow-100",
-  refused: "text-red-900 bg-red-100",
-  admin: "text-gray-900 bg-gray-100",
-};
+import { statusColorMap } from "api/requests";
+
 export const loanColumns = [
   {
     id: "select",
@@ -66,7 +61,7 @@ export const loanColumns = [
           <div
             className={
               "w-fit p-2 m-1 rounded-lg " +
-              statuses[row.getValue("loan_status")]
+              statusColorMap[row.getValue("loan_status")]
             }
           >
             {row.getValue("loan_status")}

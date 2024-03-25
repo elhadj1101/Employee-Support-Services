@@ -3,13 +3,13 @@ import { toast } from "sonner";
 
 const roles = {
   vice_president: "Vice President",
-  membre_commute: "Membre Commute",
+  membre: "Membre Commute",
   employe: "Employee",
   president: "President",
   tresorier: "Tresorier",
   "": "Admin",
 };
-
+const canViewRequests = Object.keys(roles).filter((e) => !["tresorier", "employe", ""].includes(e))
 const getUsers = async () => {
   try {
     const response = await Axios.get("/users/");
@@ -180,4 +180,5 @@ export {
   deleteUser,
   getUser,
   updateUser,
+  canViewRequests,
 };

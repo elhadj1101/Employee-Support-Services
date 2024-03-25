@@ -31,16 +31,18 @@ import { aidsColumns } from "../Columns/aidsColumns";
 
 import useStore from "../../../store/index.js";
 
-export default function RequestsTable({type="loans", showFilter=true}) {
-  const { loans, aids } = useStore();
-
+export default function RequestsTable({
+  showFilter = true,
+  columns = loanColumns,
+  data = [],
+}) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
-    data: type=== "loans" ? loans:  aids,
-    columns: type === "loans" ? loanColumns: aidsColumns,
+    data: data,
+    columns: columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -137,9 +139,7 @@ export default function RequestsTable({type="loans", showFilter=true}) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={
-                    type === "loans" ? loanColumns.length : aidsColumns.length
-                  }
+                  colSpan={columns.length}
                   className="h-24 text-center"
                 >
                   No results.

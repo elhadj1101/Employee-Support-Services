@@ -1,6 +1,6 @@
 from rest_framework import permissions
 from .models import Loan , Financial_aid
-
+from backend.settings import CAN_VIEW_REQUESTS
 class IsLoanApplier(permissions.BasePermission):
 
     # we get the last record in the Loan table we give permission according to the Loan status
@@ -27,3 +27,10 @@ class IsFinancialaidApplier(permissions.BasePermission):
                 return super().has_permission(request, view)
         else:
             return super().has_permission(request, view)
+        
+class CanViewRequests(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method == "GET":
+            perm = (request.user and request.user.is_authenticated and request.user.role in CAN_VIEW_REQUESTS )
+            return perm
+        return super().has_permission(request, view)

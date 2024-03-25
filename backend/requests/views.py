@@ -5,7 +5,7 @@ from .models import Loan, Financial_aid
 from .serializers import LoanSerializer, FileSerializer, FinancialaidSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
-from .permissions import IsLoanApplier
+from .permissions import IsLoanApplier, CanViewRequests
 from rest_framework import generics
 from .utils import calculate_max_loan
 
@@ -21,7 +21,7 @@ from .utils import calculate_max_loan
 
 
 class LoanView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, CanViewRequests]
 
     def post(self, request):
         serializer = LoanSerializer(data=request.data)
@@ -35,14 +35,20 @@ class LoanView(APIView):
             serializer.save(employee=request.user, loan_status="draft")
             return Response("loan created succefully")
         return Response(serializer.errors)
-
+    # def get(self, request):
+    #     loan = Loan.objects.filter(employee=request.user).last()
+    #     if loan:
+    #         if (loan.loan_status == "waiting") or (loan.loan_status == "approved"):
+    #             return Response("you can't apply", status=status.HTTP_400_BAD_REQUEST)
+    #     return Response("you can apply", status=status.HTTP_200_OK)
+    # get should return allemployees requests (all of them)
     def get(self, request):
-        loan = Loan.objects.filter(employee=request.user).last()
-        if loan:
-            if (loan.loan_status == "waiting") or (loan.loan_status == "approved"):
-                return Response("you can't apply", status=status.HTTP_400_BAD_REQUEST)
-        return Response("you can apply", status=status.HTTP_200_OK)
-
+        loans = Loan.objects.all()
+        if loans.exists():
+            serializer = LoanSerializer(loans, many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response("No current requests", status=status.HTTP_200_OK)  
+        
 
 # This endpoint displays the loan history to see all the previous loans the employee has applied for.
 class LoanHistoryView(APIView):
@@ -73,8 +79,8 @@ class UploadFileView(APIView):
 
 
 # This view will be used for creating financial aids 
-class FinancialaidView(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated]
+class FinancialaidView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, CanViewRequests]
     queryset = Financial_aid.objects.all()
     serializer_class = FinancialaidSerializer
 

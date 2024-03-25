@@ -4,7 +4,9 @@ import { HiOutlineUserGroup, HiOutlineUserPlus } from "react-icons/hi2";
 import { FaCircleCheck } from "react-icons/fa6";
 import { FaHandsHelping, FaPiggyBank } from "react-icons/fa";
 import useStore from "../../store/index.js";
+import { canViewRequests } from "api/auth";
 import { Link } from "react-router-dom";
+
 export default function Sidebar() {
   const { user } = useStore();
   return (
@@ -28,7 +30,7 @@ export default function Sidebar() {
             ]}
           />
         )}
-        {user && !user.is_superuser && (
+        {user && (
           <>
             <Link to="/">
               <SideButton
@@ -69,6 +71,17 @@ export default function Sidebar() {
                 },
               ]}
             />
+          </>
+        )}
+        {user && canViewRequests.includes(user.role) && (
+          <>
+            <Link to="/demandes-employe">
+              <SideButton
+                title="Demande Des Employés"
+                icon={HiOutlineUserGroup}
+                nestedBtns={[]}
+              />
+            </Link>
           </>
         )}
       </div>

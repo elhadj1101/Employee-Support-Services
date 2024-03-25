@@ -10,12 +10,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-const statuses = {
-  approved: "text-green-900 bg-green-100",
-  waiting: "text-yellow-900 bg-yellow-100",
-  refused: "text-red-900 bg-red-100",
-  admin: "text-gray-900 bg-gray-100",
-};
+import { statusColorMap  } from "api/requests" ;
+import { financial_aid_infos } from "api/requests";
+
+
+let  typeLabelMap = {}
+financial_aid_infos.forEach(
+  (e) => {
+    typeLabelMap[e.name] = e.description ;
+  });
+
 export const aidsColumns = [
   {
     id: "select",
@@ -66,7 +70,7 @@ export const aidsColumns = [
           <div
             className={
               "w-fit p-2 m-1 rounded-lg " +
-              statuses[row.getValue("financial_aid_status")]
+              statusColorMap[row.getValue("financial_aid_status")]
             }
           >
             {row.getValue("financial_aid_status")}
@@ -80,7 +84,7 @@ export const aidsColumns = [
     header: "Type d'aide",
     cell: ({ row }) => (
       <div className="text-left font-medium">
-        {row.getValue("financial_aid_type")}
+        {typeLabelMap[row.getValue("financial_aid_type")]}
       </div>
     ),
   },
