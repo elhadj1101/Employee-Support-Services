@@ -5,7 +5,13 @@ from .models import Loan, Financial_aid
 from .serializers import LoanSerializer, FileSerializer, FinancialaidSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
-from .permissions import IsLoanApplier, CanViewRequests, IsFinancialaidApplier , IsPresident
+from .permissions import (
+    IsLoanApplier,
+    CanViewRequests,
+    IsFinancialaidApplier,
+    IsPresident,
+)
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .utils import calculate_max_loan
 
@@ -38,14 +44,21 @@ class LoanView(APIView):
                 aid_status = "draft"
             elif isDraft == "false":
                 aid_status = "waiting"
-            else : 
-                return Response('Invalid query param value', status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(
+                    "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
+                )
 
-            if aid_status == "draft" and Loan.objects.filter(
-                employee=request.user,
-                loan_status="draft",
-            ).exists():
-                return Response('you can\'t create draft' , status=status.HTTP_403_FORBIDDEN)
+            if (
+                aid_status == "draft"
+                and Loan.objects.filter(
+                    employee=request.user,
+                    loan_status="draft",
+                ).exists()
+            ):
+                return Response(
+                    "you can't create draft", status=status.HTTP_403_FORBIDDEN
+                )
 
             serializer.save(employee=request.user, loan_status=aid_status)
             return Response("loan created succefully")
@@ -106,16 +119,20 @@ class FinancialaidView(generics.ListCreateAPIView):
             aid_status = "draft"
         elif isDraft == "false":
             aid_status = "waiting"
-        else : 
-            return Response('Invalid query param value', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(
+                "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
+            )
         serializer.is_valid(raise_exception=True)
 
-        if aid_status == "draft" and Financial_aid.objects.filter(
-            employee=request.user,
-            financial_aid_type=request.data["financial_aid_type"],
-            financial_aid_status="draft",
-        ).exists():
-            return Response('you can\'t create draft' , status=status.HTTP_403_FORBIDDEN)
+        if (
+            aid_status == "draft"
+            and Financial_aid.objects.filter(
+                employee=request.user,
+                financial_aid_status="draft",
+            ).exists()
+        ):
+            return Response("you can't create draft", status=status.HTTP_403_FORBIDDEN)
 
         serializer.save(
             employee=request.user,
@@ -180,3 +197,70 @@ class UploadFileView(APIView):
             return Response("file uploaded succesfully", status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# To use this view specify request_type (loan|financial-aid) as url
+# also use draft query parameter
+# for example http://127.0.0.1:8000/api/requests/financial-aid/pk?draft=true
+
+
+class UpdateRequestView(APIView):
+    def patch(self, request, request_type, pk):
+        # check if the url contains loan or financial-aid
+        if request_type in ["loan", "financial-aid"]:
+            # check for the draft query parameter
+            isDraft = request.query_params.get("draft")
+            if isDraft == "true":
+                aid_status = "draft"
+            elif isDraft == "false":
+                aid_status = "waiting"
+            else:
+                return Response(
+                    "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # update the loan object
+            if request_type == "loan":
+                loan = get_object_or_404(Loan, pk=pk)
+                # only draft records can be updated
+                if loan.loan_status != "draft":
+                    return Response(
+                        "this loan is not draft", status=status.HTTP_403_FORBIDDEN
+                    )
+                serializer = LoanSerializer(loan, data=request.data, partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save(loan_status=aid_status)
+                return Response("loan changed succesfully")
+
+            # update the financial-aid object
+            elif request_type == "financial-aid":
+                financial_aid = get_object_or_404(Financial_aid, pk=pk)
+                # only draft records can be updated
+                if financial_aid.financial_aid_status != "draft":
+                    return Response(
+                        "this financial-aid is not draft",
+                        status=status.HTTP_403_FORBIDDEN,
+                    )
+                # family_member can only be changed if the financial_aid_type  is family_member_death
+                aid_type = (
+                    request.data["financial_aid_type"]
+                    if "financial_aid_type" in request.data
+                    else financial_aid.financial_aid_type
+                )
+                if (
+                    "family_member" in request.data
+                    and aid_type != "family_member_death"
+                ):
+                    return Response(
+                        "you can't change family member",
+                        status=status.HTTP_403_FORBIDDEN,
+                    )
+
+                serializer = FinancialaidSerializer(
+                    financial_aid, data=request.data, partial=True
+                )
+                serializer.is_valid(raise_exception=True)
+                serializer.save(financial_aid_status=aid_status)
+                return Response("financial aid changed succesfully")
+
+        else:
+            return Response("page not found", status=status.HTTP_404_NOT_FOUND)

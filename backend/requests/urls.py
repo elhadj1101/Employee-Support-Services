@@ -7,7 +7,7 @@ from .views import (
     FinancialaidHistoryView,
     LoanCheckView,
     FinancialaidCheckView,
-    # UpdateRequest
+    UpdateRequestView
 )
 
 
@@ -16,7 +16,7 @@ urlpatterns = [
     path("loans/history/", LoanHistoryView.as_view()),
     path("loans/check/", LoanCheckView.as_view()),
     # for the update view loan/financial-aid
-    # path('example/<str:request_type>/' ,UpdateRequest.as_view() ),
+    path('<str:request_type>/<int:pk>' ,UpdateRequestView.as_view() ),
 
     path("financial-aids/", FinancialaidView.as_view()),
     path("financial-aids/history/", FinancialaidHistoryView.as_view()),

@@ -30,7 +30,6 @@ class IsFinancialaidApplier(permissions.BasePermission):
                 financial_aid_type=financial_aid_type,
                 financial_aid_status="waiting",
             )
-
             if financial_aid:
                 return False
             else:
