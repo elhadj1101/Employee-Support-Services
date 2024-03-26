@@ -79,8 +79,8 @@ class LoanCheckView(APIView):
         loan = Loan.objects.filter(employee=request.user).last()
         if loan:
             if (loan.loan_status == "waiting") or (loan.loan_status == "approved"):
-                return Response("False", status=status.HTTP_400_BAD_REQUEST)
-        return Response("True", status=status.HTTP_200_OK)
+                return Response("you can't apply", status=status.HTTP_400_BAD_REQUEST)
+        return Response("you can apply", status=status.HTTP_200_OK)
 
 
 # This endpoint displays the loan history to see all the previous loans the employee has applied for.
@@ -125,8 +125,6 @@ class FinancialaidView(generics.ListCreateAPIView):
             return Response(
                 "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
             )
-        serializer.is_valid(raise_exception=True)
-
         if (
             aid_status == "draft"
             and Financial_aid.objects.filter(
@@ -135,7 +133,10 @@ class FinancialaidView(generics.ListCreateAPIView):
             ).exists()
         ):
             return Response("you can't create draft", status=status.HTTP_403_FORBIDDEN)
-
+        
+        serializer.is_valid(raise_exception=True)
+        if request.data['financial_aid_type'] == 'retirement_financial_aid' and not request.user.retired :
+            return Response('Employee is not retired' , status=status.HTTP_403_FORBIDDEN)
         serializer.save(
             employee=request.user,
             family_member=family_member,
