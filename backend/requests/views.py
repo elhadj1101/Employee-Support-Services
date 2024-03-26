@@ -26,7 +26,7 @@ from .utils import calculate_max_loan
 
 
 class LoanView(APIView):
-    permission_classes = [IsAuthenticated, CanViewRequests, IsLoanApplier]
+    permission_classes = [IsAuthenticated, IsLoanApplier]
 
     def post(self, request):
         serializer = LoanSerializer(data=request.data)
@@ -65,11 +65,14 @@ class LoanView(APIView):
         return Response(serializer.errors)
 
     def get(self, request):
-        loans = Loan.objects.all()
+        execlution_criteria = {
+            'loan_status'  : 'draft'
+        }
+        loans = Loan.objects.exclude(**execlution_criteria)
         if loans.exists():
             serializer = LoanSerializer(loans, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response("No current requests", status=status.HTTP_200_OK)
+        return Response("No current loans", status=status.HTTP_200_OK)
 
 
 class LoanCheckView(APIView):
@@ -101,7 +104,7 @@ class LoanHistoryView(APIView):
 
 # This view will be used for creating financial aids
 class FinancialaidView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, CanViewRequests, IsFinancialaidApplier]
+    permission_classes = [IsAuthenticated, IsFinancialaidApplier]
     queryset = Financial_aid.objects.all()
     serializer_class = FinancialaidSerializer
 
@@ -143,6 +146,18 @@ class FinancialaidView(generics.ListCreateAPIView):
             financial_aid_status=aid_status,
         )
         return Response("Financial aid created")
+    
+    def list(self, request, *args, **kwargs):
+        execlution_criteria = {
+            'financial_aid_status' : 'draft'
+        }
+        financail_aids = Financial_aid.objects.exclude(**execlution_criteria)
+        if financail_aids :
+            serializer =  FinancialaidSerializer(financail_aids , many = True)
+            return Response(serializer.data , )
+        return Response('No current financial aids')
+    
+
 
 
 # This view to get all financial aids for the employee
