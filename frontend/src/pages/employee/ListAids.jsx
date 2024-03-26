@@ -11,7 +11,7 @@ function ListAids() {
       <div className=" mx-6 mb-4  text-2xl font-bold">
         Votre demandes d'aide financiere
       </div>
-      <RequestsTable data={aids} columns={aidsColumns}/>
+      <RequestsTable data={aids} columns={aidsColumns} filteredColumn="employee"/>
     </div>
   );
 }

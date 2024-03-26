@@ -35,19 +35,30 @@ export const loanColumns = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
-    header: () => <div className="text-left">ID</div>,
-    cell: ({ row }) => {
-      return <div className="text-left font-medium">{row.getValue("id")}</div>;
+    accessorKey: "employee",
+    header: "ID de l'employer",
+    // to filter ids
+    accessorFn: (orow) => {
+      return orow.employee.toString();
     },
+    cell: ({ row }) => (
+      <div className="text-left font-medium">{row.getValue("employee")}</div>
+    ),
   },
+  // {
+  //   accessorKey: "id",
+  //   header: () => <div className="text-left">ID</div>,
+  //   cell: ({ row }) => {
+  //     return <div className="text-left font-medium">{row.getValue("id")}</div>;
+  //   },
+  // },
   {
-    accessorKey: "start_loan_date",
+    accessorKey: "request_created_at",
     header: () => <div className="text-left">Date Demande</div>,
     cell: ({ row }) => {
       return (
         <div className="text-left font-medium">
-          {row.getValue("start_loan_date")}
+          {row.getValue("request_created_at")}
         </div>
       );
     },
@@ -74,7 +85,9 @@ export const loanColumns = [
     accessorKey: "loan_amount",
     header: "Montant",
     cell: ({ row }) => (
-      <div className="text-left font-medium">{row.getValue("loan_amount")}DA</div>
+      <div className="text-left font-medium">
+        {row.getValue("loan_amount")}DA
+      </div>
     ),
   },
   {
