@@ -5,7 +5,7 @@ from .models import Loan, Financial_aid
 from .serializers import LoanSerializer, FileSerializer, FinancialaidSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
-from .permissions import IsLoanApplier, CanViewRequests, IsFinancialaidApplier
+from .permissions import IsLoanApplier, CanViewRequests, IsFinancialaidApplier , IsPresident
 from rest_framework import generics
 from .utils import calculate_max_loan
 
@@ -33,7 +33,21 @@ class LoanView(APIView):
                 return Response(
                     "maximumn loan amount {} ".format(max),
                 )
-            serializer.save(employee=request.user, loan_status="waiting")
+            isDraft = request.query_params.get("draft")
+            if isDraft == "true":
+                aid_status = "draft"
+            elif isDraft == "false":
+                aid_status = "waiting"
+            else : 
+                return Response('Invalid query param value', status=status.HTTP_400_BAD_REQUEST)
+
+            if aid_status == "draft" and Loan.objects.filter(
+                employee=request.user,
+                loan_status="draft",
+            ).exists():
+                return Response('you can\'t create draft' , status=status.HTTP_403_FORBIDDEN)
+
+            serializer.save(employee=request.user, loan_status=aid_status)
             return Response("loan created succefully")
         return Response(serializer.errors)
 
@@ -92,6 +106,8 @@ class FinancialaidView(generics.ListCreateAPIView):
             aid_status = "draft"
         elif isDraft == "false":
             aid_status = "waiting"
+        else : 
+            return Response('Invalid query param value', status=status.HTTP_400_BAD_REQUEST)
         serializer.is_valid(raise_exception=True)
 
         if aid_status == "draft" and Financial_aid.objects.filter(
@@ -163,3 +179,4 @@ class UploadFileView(APIView):
             serializer.save(employee=request.user)
             return Response("file uploaded succesfully", status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

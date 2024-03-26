@@ -9,9 +9,12 @@ class IsLoanApplier(permissions.BasePermission):
         if request.method == "POST":
             loan = Loan.objects.filter(employee=request.user).last()
             if loan:
-                return (loan.loan_status == "finished") or (
-                    loan.loan_status == "refused"
+                return (
+                    (loan.loan_status == "finished")
+                    or (loan.loan_status == "refused")
+                    or (loan.loan_status == "draft")
                 )
+
             else:
                 return super().has_permission(request, view)
         else:
@@ -46,3 +49,7 @@ class CanViewRequests(permissions.BasePermission):
             )
             return perm
         return super().has_permission(request, view)
+
+class IsPresident(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.role == 'president'
