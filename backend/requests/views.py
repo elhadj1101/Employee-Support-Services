@@ -26,7 +26,7 @@ from .utils import calculate_max_loan
 
 
 class LoanView(APIView):
-    permission_classes = [IsAuthenticated, IsLoanApplier]
+    permission_classes = [IsAuthenticated,CanViewRequests, IsLoanApplier]
 
     def post(self, request):
         serializer = LoanSerializer(data=request.data)
@@ -104,7 +104,7 @@ class LoanHistoryView(APIView):
 
 # This view will be used for creating financial aids
 class FinancialaidView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, IsFinancialaidApplier]
+    permission_classes = [IsAuthenticated,CanViewRequests, IsFinancialaidApplier]
     queryset = Financial_aid.objects.all()
     serializer_class = FinancialaidSerializer
 
