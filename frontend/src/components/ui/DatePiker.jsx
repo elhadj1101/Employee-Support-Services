@@ -7,7 +7,7 @@ import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import useStore from "../../store/index";
-export function DatePickerDemo() {
+export function DatePickerDemo({input}) {
   const [selectedDate, setSelectedDate] = React.useState();
   const { AddUserData, setAddUserData } = useStore();
 
@@ -44,8 +44,8 @@ export function DatePickerDemo() {
                 
                 const date = formattedDate[0] + '-'+ formattedDate[2] + '-'+ formattedDate[1] 
                 console.log(e);
-              sessionStorage.setItem(`form/birth_date`, date);
-              const updatedUserData = { ...AddUserData, "birth_date": date }; 
+              localStorage.setItem(`form/${input}`, date);
+              const updatedUserData = { ...AddUserData, input: date }; 
               setAddUserData(updatedUserData);
   
               setSelectedDate(e); // Update the selectedDate state with the Date object

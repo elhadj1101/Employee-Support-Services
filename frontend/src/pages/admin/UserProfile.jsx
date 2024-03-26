@@ -11,7 +11,7 @@ import {
 import useStore from "../../store/index.js";
 import { getUser, updateUser } from "api/auth";
 export default function UserProfile() {
-  const { UserProfileData, setProfileUserData, AddUserData, profileRequsted } =
+  const { UserProfileData, setProfileUserData, profileRequsted } =
     useStore();
   const [newErrors, setNewErrors] = useState({});
   const [readOnly, setReadOnly] = useState(true);
@@ -34,7 +34,8 @@ export default function UserProfile() {
                 response[key] = value.replace(/(\d{4})(?=\d)/g, "$1 ");
                 break;
               case "rip":
-                response[key] = value.replace(/(\d{10})/, "$1 ");
+                const v =value.replace('00799999' , '')
+                response[key] = v.replace(/(\d{10})/g, "$1 ");
                 break;
 
               case "phone_number":
@@ -95,13 +96,16 @@ export default function UserProfile() {
         break;
       case "id_number":
         formattedValue = value.replace(/[^0-9]/, "");
-        formattedValue = formattedValue.replace(/(\d{2})(?=\d)/, "$1 ");
+        formattedValue = formattedValue.replace(/(\d{2})(?=\d)/g, "$1 ");
 
         break;
       case "salary":
-        formattedValue = value.replace(/[^0-9]/, "");
-        formattedValue = formattedValue.replace(/(\d{3})(?=\d)/, "$1,");
+        formattedValue = value.replace(/[^0-9,]/, "");
+        formattedValue = formattedValue.replace(/(\d{3})(?=\d)/g, "$1,");
 
+        break;
+        case "retired":
+        formattedValue = (!UserProfileData.retired)
         break;
       case "bank_rib":
         formattedValue = value.replace(/[^0-9]/, "");
@@ -109,7 +113,7 @@ export default function UserProfile() {
         break;
       case "rip":
         formattedValue = value.replace(/[^0-9]/, "");
-        formattedValue = formattedValue.replace(/(\d{10})/, "$1 ");
+        formattedValue = formattedValue.replace(/(\d{10})(?=\d)/g, "$1 ");
         break;
 
       case "phone_number":
@@ -173,15 +177,6 @@ export default function UserProfile() {
     if (!formData.email.replace(/ /g, '')|| !emailRegex.test(formData.email)) {
       newErrors.email = "Veuillez saisir une adresse e-mail valide.";
     }
-
-    // Validate password strength
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-    if (newErrors.password) delete newErrors.password;
-
-    if (!formData.password.replace(/ /g, '')|| !passwordRegex.test(formData.password.replace(/ /g, ''))) {
-      newErrors.password =
-        "Le mot de passe doit comporter au moins 8 caractères et contenir au moins une lettre majuscule, une lettre minuscule et un chiffre.";
-    }
     if (newErrors.bank_rib) delete newErrors.bank_rib;
 
     // Validate RIB length
@@ -218,29 +213,38 @@ export default function UserProfile() {
       newErrors.id_number =
         "Le numéro d'identification doit comporter exactement 18 caractères.";
     }
+ // retired and retired_at
+ if(formData.retired && formData.retired_at ===''){
+  newErrors.retired_at  =
+  "date de Retirement est requis.";
+}
+Object.keys(formData).forEach((key) => {
+  if (newErrors.key) delete newErrors.key;
+  if (!formData[key] && key !== "is_active" && key !== "is_superuser"&& key !== "retired" && key !=='retired_at') {
+    newErrors[key] = `${key.replace('_' ,' ')} est requis.`;
+  }
+});
 
-
-    Object.keys(formData).forEach((key) => {
-      if (newErrors.key) delete newErrors.key;
-      if (!formData[key] && key !== "is_active") {
-        newErrors[key] = `${key} est requis.`;
-      }
-    });
+  
     // Check if any errors occurred
     if (Object.keys(newErrors).length !== 0) {
       setNewErrors(newErrors);
       return;
     }
+    let user = {};
     Object.keys(formData).forEach((key) => {
-      if (formData[key] && key !== "is_active") {
-        formData[key] = formData[key].replace(/ /g, '')
+      if (formData[key] && typeof formData[key] === 'string') {
+        user[key] = formData[key].replace(/ /g, '');
       }
     });
+    
+    
     try {
-      const newUser = await updateUser({ ...UserProfileData, rip: '00799999' + UserProfileData.rip.replace(/ /g, '') , salary: UserProfileData.salary.replace(/,/g, '') }, profileRequsted);
-      if (newUser.status === 201) {
-        toast.success("Utilisateur modifer avec succès");
-      }
+      const updateUser = await updateUser({ ...user, rip:"00799999" + user.rip , salary: user.salary.replace(/,/g, '') }, profileRequsted);
+    console.log('uuuuuuuuuuuuuu', updateUser);
+      if(updateUser){
+      window.location.reload()
+     }
     } catch (error) {
       if (error.response) {
         console.log("errror", error.data);
@@ -413,6 +417,36 @@ export default function UserProfile() {
                   {newErrors?.phone_number}
                 </p>
               </div>
+              <div className=" mt-5 flex flex-col gap-1">
+                <label className="pb-1" htmlFor="recruted_at">
+                date de Recrutement
+                  <span
+                    style={{ color: "red" }}
+                  >
+                    {" "}
+                    *
+                  </span>
+                </label>
+                {readOnly ? (
+                  <input
+                    placeholder="date"
+                    value={UserProfileData.recruted_at}
+                    className={`w-full bg-transparent border-1 ${
+                      readOnly ? "border-none" : "border-gray-200"
+                    } outline-none h-12 rounded-lg px-4 text-base`}
+                    readOnly={readOnly}
+                  />
+                ) : 
+                <DatePickerDemo
+                  id="dateNaissance"
+                  name="dateNaissance"
+                  value={UserProfileData.recruted_at}
+                  input='recruted_at'
+                />}
+                <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
+                  {newErrors?.recruted_at}
+                </p>
+              </div>
               <div className="flex flex-col gap-1">
                 <label htmlFor="role">
                   Role<span style={{ color: "red" }}> * </span>
@@ -466,6 +500,58 @@ export default function UserProfile() {
                   {newErrors?.role}
                 </p>
               </div>
+
+              <div className="flex items-center gap-2 mt-4">
+              {!readOnly &&
+                <input
+                  id="retired"
+                  name="retired"
+                  type="checkbox"
+                  readOnly={readOnly}
+                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  checked={UserProfileData.retired}
+                  onChange={(e) =>handleChange(e)}
+                />}
+                <label htmlFor="retired">
+                  Est-il retraité ?
+                </label>
+                {readOnly && (UserProfileData.retired === 'true'?'Oui':'Non')}
+              </div>
+          
+
+
+              { UserProfileData.retired && <div className=" mt-5 flex flex-col gap-1">
+                <label htmlFor="retired_at">
+                date de Retirement
+                  <span
+                    style={{ color: "red" }}
+                  >
+                    {" "}
+                    *
+                  </span>
+                </label>
+                {readOnly ? (
+                  <input
+                    placeholder="date"
+                    value={UserProfileData.retired_at}
+                    className={`w-full bg-transparent border-1 ${
+                      readOnly ? "border-none" : "border-gray-200"
+                    } outline-none h-12 rounded-lg px-4 text-base`}
+                    readOnly={readOnly}
+                  />
+                ) : 
+                <DatePickerDemo
+                  id="dateNaissance"
+                  name="dateNaissance"
+                  value={UserProfileData.retired_at}
+                  input='retired_at'
+                />}
+                <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
+                  {newErrors?.retired_at}
+                </p>
+              </div>}
+
+
             </div>
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold py-2 mb-2 mt-4 border-l-4 border-light-blue px-3 bg-[#e2e8ff] text-light-blue text-lg  ">
@@ -522,7 +608,7 @@ export default function UserProfile() {
                   />
                   <p
                     className={`pl-2 absolute top-1/2 left-0 -translate-y-1/2  ${
-                      AddUserData?.rip.length !== 0 ? "" : "text-gray-500"
+                      UserProfileData?.rip.length !== 0 ? "" : "text-gray-500"
                     } `}
                   >
                     00799999
@@ -700,6 +786,7 @@ export default function UserProfile() {
                     id="dateNaissance"
                     name="dateNaissance"
                     value={UserProfileData.birth_date}
+                    input={'birth_date'}
                   />
                 )}
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
@@ -708,15 +795,15 @@ export default function UserProfile() {
               </div>
             </div>
             <div className="flex gap-2 items-center">
-              <div
+              {!readOnly && <div
                 onClick={(e) => {
-                  console.log(UserProfileData);
                   handleSubmit(e, UserProfileData);
                 }}
                 className=" bg-light-blue cursor-pointer rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg text-white  "
               >
                 <p className="capitalize">Enregister</p>
-              </div>
+              </div>}
+             
               {/* <div
                 onClick={() => {
                   Object.keys(localStorage).forEach((key) => {
