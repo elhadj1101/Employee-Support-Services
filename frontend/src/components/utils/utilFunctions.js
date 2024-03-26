@@ -1,6 +1,9 @@
 function formatPrice(price, delm=".") {
     
     let strPrice = price.toString();
+    if (isNaN(strPrice)) {
+        return "0";
+    }
     let rest = ""
     if (strPrice.includes(".")) {
         rest = strPrice.slice(strPrice.indexOf("."));

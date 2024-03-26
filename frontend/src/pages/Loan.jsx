@@ -14,7 +14,7 @@ const Loan = () => {
   console.log("Can apply: ", canApplyLoan);
 
   const [Montant, setMontant] = useState(intmaxPayMois);
-  const [Duration, setDuration] = useState(0);
+  const [Duration, setDuration] = useState(12);
   const [MontantError, setMontantError] = useState("");
   const [DurationError, setDurationError] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -82,8 +82,8 @@ const Loan = () => {
       <h1 className="font-semibold tet-2xl ml-6 text-2xl my-2">Demande Loan</h1>
       <div>
         <div className=" max-w-xs mx-auto sm:flex sm:justify-between sm:mx-6 sm:space-x-3 sm:max-w-full    ">
-          <Card title="Montant max prét" price={maxLoan} />
-          <Card title="Max paiment/mois" price={maxPayMois} />
+          <Card title="Montant max prét (12 mois)" price={maxLoan} />
+          <Card title="Max paiment/mois (12 mois)" price={maxPayMois} />
           <Card title="éligible au prét?" isEligable={canApplyLoan} />
         </div>
         <div className=" sm:flex md:flex lg:flex mx-6 mb-6">
@@ -108,11 +108,12 @@ const Loan = () => {
       )}
       {canApplyLoan && (
         <form className=" sm:px-7 h-auto bg-slate-50 mx-5 rounded-xl p-4">
-          <span className="  sm:mt-8 font-medium    text-xl flex mb-7 ">
+          <span className="  sm:mt-8 font-medium text-xl flex mb-7 ">
             Nouvelle demande de prét
           </span>
           <label htmlFor="Montant" className=" sm:flex  sm:mt-7 sm:mb-1    ">
-            Montant que vous voulez payer par mois
+            Montant que vous voulez payer par mois (prix totale:{" "}
+            {formatPrice(Montant * Duration, ",")}DA)
           </label>
           <input
             name="montant"
