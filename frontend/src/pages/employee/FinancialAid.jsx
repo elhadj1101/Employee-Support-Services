@@ -11,10 +11,11 @@ import FileInput from "components/utils/FileInput";
 import { Button } from "components/ui/button";
 import { formatPrice } from "components/utils/utilFunctions";
 import { financial_aid_infos } from "api/requests";
+import useStore from "store";
 
 function FinancialAid() {
-  
-
+  const { user } = useStore();
+  const employeeType = user?.retired ? "retired" : "non_retarder";
   const typeIndMap = {};
   financial_aid_infos.forEach((aid, ind) => {
     typeIndMap[aid.name] = ind;
@@ -26,7 +27,7 @@ function FinancialAid() {
   const [aidData, setAidData] = useState({
     aidType: "",
     familyMember: "",
-    employeeType: "",
+    employeeType: employeeType,
   });
   const [amount, setAmount] = useState(0);
   const handleSubmit = (e) => {
@@ -70,7 +71,7 @@ function FinancialAid() {
     const data = {
       aidType: sessionStorage.getItem("aid/type") || "",
       familyMember: sessionStorage.getItem("aid/familyMember") || "",
-      employeeType: sessionStorage.getItem("aid/employeeType") || "",
+      employeeType: employeeType,
     };
     if (data.aidType !== "") {
       let ff = financial_aid_infos[typeIndMap[data.aidType]].files;
@@ -233,6 +234,7 @@ function FinancialAid() {
               id="employeeType"
               value={aidData.employeeType}
               name="employeeType"
+              disabled
               onValueChange={(value) => {
                 sessionStorage.setItem("aid/employeeType", value);
                 const prev = { ...aidData, ["employeeType"]: value };
@@ -268,7 +270,7 @@ function FinancialAid() {
           <p className="text-lg font-semibold">
             Le Montant bénéficié :
             <span className="ml-3  text-light-blue ">
-              {formatPrice(amount)}DA
+              {formatPrice(amount, ",")}DA
             </span>
           </p>
         )}

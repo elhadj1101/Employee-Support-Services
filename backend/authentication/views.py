@@ -2,6 +2,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
+from django.contrib.auth.hashers import check_password
 from .models import Employee
 from .serializers import EmployeeSerializer, SignupSerializer, EmployeeDetailsSerializer
 from .permissions import IsAdmin
@@ -53,18 +54,21 @@ class SignupView(APIView):
             user = Employee.objects.filter(email = email)
             if not(user.exists()):
                 return Response([{"email":"User does not exist"}], status=status.HTTP_400_BAD_REQUEST)
-            # save the new password
             password = serializer.validated_data.get('password')
-            password2 = serializer.validated_data.get('password2')
-            if password != password2:
-                return Response([{"password":"Passwords do not match"}], status=status.HTTP_400_BAD_REQUEST)
+            # save the new password
+            # password2 = serializer.validated_data.get('password2')
+            # if password != password2:
+            #     return Response([{"password":"Passwords do not match"}], status=status.HTTP_400_BAD_REQUEST)
             user = user.first()
             if user.is_active:
-                return Response([{"email":"User is already active"}], status=status.HTTP_400_BAD_REQUEST)
-            user.set_password(password)
+                return Response([{"email":"User is already active."}], status=status.HTTP_400_BAD_REQUEST)
+            # user.set_password(password)
+            is_same = check_password(password, user.password)
+            if not(is_same):
+                return Response([{"password":"The provided password is wrong."}], status=status.HTTP_400_BAD_REQUEST)
             user.is_active = True
             user.save()
-            return Response([{"success":"User Signed up successfuly"}], status=status.HTTP_200_OK)
+            return Response([{"success":"User activated successfuly."}], status=status.HTTP_200_OK)
             
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

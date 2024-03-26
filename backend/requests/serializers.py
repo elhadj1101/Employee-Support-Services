@@ -8,12 +8,12 @@ class LoanSerializer(serializers.ModelSerializer):
         min_value=1,
         max_value=12,
     )
-
     class Meta:
         model = Loan
         fields = [
             'id',
             "loan_amount",
+            "employee",
             "request_created_at",
             "loan_motivation",
             "payment_method",

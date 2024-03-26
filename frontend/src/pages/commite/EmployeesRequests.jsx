@@ -17,7 +17,7 @@ function EmployeesRequests() {
       <div className=" mx-6 mb-4  text-2xl font-bold">
         Les demandes de prets
       </div>
-      <RequestsTable data={allLoans} columns={loanColumns} />
+      <RequestsTable data={allLoans} columns={loanColumns}  filteredColumn="employee"/>
     </div>
   );
 }

@@ -5,7 +5,13 @@ import { Outlet } from "react-router-dom";
 import useStore from "../store/index.js";
 import { getUsers } from "../api/auth.js";
 import { getOffres } from "../api/offres.js";
-import { getLoans, getAids, getAllAids, getAllLoans } from "../api/requests.js";
+import {
+  getLoans,
+  getAids,
+  getAllAids,
+  getAllLoans,
+  canApplyForLoan,
+} from "../api/requests.js";
 
 function Dashboard() {
     const [open, setOpen] = useState(false);
@@ -18,6 +24,7 @@ function Dashboard() {
     };
 
   const {
+    setCanApplyLoan,
     setAdminUsers,
     user,
     setAllLoans,
@@ -53,6 +60,9 @@ function Dashboard() {
     }
     async function fetchLoans() {
       const dat = await getLoans();
+      const canApply = await canApplyForLoan();
+      const cond = canApply === "True";
+      setCanApplyLoan(cond);
       console.log("fetched loans");
 
       setLoans(dat);
@@ -75,7 +85,6 @@ function Dashboard() {
     async function fetchAllLoans() {
       const dat = await getAllLoans();
       console.log("fetched All Loans");
-
       setAllLoans(dat);
       setFetchedAllLoans(true);
     }

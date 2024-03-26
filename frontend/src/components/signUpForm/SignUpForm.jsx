@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { signUp } from "../../api/auth";
 import "./SignUpForm.css";
-import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 const SignUpForm = () => {
   // const [err, setErr] = useState("");
@@ -12,65 +11,43 @@ const SignUpForm = () => {
   // const [telError, setTelError] = useState("");
 
   const [pass, setPass] = useState("");
-  const [confpass, setConfpass] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passError, setPassError] = useState("");
-  const [confpassError, setConfpassError] = useState("");
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     let correct = true;
     e.preventDefault();
     // Validate email
     if (!email.trim()) {
       
-      setEmailError("Email is required.");
+      setEmailError("l'email est requis.");
       return;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       
 
-      setEmailError("Invalid email format.");
+      setEmailError("l'email est invalide.");
       return;
     } else {
       setEmailError("");
     }
 
-    // // Validate telephone
-    // if (!tel.trim()) {
-    //   setTelError("Phone number is required.");
-    // } else if (!/^\d{10}$/.test(tel)) {
-    //   setTelError("Invalid phone number format.");
-    // } else {
-    //   setTelError("");
-    // }
-
     // Validate password
     if (!pass.trim()) {
-      setPassError("Password is required.");
+      setPassError("le mot de passe est requis.");
       correct = false;
 
     } else 
     
-    if (pass.length < 8) {
-      setPassError("Password must be at least 8 characters long.");
-      correct = false;
+    // if (pass.length < 8) {
+    //   setPassError("Password must be at least 8 characters long.");
+    //   correct = false;
 
-    } else 
+    // } else 
     {
       setPassError("");
     }
 
-    // Validate confirmation password
-    if (!confpass.trim()) {
-      setConfpassError("The confirmation is required.");
-      correct = false;
-
-    } else if (confpass !== pass) {
-      setConfpassError("Passwords do not match.");
-      correct = false;
-
-    } else {
-      setConfpassError("");
-    }
+ 
     if (!correct) {
       return;
     }
@@ -95,7 +72,6 @@ const navigate = useNavigate();
         <div className="max-w-xs my-4 px-5 sm:px-10  ">
           Merci d'entrer vos informations de connexion
         </div>
-        
       </div>
       <form className="max-w-xs">
         <label
@@ -113,28 +89,15 @@ const navigate = useNavigate();
           placeholder={"email"}
           style={{ borderColor: emailError ? "red" : "" }}
         />
-        <p className="error max-w-xs flex mx-auto sm:min-w-full ">{emailError}</p>
-{/* 
-        <label for="phone" className="text max-w-xs mx-auto flex  sm:min-w-full">
-          Num Téléphone
-        </label>
-        <input
-          className=" max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full"
-          name="phone"
-          type="text/number"
-          pattern=".{10,10}"
-          placeholder="0723343134"
-          value={tel}
-          onChange={(e) => setTel(e.target.value)}
-          style={{ borderColor: telError ? "red" : "" }}
-        />
-        <div className="error max-w-xs flex mx-auto sm:min-w-full">{telError}</div> */}
+        <p className="error max-w-xs flex mx-auto sm:min-w-full ">
+          {emailError}
+        </p>
 
         <label
           htmlFor="password"
           className="text max-w-xs mx-auto flex  sm:min-w-full"
         >
-          Mot de passe
+          Mot de passe (envoyé par l'administrateur )
         </label>
         <input
           className=" max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full"
@@ -148,28 +111,16 @@ const navigate = useNavigate();
         <div className="error max-w-xs flex mx-auto sm:min-w-full">
           {passError}
         </div>
-        <label
-          htmlFor="confirm-password"
-          className="text max-w-xs mx-auto flex  sm:min-w-full"
+
+        <button
+          className="inscri cursor-pointer  max-w-xs mx-11   sm:min-w-full sm:mx-auto  bg-blue-700"
+          onClick={handleSubmit}
         >
-          Confirmer mot de passe
-        </label>
-        <input
-          className="max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full"
-          name="confirm-password"
-          type="password"
-          value={confpass}
-          onChange={(e) => setConfpass(e.target.value)}
-          placeholder="**************"
-          style={{ borderColor: confpassError ? "red" : "" }}
-        />
-        <div className="error max-w-xs flex mx-auto sm:min-w-full  ">{confpassError}</div>
-        <button className="inscri cursor-pointer  max-w-xs mx-11   sm:min-w-full sm:mx-auto  bg-blue-700" onClick={handleSubmit}>
-          s'inscrire
+          acitver
         </button>
 
         <div className="connecter justify-center">
-          Vous possédez déjà un compte?{" "}
+          Vous avez déjà activer votre compte?{" "}
           <Link to="/">
             {" "}
             <span>Se connecter</span>{" "}

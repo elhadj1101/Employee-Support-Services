@@ -1,5 +1,5 @@
 import { DatePickerDemo } from "components/ui/DatePiker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Select,
@@ -9,13 +9,21 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import useStore from "../../store/index.js";
-import { createUser } from "api/auth";
+import { createUser, getUsers } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
 
 export default function AddUser() {
-  const { AddUserData, setAddUserData } = useStore();
+  const { AddUserData, setAddUserData , setAdminUsers } = useStore();
   const [newErrors, setNewErrors] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem('formCleared') !== 'true') {
+      localStorage.setItem('formCleared', 'true');
+      window.location.reload();
+    }
+  }, []);
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     let formattedValue = '';
@@ -88,9 +96,6 @@ export default function AddUser() {
     const prev = { ...AddUserData, [name]: formattedValue };
     setAddUserData(prev);
   };
-  
-  
-
   const handleSubmit = async (e, formData) => {
     e.preventDefault();
 
@@ -99,7 +104,7 @@ export default function AddUser() {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (newErrors.email) delete newErrors.email;
-    if (!formData.email.trim() || !emailRegex.test(formData.email)) {
+    if (!formData.email.replace(/ /g, '')|| !emailRegex.test(formData.email)) {
       newErrors.email = "Veuillez saisir une adresse e-mail valide.";
     }
 
@@ -107,45 +112,43 @@ export default function AddUser() {
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
     if (newErrors.password) delete newErrors.password;
 
-    if (!formData.password.trim() || !passwordRegex.test(formData.password)) {
+    if (!formData.password.replace(/ /g, '')|| !passwordRegex.test(formData.password.replace(/ /g, ''))) {
       newErrors.password =
         "Le mot de passe doit comporter au moins 8 caractères et contenir au moins une lettre majuscule, une lettre minuscule et un chiffre.";
     }
     if (newErrors.bank_rib) delete newErrors.bank_rib;
 
     // Validate RIB length
+    console.log('ribbbb' , formData.bank_rib.replace(/ /g, ''));
     if (
-      (formData.bank_rib.trim() && formData.bank_rib.trim().length !== 20) ||
-      isNaN(Number(formData.bank_rib))
+      (formData.bank_rib.replace(/ /g, '')&& formData.bank_rib.replace(/ /g, '').length !== 20)
     ) {
       newErrors.bank_rib = "Le RIB doit comporter exactement 20 chiffres.";
     }
     if (newErrors.phone_number) delete newErrors.phone_number;
+    console.log('phone' , formData.phone_number.replace(/ /g, ''));
 
     // Validate phone number length
     if (
-      !formData.phone_number.trim() ||
-      formData.phone_number.trim().length !== 10 ||
-      isNaN(Number(formData.phone_number))
-    ) {
+      !formData.phone_number.replace(/ /g, '') ||
+      formData.phone_number.replace(/ /g, '').length !== 10) {
       newErrors.phone_number =
         "Le numéro de téléphone doit comporter exactement 10 chiffres.";
     }
     if (newErrors.rip) delete newErrors.rip;
+    console.log('ripp' , formData.rip.replace(/ /g, ''));
 
     // Validate RIP length
     if (
-      !formData.rip.trim() ||
-      formData.rip.trim().length +"00799999".length !== 20 ||
-      isNaN(Number(formData.rip))
-    ) {
+      !formData.rip.replace(/ /g, '')||
+      formData.rip.replace(/ /g, '').length +"00799999".length !== 20 ) {
       newErrors.rip = "Le RIP doit comporter exactement 20 chiffres.";
     }
 
     if (newErrors.id_number) delete newErrors.id_number;
 
     // Validate ID number length
-    if (!formData.id_number.trim() || formData.id_number.trim().length !== 18) {
+    if (!formData.id_number.replace(/ /g, '')|| formData.id_number.replace(/ /g, '').length !== 18) {
       newErrors.id_number =
         "Le numéro d'identification doit comporter exactement 18 caractères.";
     }
@@ -161,9 +164,13 @@ export default function AddUser() {
       setNewErrors(newErrors);
       return;
     }
-    setAddUserData({ ...formData, rip: '00799999' + formData.rip });
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] && key !== "is_active") {
+        formData[key] = formData[key].replace(/ /g, '')
+      }
+    });
     try {
-      const newUser = await createUser(AddUserData);
+      const newUser = await createUser({ ...AddUserData, rip: '00799999' + AddUserData.rip.replace(/ /g, '') , salary: AddUserData.salary.replace(/,/g, '') });
       if (newUser.status === 201) {
         toast.success("Utilisateur créé avec succès");
         Object.keys(localStorage).forEach((key) => {
@@ -171,7 +178,19 @@ export default function AddUser() {
             localStorage.removeItem(key);
           }
         });
-        navigate("/utilisateurs");
+        localStorage.setItem('formCleared', 'true');
+
+        try{
+          const updatedUsers = await getUsers();
+          console.log('u', updatedUsers);
+         if(updatedUsers){
+          setAdminUsers(updatedUsers);
+          navigate("/utilisateurs");
+         }
+        }catch(err){
+          console.log(err);
+        }
+
       }
     } catch (error) {
       console.log("errror", error);
@@ -185,6 +204,9 @@ export default function AddUser() {
       }
     }
   };
+
+
+
   return (
     <div className="w-full flex-grow flex flex-col  bg-lightgray">
       <div className="px-6 pb-4 flex flex-col flex-grow relative ">
