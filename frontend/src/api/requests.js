@@ -191,4 +191,22 @@ const getAllLoans = async () => {
 
 };
 }
-export { getLoans , getAids, financial_aid_infos, statusColorMap, getAllAids, getAllLoans};
+
+const canApplyForLoan = async () => {
+  try {
+    const response = await Axios.get('/requests/loans/check/');
+    return response.data;
+  } catch (error) {
+    if (error.response){
+      toast.error(error.response.data?.detail);
+      console.log(error.response);
+      return "False";
+    }else{
+      console.log(error)
+    toast.error("Une erreur s'est produite lors de la connexion.");
+    return "False";
+    }
+
+};
+}
+export { getLoans , getAids, financial_aid_infos, statusColorMap, getAllAids, getAllLoans, canApplyForLoan};

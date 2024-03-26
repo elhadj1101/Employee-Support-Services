@@ -61,14 +61,14 @@ class SignupView(APIView):
             #     return Response([{"password":"Passwords do not match"}], status=status.HTTP_400_BAD_REQUEST)
             user = user.first()
             if user.is_active:
-                return Response([{"email":"User is already active"}], status=status.HTTP_400_BAD_REQUEST)
+                return Response([{"email":"User is already active."}], status=status.HTTP_400_BAD_REQUEST)
             # user.set_password(password)
             is_same = check_password(password, user.password)
             if not(is_same):
-                return Response([{"password":"Passwords do not match"}], status=status.HTTP_400_BAD_REQUEST)
+                return Response([{"password":"The provided password is wrong."}], status=status.HTTP_400_BAD_REQUEST)
             user.is_active = True
             user.save()
-            return Response([{"success":"User activated successfuly"}], status=status.HTTP_200_OK)
+            return Response([{"success":"User activated successfuly."}], status=status.HTTP_200_OK)
             
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
