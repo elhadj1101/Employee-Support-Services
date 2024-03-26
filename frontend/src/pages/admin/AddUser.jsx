@@ -18,12 +18,78 @@ export default function AddUser() {
   const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
-    sessionStorage.setItem(`form/${name}`, value);
-    const prev = { ...AddUserData, [name]: value };
+    let formattedValue = '';
+  
+    switch (name) {
+      case "last_name":
+        formattedValue = value.replace(/[^a-zA-Z ]/g, '');
+        break;
+      case "first_name":
+        formattedValue = value.replace(/[^a-zA-Z ]/g, '');
+        break;
+      case "id_number":
+        formattedValue = value.replace(/[^0-9]/, '');
+        formattedValue = formattedValue.replace(/(\d{2})(?=\d)/g, "$1 ");
+
+        break;
+      case "salary":
+        formattedValue = value.replace(/[^0-9]/, '');
+        formattedValue = formattedValue.replace(/(\d{3})(?=\d)/g, "$1,");
+
+
+        break;
+      case "bank_rib":
+        formattedValue = value.replace(/[^0-9]/, '');
+        formattedValue = formattedValue.replace(/(\d{4})(?=\d)/g, "$1 ");
+        break;
+        case "rip":
+          formattedValue = value.replace(/[^0-9]/g, '');
+          formattedValue = formattedValue.replace(/(\d{10})/, "$1 ");
+          break;
+        
+          case "phone_number":
+            // Remove all non-digit characters from the input value
+            const digitsOnly = value.replace(/[^0-9]/g, '');
+
+            // Check if the first digit is 0
+            const firstDigit = digitsOnly.charAt(0);
+            if (firstDigit === '0') {
+                if (digitsOnly.length === 1) {
+                    // If only one digit is entered and it's 0, keep it
+                    formattedValue = digitsOnly.charAt(0);
+                } else if (digitsOnly.length >= 2) {
+                    // If more than one digit is entered, check the second digit
+                    const secondDigit = digitsOnly.charAt(1);
+                    if (['5', '6', '7'].includes(secondDigit)) {
+                        // If the second digit is 5, 6, or 7, format the phone number
+                        if (digitsOnly.length <= 2) {
+                            formattedValue = digitsOnly;
+                        } else if (digitsOnly.length <= 6) {
+                            formattedValue = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(2)}`;
+                        } else {
+                            formattedValue = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(2, 6)} ${digitsOnly.slice(6, 10)}`;
+                        }
+                    } else {
+                        // If the second digit is not 5, 6, or 7, reset the value
+                        formattedValue = digitsOnly.charAt(0);
+                      }
+                }
+            } else {
+                // If the first digit is not 0, reset the value
+                formattedValue = '';
+            }
+            break;
+      default:
+        formattedValue = value;
+        break;
+    }
+  
+    localStorage.setItem(`form/${name}`, formattedValue);
+    const prev = { ...AddUserData, [name]: formattedValue };
     setAddUserData(prev);
-    console.log(sessionStorage);
   };
+  
+  
 
   const handleSubmit = async (e, formData) => {
     e.preventDefault();
@@ -70,7 +136,7 @@ export default function AddUser() {
     // Validate RIP length
     if (
       !formData.rip.trim() ||
-      formData.rip.trim().length !== 20 ||
+      formData.rip.trim().length +"00799999".length !== 20 ||
       isNaN(Number(formData.rip))
     ) {
       newErrors.rip = "Le RIP doit comporter exactement 20 chiffres.";
@@ -95,17 +161,17 @@ export default function AddUser() {
       setNewErrors(newErrors);
       return;
     }
-
+    setAddUserData({ ...formData, rip: '00799999' + formData.rip });
     try {
       const newUser = await createUser(AddUserData);
       if (newUser.status === 201) {
         toast.success("Utilisateur créé avec succès");
-        Object.keys(sessionStorage).forEach((key) => {
+        Object.keys(localStorage).forEach((key) => {
           if (key.startsWith("form/")) {
-            sessionStorage.removeItem(key);
+            localStorage.removeItem(key);
           }
         });
-        navigate('/utilisateurs')
+        navigate("/utilisateurs");
       }
     } catch (error) {
       console.log("errror", error);
@@ -116,7 +182,7 @@ export default function AddUser() {
             break;
           }
         }
-      } 
+      }
     }
   };
   return (
@@ -137,9 +203,9 @@ export default function AddUser() {
             </div>
             <div
               onClick={() => {
-                Object.keys(sessionStorage).forEach((key) => {
+                Object.keys(localStorage).forEach((key) => {
                   if (key.startsWith("form/")) {
-                    sessionStorage.removeItem(key);
+                    localStorage.removeItem(key);
                   }
                 });
               }}
@@ -209,12 +275,15 @@ export default function AddUser() {
                   N° Pièce d'identification
                   <span style={{ color: "red" }}> * </span>
                 </label>
+                
                 <input
                   id="id_number"
                   name="id_number"
                   type="text"
-                  placeholder="N° Pièce d'identification"
-                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  placeholder="XX XX XX XX XX XX XX XX XX"
+                  maxLength={26}
+
+                  className=" relative w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.id_number}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -223,6 +292,8 @@ export default function AddUser() {
                       : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
+              
+
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.id_number}
                 </p>
@@ -235,7 +306,7 @@ export default function AddUser() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Adresse e-mail"
+                  placeholder="example@gmail.com"
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.email}
                   onChange={(e) => handleChange(e)}
@@ -256,8 +327,9 @@ export default function AddUser() {
                 <input
                   id="phone_number"
                   name="phone_number"
-                  type="tel"
-                  placeholder="Téléphone"
+                  type="text"
+                  placeholder="0X XXXX XXXX"
+                  maxLength={12}
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.phone_number}
                   onChange={(e) => handleChange(e)}
@@ -301,7 +373,7 @@ export default function AddUser() {
                 <Select
                   name="role"
                   onValueChange={(value) => {
-                    sessionStorage.setItem(`form/role`, value);
+                    localStorage.setItem(`form/role`, value);
 
                     const prev = { ...AddUserData, ["role"]: value };
                     setAddUserData(prev);
@@ -379,9 +451,8 @@ export default function AddUser() {
                 <input
                   id="salary"
                   name="salary"
-                  type="number"
-                  placeholder="Salaire"
-                  min="0"
+                  type="text"
+                  placeholder="XXXXXX"
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.salary}
                   onChange={(e) => handleChange(e)}
@@ -399,12 +470,14 @@ export default function AddUser() {
                 <label htmlFor="rip">
                   CCP Rip<span style={{ color: "red" }}> * </span>
                 </label>
+                <div className="relative">
                 <input
                   id="rip"
                   name="rip"
                   type="text"
-                  placeholder="CCP Rip"
-                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                  maxLength={13}
+                  placeholder="XXXXXXXXXX XX"
+                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base pl-20"
                   value={AddUserData.rip}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -413,6 +486,8 @@ export default function AddUser() {
                       : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
+                <p className={`pl-2 absolute top-1/2 left-0 -translate-y-1/2  ${AddUserData?.rip.length !== 0 ?'':'text-gray-500'} `}>00799999</p>
+                </div>
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.rip}
                 </p>
@@ -423,7 +498,8 @@ export default function AddUser() {
                   id="bank_rib"
                   name="bank_rib"
                   type="text"
-                  placeholder="RIB Bancaire"
+                  placeholder="XXXX XXXX XXXX XXXX"
+                  maxLength={24}
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.bank_rib}
                   onChange={(e) => handleChange(e)}
@@ -449,7 +525,7 @@ export default function AddUser() {
                   value={AddUserData.sexe}
                   name="sexe"
                   onValueChange={(value) => {
-                    sessionStorage.setItem(`form/sexe`, value);
+                    localStorage.setItem(`form/sexe`, value);
 
                     const prev = { ...AddUserData, ["sexe"]: value };
                     setAddUserData(prev);
@@ -474,7 +550,7 @@ export default function AddUser() {
                 <Select
                   value={AddUserData.martial_situation}
                   onValueChange={(value) => {
-                    sessionStorage.setItem(`form/martial_situation`, value);
+                    localStorage.setItem(`form/martial_situation`, value);
                     const prev = {
                       ...AddUserData,
                       ["martial_situation"]: value,
@@ -552,9 +628,9 @@ export default function AddUser() {
               </div>
               <div
                 onClick={() => {
-                  Object.keys(sessionStorage).forEach((key) => {
+                  Object.keys(localStorage).forEach((key) => {
                     if (key.startsWith("form/")) {
-                      sessionStorage.removeItem(key);
+                      localStorage.removeItem(key);
                     }
                   });
                 }}

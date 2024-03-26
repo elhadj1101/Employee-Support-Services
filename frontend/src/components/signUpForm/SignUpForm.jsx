@@ -48,11 +48,14 @@ const navigate = useNavigate();
       setPassError("Password is required.");
       correct = false;
 
-    } else if (pass.length < 8) {
+    } else 
+    
+    if (pass.length < 8) {
       setPassError("Password must be at least 8 characters long.");
       correct = false;
 
-    } else {
+    } else 
+    {
       setPassError("");
     }
 
@@ -74,8 +77,8 @@ const navigate = useNavigate();
     // If all validations pass, submit the form
     try {
       const response = await signUp(email, pass);
-
-      if (response.success) {
+      console.log('signup' ,response);
+      if (response ==='success') {
         navigate('/login')
       }
     }catch (error) {

@@ -100,7 +100,7 @@ function Dashboard() {
         <Sidebar />
       </div>
       <div className=" lg:ml-[250px] flex flex-col h-screen   ">
-        <div className="  flex items-center cursor-pointer ml-3    ">
+        <div className=" flex items-center cursor-pointer ml-3    ">
           <img
             className=" h-7 w-7 lg:hidden  "
             src="/icons/menu.png"

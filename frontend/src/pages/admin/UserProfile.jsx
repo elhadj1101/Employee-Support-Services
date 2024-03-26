@@ -9,9 +9,10 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import useStore from "../../store/index.js";
-import {  getUser  , updateUser} from "api/auth";
+import { getUser, updateUser } from "api/auth";
 export default function UserProfile() {
-  const { UserProfileData, setProfileUserData ,AddUserData, profileRequsted } = useStore();
+  const { UserProfileData, setProfileUserData, AddUserData, profileRequsted } =
+    useStore();
   const [newErrors, setNewErrors] = useState({});
   const [readOnly, setReadOnly] = useState(true);
 
@@ -20,9 +21,49 @@ export default function UserProfile() {
       try {
         if (profileRequsted && profileRequsted !== "[object Object]") {
           const response = await getUser(profileRequsted);
-          console.log('profile data' , response);
-          setProfileUserData(response)
-          console.log(UserProfileData);
+          Object.entries(response).forEach(([key, value], index) => {
+            switch (key) {
+              case "id_number":
+                response[key] = value.replace(/(\d{2})(?=\d)/g, "$1 ");
+                break;
+
+              case "salary":
+                response[key] = value.replace(/(\d{3})(?=\d)/g, "$1,");
+                break;
+              case "bank_rib":
+                response[key] = value.replace(/(\d{4})(?=\d)/g, "$1 ");
+                break;
+              case "rip":
+                response[key] = value.replace(/(\d{10})/, "$1 ");
+                break;
+
+              case "phone_number":
+                // Remove all non-digit characters from the input value
+                const digitsOnly = value;
+
+                // Check if the first digit is 0
+
+                if (digitsOnly.length <= 2) {
+                  response[key] = digitsOnly;
+                } else if (digitsOnly.length <= 6) {
+                  response[key] = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(
+                    2
+                  )}`;
+                } else {
+                  response[key] = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(
+                    2,
+                    6
+                  )} ${digitsOnly.slice(6, 10)}`;
+                }
+
+                break;
+              default:
+                response[key] = value;
+                break;
+            }
+          });
+          console.log('ressssssssssss',response);
+          setProfileUserData(response);
         } else {
           console.log(localStorage.getItem("profileRequsted"));
           console.log("no profile to fetch");
@@ -42,13 +83,85 @@ export default function UserProfile() {
     fetchData();
   }, []);
 
+  useEffect(()=>{
+    console.log('profileeeeeeeeeeeeeeeeeeee',UserProfileData);
+
+  }, [UserProfileData])
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
-    sessionStorage.setItem(`profile/${name}`, value);
-    const prev = { ...UserProfileData, [name]: value };
+    let formattedValue = "";
+
+    switch (name) {
+      case "last_name":
+        formattedValue = value.replace(/[^a-zA-Z ]/g, "");
+        break;
+      case "first_name":
+        formattedValue = value.replace(/[^a-zA-Z ]/g, "");
+        break;
+      case "id_number":
+        formattedValue = value.replace(/[^0-9]/, "");
+        formattedValue = formattedValue.replace(/(\d{2})(?=\d)/, "$1 ");
+
+        break;
+      case "salary":
+        formattedValue = value.replace(/[^0-9]/, "");
+        formattedValue = formattedValue.replace(/(\d{3})(?=\d)/, "$1,");
+
+        break;
+      case "bank_rib":
+        formattedValue = value.replace(/[^0-9]/, "");
+        formattedValue = formattedValue.replace(/(\d{4})(?=\d)/g, "$1 ");
+        break;
+      case "rip":
+        formattedValue = value.replace(/[^0-9]/, "");
+        formattedValue = formattedValue.replace(/(\d{10})/, "$1 ");
+        break;
+
+      case "phone_number":
+        // Remove all non-digit characters from the input value
+        const digitsOnly = value.replace(/[^0-9]/g, "");
+
+        // Check if the first digit is 0
+        const firstDigit = digitsOnly.charAt(0);
+        if (firstDigit === "0") {
+          if (digitsOnly.length === 1) {
+            // If only one digit is entered and it's 0, keep it
+            formattedValue = digitsOnly.charAt(0);
+          } else if (digitsOnly.length >= 2) {
+            // If more than one digit is entered, check the second digit
+            const secondDigit = digitsOnly.charAt(1);
+            if (["5", "6", "7"].includes(secondDigit)) {
+              // If the second digit is 5, 6, or 7, format the phone number
+              if (digitsOnly.length <= 2) {
+                formattedValue = digitsOnly;
+              } else if (digitsOnly.length <= 6) {
+                formattedValue = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(
+                  2
+                )}`;
+              } else {
+                formattedValue = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(
+                  2,
+                  6
+                )} ${digitsOnly.slice(6, 10)}`;
+              }
+            } else {
+              // If the second digit is not 5, 6, or 7, reset the value
+              formattedValue = digitsOnly.charAt(0);
+            }
+          }
+        } else {
+          // If the first digit is not 0, reset the value
+          formattedValue = "";
+        }
+        break;
+      default:
+        formattedValue = value;
+        break;
+    }
+    console.log(name , value);
+    localStorage.setItem(`profile/${name}`, formattedValue);
+    const prev = { ...UserProfileData, [name]: formattedValue };
     setProfileUserData(prev);
-    console.log(sessionStorage);
   };
   const handleEdit = () => {
     setReadOnly(false);
@@ -90,7 +203,7 @@ export default function UserProfile() {
     // Validate RIP length
     if (
       !formData.rip.trim() ||
-      formData.rip.trim().length !== 20 ||
+      formData.rip.trim().length + "00799999".length !== 20 ||
       isNaN(Number(formData.rip))
     ) {
       newErrors.rip = "Le RIP doit comporter exactement 20 chiffres.";
@@ -106,7 +219,7 @@ export default function UserProfile() {
 
     Object.keys(formData).forEach((key) => {
       if (newErrors.key) delete newErrors.key;
-      if (!formData[key] && key !== "is_active" ) {
+      if (!formData[key] && key !== "is_active") {
         newErrors[key] = `${key} est requis.`;
       }
     });
@@ -115,8 +228,9 @@ export default function UserProfile() {
       setNewErrors(newErrors);
       return;
     }
+
     try {
-      const newUser = await updateUser(AddUserData, profileRequsted);
+      const newUser = await updateUser(UserProfileData, profileRequsted);
       if (newUser.status === 201) {
         toast.success("Utilisateur modifer avec succès");
       }
@@ -134,6 +248,7 @@ export default function UserProfile() {
       }
     }
   };
+
   return (
     <div className="w-full flex-grow flex flex-col  bg-lightgray">
       <div className="px-6 pb-4 flex flex-col flex-grow relative ">
@@ -172,7 +287,7 @@ export default function UserProfile() {
                   name="first_name"
                   type="text"
                   placeholder="Nom"
-                  className={`bg-transparent border-1 ${
+                  className={`w-full bg-transparent border-1 ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -197,7 +312,7 @@ export default function UserProfile() {
                   name="last_name"
                   type="text"
                   placeholder="Prénom"
-                  className={`bg-transparent border-1 ${
+                  className={` w-full bg-transparent border-1 ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -222,8 +337,9 @@ export default function UserProfile() {
                   id="id_number"
                   name="id_number"
                   type="text"
-                  placeholder="N° Pièce d'identification"
-                  className={`bg-transparent border-1 ${
+                  placeholder="XX XX XX XX XX XX XX XX XX"
+                  maxLength={26}
+                  className={` w-full bg-transparent border-1 ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -247,8 +363,8 @@ export default function UserProfile() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Adresse e-mail"
-                  className={`bg-transparent border-1 ${
+                  placeholder="example@gmail.com"
+                  className={`w-full bg-transparent border-1 ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -271,9 +387,10 @@ export default function UserProfile() {
                 <input
                   id="phone_number"
                   name="phone_number"
-                  type="tel"
-                  placeholder="Téléphone"
-                  className={`bg-transparent border-1 ${
+                  type="text"
+                  placeholder="0X XXXX XXXX"
+                  maxLength={12}
+                  className={`w-full bg-transparent border-1 ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -289,58 +406,38 @@ export default function UserProfile() {
                   {newErrors?.phone_number}
                 </p>
               </div>
-              {/* <div className="flex flex-col gap-1">
-                <label htmlFor="password">
-                  Mot de passe <span style={{ color: "red" }}> * </span>
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="text"
-                  placeholder="mot de passe"
-                  className={`bg-transparent border-1 ${
-                    readOnly ? "border-none" : "border-gray-200"
-                  } outline-none h-12 rounded-lg px-4 text-base`}
-                  readOnly={readOnly}
-                  value={UserProfileData.password}
-                  onChange={(e) => handleChange(e)}
-                  style={{
-                    borderColor: newErrors?.password
-                      ? "red"
-                      : " rgb(229 231 235 / var(--tw-border-opacity))",
-                  }}
-                />
-                <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
-                  {newErrors?.password}
-                </p>
-              </div> */}
               <div className="flex flex-col gap-1">
                 <label htmlFor="role">
                   Role<span style={{ color: "red" }}> * </span>
                 </label>
 
-                {readOnly ? <input
-                  placeholder="Role"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
-                  readOnly={readOnly}
-                  value={UserProfileData.role}
-
-                  
-                /> : <Select
-                  name="role"
-                  onValueChange={(value) => {
-                    sessionStorage.setItem(`profile/role`, value);
-
-                    const prev = { ...UserProfileData, ["role"]: value };
-                    setProfileUserData(prev);
-                  }}
-                  value={UserProfileData.role}
-                >
-                  <SelectTrigger
-                    className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                {readOnly ? (
+                  <input
+                    placeholder="Role"
+                    className={`w-full bg-transparent border-1 ${
+                      readOnly ? "border-none" : "border-gray-200"
+                    } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
-                    value={AddUserData.role}
+                    value={UserProfileData.role}
+                  />
+                ) : (
+                  <Select
+                    name="role"
+                    onValueChange={(value) => {
+                      localStorage.setItem(`profile/role`, value);
+
+                      const prev = { ...UserProfileData, ["role"]: value };
+                      setProfileUserData(prev);
+                    }}
+                    value={UserProfileData.role}
                   >
+                    <SelectTrigger
+                      className={`w-full bg-transparent border-1 ${
+                        readOnly ? "border-none" : "border-gray-200"
+                      } outline-none h-12 rounded-lg px-4 text-base`}
+                      readOnly={readOnly}
+                      value={UserProfileData.role}
+                    >
                       <SelectValue placeholder="Choisir un rôle" />
                     </SelectTrigger>
                     <SelectContent>
@@ -357,49 +454,11 @@ export default function UserProfile() {
                       <SelectItem value="employe">Employé(e)</SelectItem>
                     </SelectContent>
                   </Select>
-                }
+                )}
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.role}
                 </p>
               </div>
-              {/* <div className="flex flex-col gap-1"> 
-                <label htmlFor="upload" className="mb-2">
-                  Photo de l'utilisateur
-                  <span style={{ color: "red" }}> * </span>
-                </label>
-                <div className="flex items-center justify-center w-full">
-                  <label
-                    htmlFor="dropzone-file"
-                    className="flex flex-col items-center justify-center w-full mx-auto h-56 border-1 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
-                  >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg
-                        className="w-8 h-8 mb-4 text-gray-500"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                        />
-                      </svg>
-                      <p className="mb-2 text-sm  text-gray-500">
-                        <span className="font-semibold">Click to upload</span>{" "}
-                        or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        SVG, PNG or JPG (MAX. 800x400px)
-                      </p>
-                    </div>
-                    <input id="dropzone-file" type="file" className="hidden" />
-                  </label>
-                </div>
-              </div> */}
             </div>
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold py-2 mb-2 mt-4 border-l-4 border-light-blue px-3 bg-[#e2e8ff] text-light-blue text-lg  ">
@@ -412,10 +471,10 @@ export default function UserProfile() {
                 <input
                   id="salary"
                   name="salary"
-                  type="number"
-                  placeholder="Salaire"
+                  type="text"
+                  placeholder="XXXXXX"
                   min="0"
-                  className={`bg-transparent border-1 ${
+                  className={`w-full bg-transparent border-1 ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -435,23 +494,33 @@ export default function UserProfile() {
                 <label htmlFor="rip">
                   CCP Rip<span style={{ color: "red" }}> * </span>
                 </label>
-                <input
-                  id="rip"
-                  name="rip"
-                  type="text"
-                  placeholder="CCP Rip"
-                  className={`bg-transparent border-1 ${
-                    readOnly ? "border-none" : "border-gray-200"
-                  } outline-none h-12 rounded-lg px-4 text-base`}
-                  readOnly={readOnly}
-                  value={UserProfileData.rip}
-                  onChange={(e) => handleChange(e)}
-                  style={{
-                    borderColor: newErrors?.rip
-                      ? "red"
-                      : " rgb(229 231 235 / var(--tw-border-opacity))",
-                  }}
-                />
+                <div className="relative">
+                  <input
+                    id="rip"
+                    name="rip"
+                    type="text"
+                    maxLength={13}
+                    placeholder="XXXXXXXXXX XX"
+                    className={` pl-20 w-full bg-transparent border-1 ${
+                      readOnly ? "border-none" : "border-gray-200"
+                    } outline-none h-12 rounded-lg px-4 text-base`}
+                    readOnly={readOnly}
+                    value={UserProfileData.rip}
+                    onChange={(e) => handleChange(e)}
+                    style={{
+                      borderColor: newErrors?.rip
+                        ? "red"
+                        : " rgb(229 231 235 / var(--tw-border-opacity))",
+                    }}
+                  />
+                  <p
+                    className={`pl-2 absolute top-1/2 left-0 -translate-y-1/2  ${
+                      AddUserData?.rip.length !== 0 ? "" : "text-gray-500"
+                    } `}
+                  >
+                    00799999
+                  </p>
+                </div>
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.rip}
                 </p>
@@ -462,8 +531,9 @@ export default function UserProfile() {
                   id="bank_rib"
                   name="bank_rib"
                   type="text"
-                  placeholder="RIB Bancaire"
-                  className={`bg-transparent border-1 ${
+                  placeholder="XXXX XXXX XXXX XXXX"
+                  maxLength={24}
+                  className={`w-full bg-transparent border-1 ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -487,28 +557,31 @@ export default function UserProfile() {
                 <label htmlFor="sexe">
                   Sexe<span style={{ color: "red" }}> * </span>
                 </label>
-                {readOnly ? <input
-                  placeholder="Sexe"
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
-                  readOnly={readOnly}
-                  value={UserProfileData.sexe}
+                {readOnly ? (
+                  <input
+                    placeholder="Sexe"
+                    className={`w-full bg-transparent border-1 ${
+                      readOnly ? "border-none" : "border-gray-200"
+                    } outline-none h-12 rounded-lg px-4 text-base`}
+                    readOnly={readOnly}
+                    value={UserProfileData.sexe}
+                  />
+                ) : (
+                  <Select
+                    value={UserProfileData.sexe}
+                    name="sexe"
+                    onValueChange={(value) => {
+                      localStorage.setItem(`profile/sexe`, value);
 
-                  
-                /> :    <Select
-                  value={UserProfileData.sexe}
-                  name="sexe"
-                  onValueChange={(value) => {
-                    sessionStorage.setItem(`profile/sexe`, value);
-
-                    const prev = { ...UserProfileData, ["sexe"]: value };
-                    setProfileUserData(prev);
-                  }}
-                >
-                  <SelectTrigger
-                    className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
-                
+                      const prev = { ...UserProfileData, ["sexe"]: value };
+                      setProfileUserData(prev);
+                    }}
                   >
-                   
+                    <SelectTrigger
+                      className={`w-full bg-transparent border-1 ${
+                        readOnly ? "border-none" : "border-gray-200"
+                      } outline-none h-12 rounded-lg px-4 text-base`}
+                    >
                       <SelectValue placeholder="Choisir le sexe" />
                     </SelectTrigger>
                     <SelectContent>
@@ -516,7 +589,7 @@ export default function UserProfile() {
                       <SelectItem value="femme">Femme</SelectItem>
                     </SelectContent>
                   </Select>
-                }
+                )}
 
                 <p className="text-red-500 text-[11px] font-light mb-1 h-3">
                   {newErrors?.sexe}
@@ -526,31 +599,34 @@ export default function UserProfile() {
                 <label htmlFor="martial_situation">
                   Situation Familiale<span style={{ color: "red" }}> * </span>
                 </label>
-                {readOnly ? <input
-                  placeholder="situation ..."
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
-                  readOnly={readOnly}
-                  value={UserProfileData.martial_situation}
-
-                  
-                /> :
-                <Select
-                  value={UserProfileData.martial_situation}
-                  onValueChange={(value) => {
-                    sessionStorage.setItem(`profile/martial_situation`, value);
-                    const prev = {
-                      ...UserProfileData,
-                      ["martial_situation"]: value,
-                    };
-                    setProfileUserData(prev);
-                  }}
-                >
-                  <SelectTrigger
-                    className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
+                {readOnly ? (
+                  <input
+                    placeholder="situation ..."
+                    className={`w-full bg-transparent border-1 ${
+                      readOnly ? "border-none" : "border-gray-200"
+                    } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
-                    value={AddUserData.martial_situation}
+                    value={UserProfileData.martial_situation}
+                  />
+                ) : (
+                  <Select
+                    value={UserProfileData.martial_situation}
+                    onValueChange={(value) => {
+                      localStorage.setItem(`profile/martial_situation`, value);
+                      const prev = {
+                        ...UserProfileData,
+                        ["martial_situation"]: value,
+                      };
+                      setProfileUserData(prev);
+                    }}
                   >
-              
+                    <SelectTrigger
+                      className={`w-full bg-transparent border-1 ${
+                        readOnly ? "border-none" : "border-gray-200"
+                      } outline-none h-12 rounded-lg px-4 text-base`}
+                      readOnly={readOnly}
+                      value={UserProfileData.martial_situation}
+                    >
                       <SelectValue placeholder="Choisir la situation familiale" />
                     </SelectTrigger>
                     <SelectContent>
@@ -560,7 +636,7 @@ export default function UserProfile() {
                       <SelectItem value="veuf">Veuf(ve)</SelectItem>
                     </SelectContent>
                   </Select>
-                }
+                )}
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.martial_situation}
                 </p>
@@ -574,7 +650,7 @@ export default function UserProfile() {
                   name="birth_adress"
                   type="text"
                   placeholder="Lieu de naissance"
-                  className={`bg-transparent border-1 ${
+                  className={`w-full bg-transparent border-1 ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -603,19 +679,22 @@ export default function UserProfile() {
                   </span>
                 </label>
                 {/* Replace DatePickerDemo with your actual component */}
-                {readOnly ? <input
-                  placeholder="date"
-                  value={UserProfileData.birth_date}
-
-                  className={`bg-transparent border-1 ${readOnly ? 'border-none' : "border-gray-200"} outline-none h-12 rounded-lg px-4 text-base`}
-                  readOnly={readOnly}
-                  
-                /> :
-                <DatePickerDemo
-                  id="dateNaissance"
-                  name="dateNaissance"
-                  value={UserProfileData.birth_date}
-                />}
+                {readOnly ? (
+                  <input
+                    placeholder="date"
+                    value={UserProfileData.birth_date}
+                    className={`w-full bg-transparent border-1 ${
+                      readOnly ? "border-none" : "border-gray-200"
+                    } outline-none h-12 rounded-lg px-4 text-base`}
+                    readOnly={readOnly}
+                  />
+                ) : (
+                  <DatePickerDemo
+                    id="dateNaissance"
+                    name="dateNaissance"
+                    value={UserProfileData.birth_date}
+                  />
+                )}
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
                   {newErrors?.birth_date}
                 </p>
@@ -633,9 +712,9 @@ export default function UserProfile() {
               </div>
               {/* <div
                 onClick={() => {
-                  Object.keys(sessionStorage).forEach((key) => {
+                  Object.keys(localStorage).forEach((key) => {
                     if (key.startsWith("profile/")) {
-                      sessionStorage.removeItem(key);
+                      localStorage.removeItem(key);
                     }
                   });
                   window.location.reload();

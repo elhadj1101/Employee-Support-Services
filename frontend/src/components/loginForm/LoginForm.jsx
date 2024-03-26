@@ -41,6 +41,7 @@ const LoginForm = () => {
       const response = await login(email, pass);
       if (response) {
         toast.success("login success");
+        
         localStorage.setItem("access_token", response.access);
         localStorage.setItem("refresh_token", response.refresh);
         Axios.defaults.headers["Authorization"] =
