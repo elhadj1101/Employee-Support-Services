@@ -23,6 +23,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['id_number'] = user.id_number
         token['salary'] = user.salary
         token['email'] = user.email
+        token['retired'] = user.retired
+        token['recruted_at'] = user.recruted_at.strftime("%d-%m-%Y")
+        token['retired_at'] = user.retired_at.strftime("%d-%m-%Y") if user.retired_at else ""
         return token
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -32,7 +35,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'id','email','password','first_name','last_name',
             'birth_date','birth_adress','salary','martial_situation',
             'sexe','rip','bank_rib','id_number',
-            'role','phone_number','is_active','is_superuser'
+            'role','phone_number','is_active','is_superuser','retired','recruted_at',"retired_at"
         ]
         extra_kwargs = {'password': {'write_only': True}}
     def validate(self, attrs):
@@ -72,6 +75,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"id_number":"Id number must be 18 digits"})
         if not(is_digits(data.get('salary',None))):
                 raise serializers.ValidationError({"salary":"Salary must contain only digits"})
+        if (data.get('retired',False) and data.get('retired_at',None) is None):
+            raise serializers.ValidationError({"retired_at":"Retired_at must be provided"})
         return data
     
     def create(self, validated_data):
@@ -90,7 +95,7 @@ class EmployeeDetailsSerializer(serializers.ModelSerializer):
             'id','email','first_name','last_name',
             'birth_date','birth_adress','salary','martial_situation',
             'sexe','rip','bank_rib','id_number',
-            'role','phone_number','is_active','is_superuser'
+            'role','phone_number','is_active','is_superuser','retired','recruted_at',"retired_at"
         ]
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -125,6 +130,8 @@ class EmployeeDetailsSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"id_number":"Id number must be 18 digits"})
         if not(is_digits(data.get('salary',None))):
                 raise serializers.ValidationError({"salary":"Salary must contain only digits"})
+        if (data.get('retired',False) and data.get('retired_at',None) is None):
+            raise serializers.ValidationError({"retired_at":"Retired_at must be provided"})
         return data
 
 

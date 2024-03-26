@@ -60,12 +60,14 @@ class LoanView(APIView):
 
 
 class LoanCheckView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request):
         loan = Loan.objects.filter(employee=request.user).last()
         if loan:
             if (loan.loan_status == "waiting") or (loan.loan_status == "approved"):
-                return Response("you can't apply", status=status.HTTP_400_BAD_REQUEST)
-        return Response("you can apply", status=status.HTTP_200_OK)
+                return Response("False", status=status.HTTP_400_BAD_REQUEST)
+        return Response("True", status=status.HTTP_200_OK)
 
 
 # This endpoint displays the loan history to see all the previous loans the employee has applied for.
