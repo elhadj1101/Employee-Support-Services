@@ -119,7 +119,7 @@ const LoginForm = () => {
           Vous n’avez pas de compte ?
           <span>
             {" "}
-            <Link to={"/signup"}>Créer un compte</Link>
+            <Link to={"/signup"}>activer votre compte</Link>
           </span>{" "}
         </div>
       </form>

@@ -96,7 +96,7 @@ const signUp = async (email, password) => {
   try {
     const response = await Axios.post(
       "/signup/",
-      JSON.stringify({ email, password, password2: password })
+      JSON.stringify({ email, password })
     );
     const data = response.data[0];
     toast.success(data["success"]);
