@@ -30,6 +30,7 @@ class FileSerializer(serializers.ModelSerializer):
 
 
 class FinancialaidSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Financial_aid   
         fields = [
@@ -40,6 +41,9 @@ class FinancialaidSerializer(serializers.ModelSerializer):
             "financial_aid_status",
             "request_response_at"
         ]
+        extra_kwargs = {
+            'financial_aid_status': {'read_only': True}
+        }
 
     def validate(self, attrs):
         data = super().validate(attrs)
