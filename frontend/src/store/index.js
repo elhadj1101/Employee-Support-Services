@@ -70,7 +70,9 @@ const useStore = create((set) => ({
   allLoans : [],
   setAllLoans : (newLoans) => set({allLoans : newLoans}),
   fetchedAllLoans: false,
-  setFetchedAllLoans: (newStat) => set({fetchedAllLoans : newStat})
+  setFetchedAllLoans: (newStat) => set({fetchedAllLoans : newStat}),
+  canApplyLoan: false,
+  setCanApplyLoan: (newStat) => set({canApplyLoan : newStat}),
 }));
 
 export default useStore;
