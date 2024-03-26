@@ -31,7 +31,6 @@ import useStore from "../../../store/index.js";
 
 export default function TestTable() {
   const { adminUsers } = useStore();
-console.log('ussers' , adminUsers);
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});

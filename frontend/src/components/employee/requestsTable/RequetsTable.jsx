@@ -27,12 +27,10 @@ import {
   TableRow,
 } from "components/ui/table";
 import { loanColumns } from "../Columns/loanColumns";
-import { aidsColumns } from "../Columns/aidsColumns";
-
-import useStore from "../../../store/index.js";
 
 export default function RequestsTable({
   showFilter = true,
+  filteredColumn= "id",
   columns = loanColumns,
   data = [],
 }) {
@@ -65,9 +63,9 @@ export default function RequestsTable({
         <div className="flex items-center py-4 ">
           <Input
             placeholder="Filtrer les IDs..."
-            value={table.getColumn("id")?.getFilterValue() ?? ""}
+            value={table.getColumn(filteredColumn)?.getFilterValue() ?? ""}
             onChange={(event) => {
-              table.getColumn("id")?.setFilterValue(event.target.value);
+              table.getColumn(filteredColumn)?.setFilterValue(event.target.value);
             }}
             className="max-w-[90%]"
           />

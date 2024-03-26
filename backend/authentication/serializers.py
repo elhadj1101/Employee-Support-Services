@@ -131,6 +131,6 @@ class EmployeeDetailsSerializer(serializers.ModelSerializer):
 class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField(required = True)
     password = serializers.CharField(required = True)
-    password2 = serializers.CharField(required = True)
+#     password2 = serializers.CharField(required = True)
     
 

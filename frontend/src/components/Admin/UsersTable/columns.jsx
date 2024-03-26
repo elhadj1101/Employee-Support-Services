@@ -181,7 +181,6 @@ export const columns = [
     accessorKey: "Statut ",
     header: <div className="text-center">Statut</div>,
     cell: ({ row }) => {
-      console.log("row", row);
       return (
         <div className="capitalize w-full flex justify-center">
           <div

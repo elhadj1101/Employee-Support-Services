@@ -33,7 +33,7 @@ class LoanView(APIView):
                 return Response(
                     "maximumn loan amount {} ".format(max),
                 )
-            isDraft = request.query_params.get("draft")
+            isDraft = request.query_params.get("draft",None)
             if isDraft == "true":
                 aid_status = "draft"
             elif isDraft == "false":

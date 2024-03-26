@@ -75,7 +75,6 @@ function Dashboard() {
     async function fetchAllLoans() {
       const dat = await getAllLoans();
       console.log("fetched All Loans");
-
       setAllLoans(dat);
       setFetchedAllLoans(true);
     }
