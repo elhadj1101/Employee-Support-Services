@@ -1,5 +1,4 @@
 import * as React from "react";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import {
@@ -10,16 +9,74 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-import { statusColorMap  } from "api/requests" ;
+import {  DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter,
+} from "../../ui/dialog";
+import { statusColorMap } from "api/requests";
 import { financial_aid_infos } from "api/requests";
 
+import { useNavigate } from "react-router-dom";
+import useStore from "../../../store/index";
+import { toast } from "sonner";
 
-let  typeLabelMap = {}
-financial_aid_infos.forEach(
-  (e) => {
-    typeLabelMap[e.name] = e.description ;
-  });
+let typeLabelMap = {};
+financial_aid_infos.forEach((e) => {
+  typeLabelMap[e.name] = e.description;
+});
+const DeleteButton = ({ id }) => {
+  const { setAdminUsers } = useStore();
 
+  const handleDeleteClick = async (e) => {
+    // try {
+    //   const response = await deleteUser(id);
+    //   if (response.success) {
+    //     toast.success("Le compte utilisateur a été désactivé avec succès.");
+    //   }
+    //   const updatedUsers = await getUsers();
+    //   setAdminUsers(updatedUsers);
+    // } catch (error) {
+    //   if (error.detail) {
+    //     toast.error(error.detail);
+    //   } else if (error.error) {
+    //     toast.error(error.error);
+    //   } else {
+    //     toast.error(
+    //       "Une erreur s'est produite lors de desactivation du compte."
+    //     );
+    //   }
+    // }
+  };
+  return (
+    <Button
+      variant="danger"
+      className="hover:bg-red-600 hover:text-white border border-red-800 text-red-800"
+      onClick={(e) => handleDeleteClick(e)}
+    >
+      Supprimer{" "}
+    </Button>
+  );
+};
+const NavigateDropdownMenuItem = ({ id, email, text }) => {
+  const { setProfileRequsted } = useStore();
+
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    // setProfileRequsted(id);
+    // localStorage.setItem("profileRequsted", id);
+
+    // navigate(`${id}`);
+  };
+
+  return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
+};
 export const aidsColumns = [
   {
     id: "select",
@@ -45,17 +102,17 @@ export const aidsColumns = [
   },
   {
     accessorKey: "id",
-    header: () => <div className="text-left">ID</div>,
+    header: () => <div className="text-center">ID</div>,
     cell: ({ row }) => {
-      return <div className="text-left font-medium">{row.getValue("id")}</div>;
+      return <div className="text-center font-medium">{row.getValue("id")}</div>;
     },
   },
   {
     accessorKey: "request_created_at",
-    header: () => <div className="text-left">Date Demande</div>,
+    header: () => <div className="text-center">Date Demande</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-left font-medium">
+        <div className="text-center font-medium">
           {row.getValue("request_created_at")}
         </div>
       );
@@ -63,7 +120,7 @@ export const aidsColumns = [
   },
   {
     accessorKey: "financial_aid_status",
-    header: () => <div className="text-left">Status</div>,
+    header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => {
       return (
         <div className="capitalize w-full">
@@ -83,49 +140,70 @@ export const aidsColumns = [
     accessorKey: "financial_aid_type",
     header: "Type d'aide",
     cell: ({ row }) => (
-      <div className="text-left font-medium">
+      <div className="text-center font-medium">
         {typeLabelMap[row.getValue("financial_aid_type")]}
       </div>
     ),
   },
   {
     accessorKey: "request_response_at",
-    header: () => <div className="text-left">Date de reponse</div>,
+    header: () => <div className="text-center">Date de reponse</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-left font-medium">
+        <div className="text-center font-medium">
           {row.getValue("request_response_at") || "--"}
         </div>
       );
     },
   },
-  // {
-  //   id: "actions",
-  //   enableHiding: false,
-  //   cell: ({ row }) => {
-  //     const payment = row.original;
+  {
+    id: "actions",
+    header: () => <div className="text-center">Actions</div>,
 
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="ghost" className="h-8 w-8 p-0">
-  //             <span className="sr-only">Open menu</span>
-  //             <DotsHorizontalIcon className="h-4 w-4" />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end">
-  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //           <DropdownMenuItem
-  //             onClick={() => navigator.clipboard.writeText(payment.id)}
-  //           >
-  //             Copy request ID
-  //           </DropdownMenuItem>
-  //           <DropdownMenuSeparator />
-  //           <DropdownMenuItem>View Request</DropdownMenuItem>
-  //           <DropdownMenuItem>Delete</DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
-  //   },
-  // },
+    enableHiding: false,
+    cell: ({ row }) => {
+      return (
+        <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <DotsHorizontalIcon className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+          <NavigateDropdownMenuItem
+            email={row.original.email}
+            id={row.original.id}
+            text={"Détails de la demande"}
+          />
+
+          <Dialog>
+            <DialogTrigger style={{ width: "100%" }}>
+              <div className=" w-full cursor-pointer text-center  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+              Supprimer
+              </div>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  Êtes-vous sûr de Supprimer Cette Demmande?
+                </DialogTitle>
+                <DialogDescription>
+                  Cette action va Supprimer definitivement la demmande
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose>
+                  <DeleteButton id={row.original.id} />
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      );
+    },
+  },
 ];

@@ -8,9 +8,9 @@ import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import useStore from "../../store/index";
 export function DatePickerDemo({input}) {
-  const [selectedDate, setSelectedDate] = React.useState();
   const { AddUserData, setAddUserData } = useStore();
-
+  const [selectedDate, setSelectedDate] = React.useState();
+  
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -45,7 +45,7 @@ export function DatePickerDemo({input}) {
                 const date = formattedDate[0] + '-'+ formattedDate[2] + '-'+ formattedDate[1] 
                 console.log(e);
               localStorage.setItem(`form/${input}`, date);
-              const updatedUserData = { ...AddUserData, input: date }; 
+              const updatedUserData = { ...AddUserData, [input]: date }; 
               setAddUserData(updatedUserData);
   
               setSelectedDate(e); // Update the selectedDate state with the Date object

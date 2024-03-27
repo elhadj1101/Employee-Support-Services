@@ -179,11 +179,14 @@ export default function AddUser() {
         newErrors[key] = `${key.replace('_' ,' ')} est requis.`;
       }
     });
+
+    console.log('form data' , formData);
     // Check if any errors occurred
     if (Object.keys(newErrors).length !== 0) {
       setNewErrors(newErrors);
       return;
     }
+
     Object.keys(formData).forEach((key) => {
       if (formData[key] && key !== "is_active" && key !=='retired') {
         formData[key] = formData[key].replace(/ /g, "");

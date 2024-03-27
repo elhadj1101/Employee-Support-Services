@@ -7,9 +7,16 @@ import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import useStore from "../../store/index";
-export function DatePickerDemo({input}) {
-  const [selectedDate, setSelectedDate] = React.useState(localStorage.getItem(`profile/${input}_state`) || null);
-  const {UserProfileData, setProfileUserData } = useStore();
+export function DatePickerDemo({ input }) {
+  const { UserProfileData, setProfileUserData } = useStore();
+
+  const parts = UserProfileData[input].split("-");
+  const { 0: year, 1: month, 2: day } = parts;
+  const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
+  const [selectedDate, setSelectedDate] = React.useState(
+    localStorage.getItem(`profile/${input}_state`) || date
+  );
 
   return (
     <Popover>
@@ -22,7 +29,11 @@ export function DatePickerDemo({input}) {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {selectedDate ? format(selectedDate, "PPP") : <span>Sélectionner une date</span>}
+          {selectedDate ? (
+            format(selectedDate, "PPP")
+          ) : (
+            <span>Sélectionner une date</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
@@ -30,29 +41,32 @@ export function DatePickerDemo({input}) {
           mode="single"
           selected={selectedDate}
           onSelect={(e) => {
-            if(e){
+            if (e) {
               const options = {
                 day: "numeric",
                 month: "numeric",
                 year: "numeric",
               };
-  
+
               const formattedDate = e
                 .toLocaleDateString("en-US", options)
                 .split("/")
-                .reverse()
-                
-                const date = formattedDate[0] + '-'+ formattedDate[2] + '-'+ formattedDate[1] 
-                console.log(e);
-              localStorage.setItem(`profile/input`, date);
+                .reverse();
+
+              const date =
+                formattedDate[0] +
+                "-" +
+                formattedDate[2] +
+                "-" +
+                formattedDate[1];
+              localStorage.setItem(`profile/${input}`, date);
               localStorage.setItem(`profile/${input}_state`, e);
 
-              const updatedUserData = { ...UserProfileData, input: date }; 
+              const updatedUserData = { ...UserProfileData, [input]: date };
               setProfileUserData(updatedUserData);
-  
+
               setSelectedDate(e); // Update the selectedDate state with the Date object
             }
-           
           }}
           initialFocus
         />
@@ -60,4 +74,3 @@ export function DatePickerDemo({input}) {
     </Popover>
   );
 }
-

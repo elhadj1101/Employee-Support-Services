@@ -21,6 +21,7 @@ export default function UserProfile() {
       try {
         if (profileRequsted && profileRequsted !== "[object Object]") {
           const response = await getUser(profileRequsted);
+
           Object.entries(response).forEach(([key, value], index) => {
             switch (key) {
               case "id_number":
@@ -238,11 +239,9 @@ Object.keys(formData).forEach((key) => {
       }
     });
     
-    
     try {
-      const updateUser = await updateUser({ ...user, rip:"00799999" + user.rip , salary: user.salary.replace(/,/g, '') }, profileRequsted);
-    console.log('uuuuuuuuuuuuuu', updateUser);
-      if(updateUser){
+      const upUser = await updateUser({ ...user, rip:"00799999" + user.rip , salary: user.salary.replace(/,/g, '') }, profileRequsted);
+      if(upUser){
       window.location.reload()
      }
     } catch (error) {
@@ -515,7 +514,7 @@ Object.keys(formData).forEach((key) => {
                 <label htmlFor="retired">
                   Est-il retraité ?
                 </label>
-                {readOnly && (UserProfileData.retired === 'true'?'Oui':'Non')}
+                {readOnly && (UserProfileData.retired?'Oui':'Non')}
               </div>
           
 
