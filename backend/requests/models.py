@@ -78,7 +78,8 @@ class Document(models.Model):
         return f'{instance.employee.pk}/docs/{rndm_filename}'
         
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE )
-    financial_aid = models.ForeignKey(Financial_aid , on_delete = models.CASCADE, related_name='documents')
+    loan = models.ForeignKey(Loan , on_delete = models.CASCADE , null =True)
+    financial_aid = models.ForeignKey(Financial_aid , on_delete = models.CASCADE, related_name='documents' , null = True)
     document_name = models.CharField(max_length = 255)
     random_name = models.CharField(max_length = 255)
     document_file = models.FileField(upload_to=get_path )

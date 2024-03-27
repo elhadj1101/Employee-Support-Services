@@ -5,6 +5,7 @@ from backend.settings import CAN_VIEW_REQUESTS
 
 class IsLoanApplier(permissions.BasePermission):
     # we get the last record in the Loan table we give permission according to the Loan status
+    message = {'errors': 'you don\'t have permission to create loan'}
     def has_permission(self, request, view):
         if request.method == "POST":
             loan = Loan.objects.filter(employee=request.user).last()
@@ -22,6 +23,7 @@ class IsLoanApplier(permissions.BasePermission):
 
 
 class IsFinancialaidApplier(permissions.BasePermission):
+    message = {'errors': 'you don\'t have permission to create financial-aid'}
     def has_permission(self, request, view):
         if request.method == "POST" and "financial_aid_type" in request.data:
             financial_aid_type = request.data["financial_aid_type"]
@@ -39,6 +41,7 @@ class IsFinancialaidApplier(permissions.BasePermission):
 
 
 class CanViewRequests(permissions.BasePermission):
+    message = {'errors': 'you don\'t have permission to view requests'}
     def has_permission(self, request, view):
         if request.method == "GET":
             perm = (
