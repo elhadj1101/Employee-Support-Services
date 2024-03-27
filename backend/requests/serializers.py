@@ -20,7 +20,7 @@ class LoanSerializer(serializers.ModelSerializer):
             "loan_period",
             "loan_status",
         ]
-        extra_kwargs = {"loan_status": {"read_only": True}}
+        extra_kwargs = {"loan_status": {"read_only": True} ,"employee": {"read_only": True} }
 
 
 class FileSerializer(serializers.ModelSerializer):

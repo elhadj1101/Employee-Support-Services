@@ -12,6 +12,7 @@ import { Button } from "components/ui/button";
 import { formatPrice } from "components/utils/utilFunctions";
 import { financial_aid_infos } from "api/requests";
 import useStore from "store";
+import Axios from "api/axios";
 
 function FinancialAid() {
   const { user } = useStore();
@@ -57,14 +58,36 @@ function FinancialAid() {
     }
 
     const formData = new FormData();
-    formData.append("aidType", aidData.aidType);
-    formData.append("familyMember", aidData.familyMember);
-    formData.append("employeeType", aidData.employeeType);
+    formData.append("financial_aid_type", aidData.aidType);
+    formData.append("family_member", aidData.familyMember);
 
     for (let i = 0; i < uploadedFiles.length; i++) {
       formData.append("files[]", uploadedFiles[i]);
     }
-    console.log(formData);
+
+    Axios.post("/requests/financial-aids/?draft=true", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((res) => {
+        toast.success("La demande a été envoyée avec succès");
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.data?.detail) {
+            toast.error(err.response.data?.detail);
+          } else if (err.response.data?.error) {
+            toast.error(err.response.data.error);
+          } else if (err.response.data) {
+            toast.error(err.response.data.toString());
+          }
+        } else {
+          toast.error(
+            "Une erreur s'est produite lors de l'envoi de la demande"
+          );
+        }
+      });
   };
 
   useEffect(() => {
@@ -105,7 +128,6 @@ function FinancialAid() {
   return (
     <div className="w-full h-[100vh] flex-grow flex flex-col  bg-gray-bg px-6 py-4">
       <h1 className="font-semibold text-2xl my-2">Demande d'aide financière</h1>
-
       <form className="" onSubmit={handleSubmit}>
         <label
           htmlFor="aidType"
