@@ -34,7 +34,7 @@ function ListLoans() {
       <RequestsTable
         data={loans}
         filteredColumn="employee"
-        columns={loanColumns}
+        columns={cols}
       />
     </div>
   );

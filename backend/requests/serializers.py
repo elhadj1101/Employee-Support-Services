@@ -35,6 +35,7 @@ class FinancialaidSerializer(serializers.ModelSerializer):
         model = Financial_aid   
         fields = [
             "id",
+            "employee",
             "request_created_at",
             "financial_aid_type",
             "family_member",
