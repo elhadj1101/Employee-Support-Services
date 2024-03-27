@@ -12,7 +12,7 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { statusColorMap } from "api/requests";
 
-export const loanColumns = (colsToHide=[]) =>{
+export const loanColumns = (colsToHide = []) => {
   const cols = [
     {
       id: "select",
@@ -51,7 +51,9 @@ export const loanColumns = (colsToHide=[]) =>{
       accessorKey: "id",
       header: () => <div className="text-left">ID</div>,
       cell: ({ row }) => {
-        return <div className="text-left font-medium">{row.getValue("id")}</div>;
+        return (
+          <div className="text-left font-medium">{row.getValue("id")}</div>
+        );
       },
     },
     {
@@ -104,6 +106,17 @@ export const loanColumns = (colsToHide=[]) =>{
       },
     },
     {
+      accessorKey: "payment_method",
+      header: () => <div className="text-left">Methode de payement</div>,
+      cell: ({ row }) => {
+        return (
+          <div className="text-left font-medium">
+            {row.getValue("payment_method")}
+          </div>
+        );
+      },
+    },
+    {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
@@ -136,5 +149,4 @@ export const loanColumns = (colsToHide=[]) =>{
     },
   ];
   return cols.filter((col) => !colsToHide.includes(col.accessorKey));
-
-}
+};

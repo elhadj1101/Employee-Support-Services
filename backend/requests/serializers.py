@@ -30,7 +30,7 @@ class FileSerializer(serializers.ModelSerializer):
 
 
 class FinancialaidSerializer(serializers.ModelSerializer):
-    
+    documents = FileSerializer(many=True)
     class Meta:
         model = Financial_aid   
         fields = [
@@ -38,6 +38,7 @@ class FinancialaidSerializer(serializers.ModelSerializer):
             "employee",
             "request_created_at",
             "financial_aid_type",
+            "documents",
             "family_member",
             "financial_aid_status",
             "request_response_at"

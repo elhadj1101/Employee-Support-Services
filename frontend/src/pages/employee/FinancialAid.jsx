@@ -3,11 +3,11 @@ import { toast } from "sonner";
 import {
   Select,
   SelectContent,
-  SelectGroup,
-  SelectLabel,
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel,
 } from "components/ui/select";
 import FileInput from "components/utils/FileInput";
 import { Button } from "components/ui/button";
@@ -17,7 +17,9 @@ import useStore from "store";
 import Axios from "api/axios";
 
 function FinancialAid() {
-  const { user, setUpdated } = useStore();
+  const { user, setUpdated, aidDraftId, aids } = useStore();
+  const crrntAid =
+    aidDraftId && aids && aids.filter((aid) => aid.id === aidDraftId)[0];
   const employeeType = user?.retired ? "retired" : "non_retired";
   const typeIndMap = {};
   financial_aid_infos.forEach((aid, ind) => {
@@ -59,7 +61,7 @@ function FinancialAid() {
       toast.error("Veuillez choisir un type d'employer");
       return;
     }
-    if (uploadedFiles.length !== fileNames.length) {
+    if (uploadedFiles.length !== fileNames.length && !(isDraft === "true")) {
       toast.error(
         `Veuillez ajouter tous les fichiers nécessaires, il vous manque ${Math.abs(
           uploadedFiles.length - fileNames.length
@@ -67,14 +69,22 @@ function FinancialAid() {
       );
       return;
     }
-
+    if (isDraft === "true" && (uploadedFiles.length > fileNames.length)) {
+      toast.error(
+        `Vous ne pouvez pas ajouter plus de fichiers que nécessaire. (max: ${fileNames.length} fichiers)`
+      );
+      return;
+    }
+    const endpoint = crrntAid
+      ? "/requests/financial-aids/?draft="
+      : `/requests/financial-aids/${aidDraftId}/draft=` ;
     const formData = new FormData();
     formData.append("financial_aid_type", aidData.aidType);
     formData.append("family_member", aidData.familyMember);
     uploadedFiles.forEach((file) => {
       formData.append("files[]", file);
     });
-    Axios.post("/requests/financial-aids/?draft="+isDraft, formData, {
+    Axios.post(endpoint + isDraft, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -102,8 +112,12 @@ function FinancialAid() {
 
   useEffect(() => {
     const data = {
-      aidType: sessionStorage.getItem("aid/type") || "",
-      familyMember: sessionStorage.getItem("aid/familyMember") || "",
+      aidType: crrntAid
+        ? crrntAid.financial_aid_type
+        : sessionStorage.getItem("aid/type") || "",
+      familyMember: crrntAid
+        ? crrntAid.familyMember
+        : sessionStorage.getItem("aid/familyMember") || "",
       employeeType: employeeType,
     };
     if (data.aidType !== "") {
@@ -137,7 +151,11 @@ function FinancialAid() {
   }, []);
   return (
     <div className="w-full h-[100vh] flex-grow flex flex-col  bg-gray-bg px-6 py-4">
-      <h1 className="font-semibold text-2xl my-2">Demande d'aide financière</h1>
+      <h1 className="font-semibold text-2xl my-2">
+        {!crrntAid
+          ? "Demande d'aide financière"
+          : "Modification d'un brouillon (N°:" + crrntAid.id + ")"}
+      </h1>
       <form className="">
         <label
           htmlFor="aidType"
