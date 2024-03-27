@@ -3,7 +3,7 @@ from .models import Loan, Document, Financial_aid
 
 
 class LoanSerializer(serializers.ModelSerializer):
-    loan_amount = serializers.IntegerField()
+    loan_amount = serializers.FloatField()
     loan_period = serializers.IntegerField(
         min_value=1,
         max_value=12,

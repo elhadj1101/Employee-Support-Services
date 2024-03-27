@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import {
   Select,
   SelectContent,
+  SelectGroup,
+  SelectLabel,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -15,12 +17,18 @@ import useStore from "store";
 import Axios from "api/axios";
 
 function FinancialAid() {
-  const { user } = useStore();
-  const employeeType = user?.retired ? "retired" : "non_retarder";
+  const { user, setUpdated } = useStore();
+  const employeeType = user?.retired ? "retired" : "non_retired";
   const typeIndMap = {};
   financial_aid_infos.forEach((aid, ind) => {
     typeIndMap[aid.name] = ind;
   });
+  // const categorizedInfo = Object.groupBy(financial_aid_infos, "category");
+  let categorizedInfo = financial_aid_infos.reduce((x, y) => {
+    (x[y.category] = x[y.category] || []).push(y);
+
+    return x;
+  }, {});
   const [fileNames, setFileNames] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
@@ -33,6 +41,9 @@ function FinancialAid() {
   const [amount, setAmount] = useState(0);
   const handleSubmit = (e) => {
     e.preventDefault();
+    const { name } = e.target;
+    let isDraft = "false";
+    if (name === "draft") isDraft = "true";
     if (aidData.aidType === "") {
       toast.error("Veuillez choisir un type d'aide");
       return;
@@ -60,17 +71,16 @@ function FinancialAid() {
     const formData = new FormData();
     formData.append("financial_aid_type", aidData.aidType);
     formData.append("family_member", aidData.familyMember);
-
-    for (let i = 0; i < uploadedFiles.length; i++) {
-      formData.append("files[]", uploadedFiles[i]);
-    }
-
-    Axios.post("/requests/financial-aids/?draft=true", formData, {
+    uploadedFiles.forEach((file) => {
+      formData.append("files[]", file);
+    });
+    Axios.post("/requests/financial-aids/?draft="+isDraft, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     })
       .then((res) => {
+        setUpdated("aids");
         toast.success("La demande a été envoyée avec succès");
       })
       .catch((err) => {
@@ -128,7 +138,7 @@ function FinancialAid() {
   return (
     <div className="w-full h-[100vh] flex-grow flex flex-col  bg-gray-bg px-6 py-4">
       <h1 className="font-semibold text-2xl my-2">Demande d'aide financière</h1>
-      <form className="" onSubmit={handleSubmit}>
+      <form className="">
         <label
           htmlFor="aidType"
           className="block mb-2  font-medium text-gray-900 dark:text-white"
@@ -184,13 +194,27 @@ function FinancialAid() {
             <SelectValue placeholder="Choissisez un type" />
           </SelectTrigger>
           <SelectContent>
-            {financial_aid_infos.map((option, ind) => {
+            {Object.entries(categorizedInfo).map(([category, aids], ind) => {
+              return (
+                <SelectGroup key={ind}>
+                  <SelectLabel>{category}</SelectLabel>
+                  {aids.map((aid, ind) => {
+                    return (
+                      <SelectItem key={ind} value={aid.name}>
+                        {aid.description}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectGroup>
+              );
+            })}
+            {/* {financial_aid_infos.map((option, ind) => {
               return (
                 <SelectItem key={ind} value={option.name}>
                   {option.description}
                 </SelectItem>
               );
-            })}
+            })} */}
           </SelectContent>
         </Select>
         {aidData.aidType === "family_member_death" && (
@@ -296,6 +320,24 @@ function FinancialAid() {
             </span>
           </p>
         )}
+        {aidData.aidType !== "" &&
+          aidData.aidType !== "family_member_death" &&
+          amount === 0 && (
+            <div className="text-lg font-semibold">
+              Le Montant bénéficié :
+              <ul className="pl-4 text-sm w- list-decimal font-light ">
+                {financial_aid_infos[
+                  typeIndMap[aidData.aidType]
+                ].amountNotes.map((note, ind) => {
+                  return (
+                    <li className="" key={ind}>
+                      {note}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         {aidData.aidType !== "" && (
           <>
             <h2 className="font-semibold text-lg mt-4">
@@ -326,13 +368,26 @@ function FinancialAid() {
             multpl={true}
           />
         </div>
-        <Button
-          type="submit"
-          className="w-full bg-light-blue py-5 text-lg text-white hover:text-white hover:bg-light-blue"
-          variant="outline"
-        >
-          Envoyer la demande
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            name="not-draft"
+            className=" bg-light-blue py-5 text-lg text-white hover:text-white hover:bg-light-blue"
+            variant="outline"
+          >
+            Envoyer la demande
+          </Button>
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            name="draft"
+            className=" bg-white py-5 text-lg text-darkblue hover:border-darkblue hover:border-1"
+            variant="outline"
+          >
+            Sauvegarder comme brouillon
+          </Button>
+        </div>
       </form>
     </div>
   );

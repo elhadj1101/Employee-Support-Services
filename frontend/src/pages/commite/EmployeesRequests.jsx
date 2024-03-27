@@ -6,6 +6,7 @@ import { loanColumns } from "components/employee/Columns/loanColumns";
 
 function EmployeesRequests() {
   const { allAids, allLoans } = useStore();
+  const loancols = loanColumns(["id"]) || [];
 
   return (
     <div className="bg-gray-bg py-2 h-full">
@@ -17,7 +18,7 @@ function EmployeesRequests() {
       <div className=" mx-6 mb-4  text-2xl font-bold">
         Les demandes de prets
       </div>
-      <RequestsTable data={allLoans} columns={loanColumns}  filteredColumn="employee"/>
+      <RequestsTable data={allLoans} columns={loancols}  filteredColumn="employee"/>
     </div>
   );
 }

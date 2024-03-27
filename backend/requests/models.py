@@ -21,10 +21,10 @@ class Loan(models.Model):
 
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE   )
     request_created_at = models.DateField(auto_now_add = True)
-    loan_amount = models.IntegerField(null = False)
+    loan_amount = models.FloatField(null = False)
     payment_method = models.TextField(null=False , choices = payment_method_options)
     loan_motivation = models.TextField(null = False)
-    start_loan_date = models.DateField(null = True)
+    start_loan_date = models.DateField(null = True, blank=True)
     loan_period = models.IntegerField( null = False)
     loan_status = models.CharField(choices = status_options , max_length = 30  , null = False)
 
