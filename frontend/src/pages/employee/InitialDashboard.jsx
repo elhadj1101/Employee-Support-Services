@@ -11,9 +11,10 @@ import { Button } from "components/ui/button";
 import ServiceCard from "components/employee/ServiceCard";
 import useStore from "../../store/index.js";
 import RequestsTable from "components/employee/requestsTable/RequetsTable";
+import { loanColumns } from "components/employee/Columns/loanColumns";
 function InitialDashboard() {
-  const { offres } = useStore();
-
+  const { offres, loans } = useStore();
+  const cols = loanColumns(["employee"]) || [];
   return (
     <div className=" bg-gray-bg py-2 h-full">
       <div className=" mx-6 mb-4  text-2xl font-bold">Dernieres Offres</div>
@@ -102,7 +103,7 @@ function InitialDashboard() {
         Liste des demandes de prets
       </div>
       <div className=" mx-6 flex gap-5 flex-wrap lg:flex-nowrap">
-        <RequestsTable showFilter={false} />
+        <RequestsTable data={loans} columns={cols} showFilter={false} />
       </div>
     </div>
   );

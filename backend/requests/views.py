@@ -38,35 +38,41 @@ class LoanView(APIView):
             loan_amount = float(request.data["loan_amount"])
             if max < loan_amount:
                 return Response(
-                    "maximumn loan amount {} ".format(max),
+                    {"error":"maximumn loan amount {} ".format(max)},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
             isDraft = request.query_params.get("draft", None)
             if isDraft == "true":
-                aid_status = "draft"
+                loan_status = "draft"
             elif isDraft == "false":
-                aid_status = "waiting"
+                loan_status = "waiting"
             else:
-                return Response(aid_status == "waiting"
-                    "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
+
+                return Response(
+                    {"error":"Invalid query param value"},
+                    status=status.HTTP_400_BAD_REQUEST
+
                 )
 
             if (
-                aid_status == "draft"
+                loan_status == "draft"
                 and Loan.objects.filter(
                     employee=request.user,
                     loan_status="draft",
                 ).exists()
             ):
                 return Response(
-                    "you can't create draft, already have one",
-                    status=status.HTTP_403_FORBIDDEN,
+
+                    {"error":"you can't create draft, already have one"},
+                    status=status.HTTP_403_FORBIDDEN
                 )
             
             files = request.FILES.getlist("files[]", [])
-            if not  files and aid_status == 'waiting':
+            if not  files and loan_status == 'waiting':
                 return Response('you must upload files' , status=status.HTTP_400_BAD_REQUEST)
 
-            created_instance = serializer.save(employee=request.user, loan_status=aid_status)
+
+            created_instance = serializer.save(employee=request.user, loan_status=loan_status)
             for f in files:
                 d = Document(
                 employee=request.user,
@@ -76,8 +82,9 @@ class LoanView(APIView):
                 loan = created_instance
                 )
                 d.save()
-            return Response("loan created succefully")
+            return Response({"sucess":"loan created succefully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors)
+
 
     def get(self, request):
         execlution_criteria = {"loan_status": "draft"}
@@ -95,8 +102,8 @@ class LoanCheckView(APIView):
         loan = Loan.objects.filter(employee=request.user).last()
         if loan:
             if (loan.loan_status == "waiting") or (loan.loan_status == "approved"):
-                return Response("you can't apply", status=status.HTTP_400_BAD_REQUEST)
-        return Response("you can apply", status=status.HTTP_200_OK)
+                return Response("False", status=status.HTTP_200_OK)
+        return Response("True", status=status.HTTP_200_OK)
 
 
 # This endpoint displays the loan history to see all the previous loans the employee has applied for.
@@ -149,12 +156,8 @@ class FinancialaidView(generics.ListCreateAPIView):
                 financial_aid_status="draft",
             ).exists()
         ):
-            return Response(
-                {"error": "you can't create draft"}, status=status.HTTP_403_FORBIDDEN
-            )
-
-       
-
+            return Response({"error":"you can't create draft, already have one"}, status=status.HTTP_403_FORBIDDEN)
+        
         serializer.is_valid(raise_exception=True)
         if (
             request.data["financial_aid_type"] == "retirement_financial_aid"
@@ -225,9 +228,9 @@ class FinancialaidCheckView(APIView):
                     financial_aid_type=aid_type,
                 )
                 if financial_aid.filter(financial_aid_status="waiting").exists():
-                    return Response("you can't apply")
+                    return Response("False", status=status.HTTP_200_OK)
                 else:
-                    return Response("you can apply")
+                    return Response("True", status=status.HTTP_200_OK)
             return Response(
                 "Invalid type in the query parameter",
                 status=status.HTTP_400_BAD_REQUEST,

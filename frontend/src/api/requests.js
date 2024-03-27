@@ -10,6 +10,7 @@ const statusColorMap = {
 const financial_aid_infos = [
     {
       name: "family_member_death",
+      category: "Décès",
       description: "Décès d'un membre de famille",
       files: [
         "Attestation de travail",
@@ -41,6 +42,7 @@ const financial_aid_infos = [
     },
     {
       name: "employee_death",
+      category: "Décès",
       description: "Décès de l'employé",
       types: {
         retired: {
@@ -48,8 +50,8 @@ const financial_aid_infos = [
           desc: "Retraité",
           amount: 50000,
         },
-        non_retarder: {
-          name: "non_retarder",
+        non_retired: {
+          name: "non_retired",
           desc: "Non retraité",
           amount: 100000,
           note: "La durée pendant laquelle il doit être à la retraite est de maximum 3 ans avant le décès pour bénéficier de l'aide",
@@ -64,18 +66,21 @@ const financial_aid_infos = [
     },
     {
       name: "child_birth",
+      category: "Les Prestations",
       description: "Naissance d'un fils",
       files: ["Attestation de travail", "Acte de naissance n°12 de l'enfant"],
       amount: 10000,
     },
     {
       name: "mariage",
+      category: "Les Prestations",
       description: "Mariage",
       files: ["Attestation de travail", "Contrat de mariage"],
       amount: 20000,
     },
     {
       name: "circumcision_newborn",
+      category: "Les Prestations",
       description: "Circoncision d'un nouveau-né",
       files: [
         "Attestation de travail",
@@ -85,6 +90,7 @@ const financial_aid_infos = [
     },
     {
       name: "retirement",
+      category: "Les Prestations",
       description: "Retraite",
       files: [
         "Attestation de suspension de salaire",
@@ -93,6 +99,71 @@ const financial_aid_infos = [
       ],
       amount: 70000,
     },
+    {
+        name: 'surgeries',
+        category: "Les Services De Solidarité",
+        description: 'les opérations chirurgicales',
+        files: [
+          "Attestation de travail",
+          "Un rapport médical diagnostiquant la maladie et nécessitant une intervention chirurgicale.",
+          "Facture de l'opération avec les spécifications légales.",
+          "Attestation de non-affiliation à la Caisse nationale des travailleurs salariés ou d'affiliation pour les non-salariés (pour les parrains de plus de 21 ans).",
+          "Certificat de famille ou attestation d'acquisition de droits extraits de la sécurité sociale (pour les parrains de plus de 21 ans).",
+          "Certificat de non-mariage pour une fille de plus de 21 ans."
+        ],
+        amount: 0,
+        amountNotes : ["La Comité fournit une aide financière de 25 % du coût des interventions chirurgicales inférieures à 150 000DA.",
+              "La subvention concerne le personnel scolaire et les enseignants, les enfants mineurs jusqu'à l'âge de 21 ans, les filles jusqu'au mariage et les conjoints qui ne cotisent pas à la sécurité sociale.",
+              "La subvention pour les actifs est de 10 %.",
+              "La prise en charge des césariennes est plafonnée à 50 000DA.",
+              "Les interventions chirurgicales prises en charge par la Caisse nationale de sécurité sociale ne sont pas remboursées à 100 %."
+            ]
+    },
+    {
+        name: 'mineral_baths',
+        category: "Les Services De Solidarité",
+        description: 'Bains minéraux',
+        files: [
+          "Attestaion de travail",
+          "Un rapport médical spécifiant la nécessité d'un traitement par un médecin spécialisé.",
+          "La facture de l'opération avec les spécifications légales."
+        ],
+        amount: 0,
+        amountNotes: [
+          "Le comité remboursera 25 % de la valeur des cures thermales qui ne dépassent pas 50 000DA",
+        ]
+    },
+    {
+        name: 'accident_and_disasters',
+        category: "Les Services De Solidarité",
+        description: 'Assistance en cas d\'accident Et les catastrophes',
+        files: [
+              "Attestation de travail",
+              "Une attestation de la victime ou un rapport d'intervention fourni par les autorités compétentes.",
+              "Une fiche technique d'un expert pour présenter l'importance des pertes.",
+              "Un rapport d'inspection préparé par la commission."
+        ],
+        amount: 0,
+        amountNotes: [
+             "Le comité fournit une assistance financière aux employés et enseignants de l'école qui sont touchés par des accidents d'urgence ou des catastrophes naturelles.",
+              "La valeur de l'aide financière est estimée à un maximum de 50 000DA."
+        ]
+    },
+    {
+        name: 'social_and_health_aid',
+        category: "Les Services De Solidarité",
+        description: 'Aide aux conditions sociales et sanitaires',
+        files: [
+          "Attestation de travail",
+           "Certificats et documents prouvant le besoin d'assistance.",
+            "Procès-verbal préparé par le comité."
+        ],
+        amountNotes:[
+            "Le Comité accorde une aide financière au personnel scolaire et aux enseignants qui en ont besoin, sous réserve de l'appréciation du Comité.",
+            "La valeur de l'aide financière est limitée à un maximum de 50 000DA."
+        ],
+        amount: 0
+    }
   ];
 
 
