@@ -1,9 +1,9 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Loan, Financial_aid
+from .models import Loan, Financial_aid, Document
 from .serializers import LoanSerializer, FileSerializer, FinancialaidSerializer
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from rest_framework import status
 from .permissions import (
     IsLoanApplier,
@@ -14,7 +14,7 @@ from .permissions import (
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .utils import calculate_max_loan
-
+from django.http import HttpResponse
 # Create your views here.
 
 
@@ -57,7 +57,7 @@ class LoanView(APIView):
                 ).exists()
             ):
                 return Response(
-                    "you can't create draft", status=status.HTTP_403_FORBIDDEN
+                    "you can't create draft, already have one", status=status.HTTP_403_FORBIDDEN
                 )
 
             serializer.save(employee=request.user, loan_status=aid_status)
@@ -110,6 +110,10 @@ class FinancialaidView(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        files = request.FILES.getlist("files[]", [])
+        if not files:
+            return Response({"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST)
+        
         family_member = (
             request.data["family_member"]
             if (
@@ -126,7 +130,7 @@ class FinancialaidView(generics.ListCreateAPIView):
             aid_status = "waiting"
         else:
             return Response(
-                "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
+                {"error":"Invalid query param value"}, status=status.HTTP_400_BAD_REQUEST
             )
         if (
             aid_status == "draft"
@@ -135,27 +139,31 @@ class FinancialaidView(generics.ListCreateAPIView):
                 financial_aid_status="draft",
             ).exists()
         ):
-            return Response("you can't create draft", status=status.HTTP_403_FORBIDDEN)
+            return Response({"error":"you can't create draft"}, status=status.HTTP_403_FORBIDDEN)
         
         serializer.is_valid(raise_exception=True)
         if request.data['financial_aid_type'] == 'retirement_financial_aid' and not request.user.retired :
-            return Response('Employee is not retired' , status=status.HTTP_403_FORBIDDEN)
-        serializer.save(
+            return Response({"error":'employee is not retired'} , status=status.HTTP_403_FORBIDDEN)
+        created_instance = serializer.save(
             employee=request.user,
             family_member=family_member,
             financial_aid_status=aid_status,
         )
-        return Response("Financial aid created")
+        # now create the files
+        for f in files:
+            d = Document (employee = request.user , document_file = f , document_name = f.name, financial_aid = created_instance)
+            d.save()
+        return Response({"success":"financial aid created"}, status=status.HTTP_201_CREATED)
     
     def list(self, request, *args, **kwargs):
         execlution_criteria = {
             'financial_aid_status' : 'draft'
         }
         financail_aids = Financial_aid.objects.exclude(**execlution_criteria)
-        if financail_aids :
+        if financail_aids.exists() :
             serializer =  FinancialaidSerializer(financail_aids , many = True)
-            return Response(serializer.data , )
-        return Response('No current financial aids')
+            return Response(serializer.data , status = status.HTTP_200_OK)
+        return Response([], status = status.HTTP_200_OK)
     
 
 
@@ -203,6 +211,15 @@ class FinancialaidCheckView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+class testFileUpload (APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        files = request.FILES.getlist('files[]')
+        for f in files:
+            # CREATE A DOCUMENT EVERY TIME
+            print(f.name)
+        return HttpResponse("file uploaded succesfully", status=status.HTTP_200_OK)
 
 class UploadFileView(APIView):
     parser_classes = (MultiPartParser, FormParser)

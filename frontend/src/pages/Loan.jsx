@@ -11,7 +11,6 @@ const Loan = () => {
   const intmaxPayMois = user && user.salary * 0.3;
   const maxPayMois = formatPrice(intmaxPayMois, ",");
   const maxLoan = formatPrice(intmaxPayMois * 12, ",");
-  console.log("Can apply: ", canApplyLoan);
 
   const [Montant, setMontant] = useState(intmaxPayMois);
   const [Duration, setDuration] = useState(12);

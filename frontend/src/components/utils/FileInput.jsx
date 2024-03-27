@@ -1,5 +1,4 @@
-import { max } from "date-fns";
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
 
 function FileInput({
@@ -80,7 +79,6 @@ function FileInput({
       e.preventDefault();
       setIsDragActive(false);
       const droppedFiles = Array.from(e.target.files);
-      console.log(files);
       if (maxFiles !== -1 && files.length + droppedFiles.length > maxFiles) {
         toast.warning(
           `Vous ne pouvez pas ajouter plus de ${maxFiles} fichiers`

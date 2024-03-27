@@ -1,13 +1,14 @@
 from django.urls import path
 from .views import (
     LoanView,
-    UploadFileView,
     LoanHistoryView,
     FinancialaidView,
     FinancialaidHistoryView,
     LoanCheckView,
     FinancialaidCheckView,
-    UpdateRequestView
+    UpdateRequestView,
+    testFileUpload,
+
 )
 
 
@@ -22,5 +23,5 @@ urlpatterns = [
     path("financial-aids/history/", FinancialaidHistoryView.as_view()),
     path("financial-aids/check", FinancialaidCheckView.as_view()),
     # just for testing UploadFileView
-    path("file/", UploadFileView.as_view()),
+    path("file/", testFileUpload.as_view()),
 ]

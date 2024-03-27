@@ -1,6 +1,8 @@
 from django.db import models
 from authentication.models import Employee
 from datetime import timedelta
+from django.db.models.signals import post_delete
+from backend.utils import file_cleanup
 # Create your models here.
 
 #Loan
@@ -63,10 +65,32 @@ class Financial_aid(models.Model):
 
 # Document
 class Document(models.Model):
-
+    def get_path(instance, filename):
+        extension = filename.split('.')[-1]
+        name = filename.split('.')[0]
+            
+        import os, random, string
+        length = 13
+        chars = string.ascii_letters + string.digits + '!@#$%^&*()'
+        random.seed = (os.urandom(1024))
+        a = ''.join(random.choice(chars) for i in range(length))
+        rndm_filename = '%s%s%s' % (name,str(a),extension)
+        return f'{instance.employee.pk}/docs/{rndm_filename}'
+        
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE )
-    financial_aid = models.ForeignKey(Financial_aid , on_delete = models.CASCADE   )
+    financial_aid = models.ForeignKey(Financial_aid , on_delete = models.CASCADE, related_name='documents')
     document_name = models.CharField(max_length = 255)
-    document_file = models.FileField(upload_to='docs/%Y/%m/%d' )
-   
+    random_name = models.CharField(max_length = 255)
+    document_file = models.FileField(upload_to=get_path )
+    document_uploaded_at = models.DateField(auto_now_add = True)
     
+    # for postDelete signal
+    doc_field = "document_file"
+    
+    
+    def __str__(self) -> str:
+        return self.document_name + str(self.employee.pk)
+    
+post_delete.connect(
+    file_cleanup, sender=Document, dispatch_uid="document.file_cleanup"
+)

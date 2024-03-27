@@ -30,7 +30,7 @@ class IsFinancialaidApplier(permissions.BasePermission):
                 financial_aid_type=financial_aid_type,
                 financial_aid_status="waiting",
             )
-            if financial_aid:
+            if financial_aid.exists():
                 return False
             else:
                 return True
