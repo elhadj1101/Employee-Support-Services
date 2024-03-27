@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from django.contrib.auth.hashers import check_password
 from .models import Employee
 from .serializers import EmployeeSerializer, SignupSerializer, EmployeeDetailsSerializer
-from .permissions import IsAdmin
+from .permissions import IsAdmin, canViewDetails
 
 # this is just for testing our add user enpoint 
 class CreateUserView(generics.ListCreateAPIView):
@@ -25,7 +25,7 @@ class CreateUserView(generics.ListCreateAPIView):
 class UserDetailsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeDetailsSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, canViewDetails]
     def delete(self, request, *args, **kwargs):
         # deactivate the account
         user = self.get_object()
