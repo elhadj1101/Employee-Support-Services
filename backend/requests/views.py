@@ -1,8 +1,8 @@
-from rest_framework.permissions import IsAuthenticated,AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Loan, Financial_aid, Document
-from .serializers import LoanSerializer, FileSerializer, FinancialaidSerializer
+from .serializers import LoanSerializer, FinancialaidSerializer
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from rest_framework import status
 from .permissions import (
@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .utils import calculate_max_loan
 from django.http import HttpResponse
+
 # Create your views here.
 
 
@@ -26,7 +27,7 @@ from django.http import HttpResponse
 
 
 class LoanView(APIView):
-    permission_classes = [IsAuthenticated,CanViewRequests, IsLoanApplier]
+    permission_classes = [IsAuthenticated, CanViewRequests, IsLoanApplier]
 
     def post(self, request):
         serializer = LoanSerializer(data=request.data)
@@ -40,15 +41,17 @@ class LoanView(APIView):
                     {"error":"maximumn loan amount {} ".format(max)},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            isDraft = request.query_params.get("draft",None)
+            isDraft = request.query_params.get("draft", None)
             if isDraft == "true":
                 loan_status = "draft"
             elif isDraft == "false":
                 loan_status = "waiting"
             else:
+
                 return Response(
                     {"error":"Invalid query param value"},
                     status=status.HTTP_400_BAD_REQUEST
+
                 )
 
             if (
@@ -59,18 +62,32 @@ class LoanView(APIView):
                 ).exists()
             ):
                 return Response(
+
                     {"error":"you can't create draft, already have one"},
                     status=status.HTTP_403_FORBIDDEN
                 )
+            
+            files = request.FILES.getlist("files[]", [])
+            if not  files and loan_status == 'waiting':
+                return Response('you must upload files' , status=status.HTTP_400_BAD_REQUEST)
 
-            serializer.save(employee=request.user, loan_status=loan_status)
+
+            created_instance = serializer.save(employee=request.user, loan_status=loan_status)
+            for f in files:
+                d = Document(
+                employee=request.user,
+                document_file=f,
+                document_name=f.name,
+                financial_aid=None,
+                loan = created_instance
+                )
+                d.save()
             return Response({"sucess":"loan created succefully"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.bad)
+        return Response(serializer.errors)
+
 
     def get(self, request):
-        execlution_criteria = {
-            'loan_status'  : 'draft'
-        }
+        execlution_criteria = {"loan_status": "draft"}
         loans = Loan.objects.exclude(**execlution_criteria)
         if loans.exists():
             serializer = LoanSerializer(loans, many=True)
@@ -80,7 +97,7 @@ class LoanView(APIView):
 
 class LoanCheckView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request):
         loan = Loan.objects.filter(employee=request.user).last()
         if loan:
@@ -107,16 +124,12 @@ class LoanHistoryView(APIView):
 
 # This view will be used for creating financial aids
 class FinancialaidView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated,CanViewRequests, IsFinancialaidApplier]
+    permission_classes = [IsAuthenticated, CanViewRequests, IsFinancialaidApplier]
     queryset = Financial_aid.objects.all()
     serializer_class = FinancialaidSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        files = request.FILES.getlist("files[]", [])
-        if not files:
-            return Response({"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST)
-        
         family_member = (
             request.data["family_member"]
             if (
@@ -133,7 +146,8 @@ class FinancialaidView(generics.ListCreateAPIView):
             aid_status = "waiting"
         else:
             return Response(
-                {"error":"Invalid query param value"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "Invalid query param value"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         if (
             aid_status == "draft"
@@ -145,30 +159,44 @@ class FinancialaidView(generics.ListCreateAPIView):
             return Response({"error":"you can't create draft, already have one"}, status=status.HTTP_403_FORBIDDEN)
         
         serializer.is_valid(raise_exception=True)
-        if request.data['financial_aid_type'] == 'retirement_financial_aid' and not request.user.retired :
-            return Response({"error":'employee is not retired'} , status=status.HTTP_403_FORBIDDEN)
+        if (
+            request.data["financial_aid_type"] == "retirement_financial_aid"
+            and not request.user.retired
+        ):
+            return Response(
+                {"error": "employee is not retired"}, status=status.HTTP_403_FORBIDDEN
+            )
         created_instance = serializer.save(
             employee=request.user,
             family_member=family_member,
             financial_aid_status=aid_status,
         )
         # now create the files
+        files = request.FILES.getlist("files[]", [])
+        if not files and aid_status == 'waiting' :
+            return Response(
+                {"error": "you must upload files"}, status=status.HTTP_400_BAD_REQUEST
+            )
         for f in files:
-            d = Document (employee = request.user , document_file = f , document_name = f.name, financial_aid = created_instance)
+            d = Document(
+                employee=request.user,
+                document_file=f,
+                document_name=f.name,
+                financial_aid=created_instance,
+                loan = None
+            )
             d.save()
-        return Response({"success":"financial aid created"}, status=status.HTTP_201_CREATED)
-    
-    def list(self, request, *args, **kwargs):
-        execlution_criteria = {
-            'financial_aid_status' : 'draft'
-        }
-        financail_aids = Financial_aid.objects.exclude(**execlution_criteria)
-        if financail_aids.exists() :
-            serializer =  FinancialaidSerializer(financail_aids , many = True)
-            return Response(serializer.data , status = status.HTTP_200_OK)
-        return Response([], status = status.HTTP_200_OK)
-    
+        return Response(
+            {"success": "financial aid created"}, status=status.HTTP_201_CREATED
+        )
 
+    def list(self, request, *args, **kwargs):
+        execlution_criteria = {"financial_aid_status": "draft"}
+        financail_aids = Financial_aid.objects.exclude(**execlution_criteria)
+        if financail_aids.exists():
+            serializer = FinancialaidSerializer(financail_aids, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response([], status=status.HTTP_200_OK)
 
 
 # This view to get all financial aids for the employee
@@ -213,28 +241,7 @@ class FinancialaidCheckView(APIView):
                 "Missing 'aid_type' parameter in the request",
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-class testFileUpload (APIView):
-    permission_classes = [AllowAny]
-    
-    def post(self, request):
-        files = request.FILES.getlist('files[]')
-        for f in files:
-            # CREATE A DOCUMENT EVERY TIME
-            print(f.name)
-        return HttpResponse("file uploaded succesfully", status=status.HTTP_200_OK)
-
-class UploadFileView(APIView):
-    parser_classes = (MultiPartParser, FormParser)
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        serializer = FileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(employee=request.user)
-            return Response("file uploaded succesfully", status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        
 
 # To use this view specify request_type (loan|financial-aid) as url
 # also use draft query parameter
@@ -255,7 +262,7 @@ class UpdateRequestView(APIView):
                 return Response(
                     "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
                 )
-
+            files = request.FILES.getlist('files[]', [])
             # update the loan object
             if request_type == "loan":
                 loan = get_object_or_404(Loan, pk=pk)
@@ -267,7 +274,7 @@ class UpdateRequestView(APIView):
                 serializer = LoanSerializer(loan, data=request.data, partial=True)
                 serializer.is_valid(raise_exception=True)
                 serializer.save(loan_status=aid_status)
-                return Response("loan changed succesfully")
+                return Response("loan updated succesfully")
 
             # update the financial-aid object
             elif request_type == "financial-aid":
@@ -298,7 +305,7 @@ class UpdateRequestView(APIView):
                 )
                 serializer.is_valid(raise_exception=True)
                 serializer.save(financial_aid_status=aid_status)
-                return Response("financial aid changed succesfully")
+                return Response("financial aid updated succesfully")
 
         else:
-            return Response("page not found", status=status.HTTP_404_NOT_FOUND)
+            return Response({"error":"page not found"}, status=status.HTTP_404_NOT_FOUND)

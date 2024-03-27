@@ -23,11 +23,6 @@ class LoanSerializer(serializers.ModelSerializer):
         extra_kwargs = {"loan_status": {"read_only": True} ,"employee": {"read_only": True} }
 
 
-class FileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Document
-        fields = ["document_name", "document_file"]
-
 
 class FinancialaidSerializer(serializers.ModelSerializer):
     documents = FileSerializer(many=True)

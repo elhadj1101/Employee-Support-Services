@@ -7,7 +7,7 @@ from .views import (
     LoanCheckView,
     FinancialaidCheckView,
     UpdateRequestView,
-    testFileUpload,
+    
 
 )
 
@@ -22,6 +22,6 @@ urlpatterns = [
     path("financial-aids/", FinancialaidView.as_view()),
     path("financial-aids/history/", FinancialaidHistoryView.as_view()),
     path("financial-aids/check", FinancialaidCheckView.as_view()),
-    # just for testing UploadFileView
-    path("file/", testFileUpload.as_view()),
+
+    
 ]
