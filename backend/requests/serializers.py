@@ -16,12 +16,15 @@ class LoanSerializer(serializers.ModelSerializer):
         min_value=1,
         max_value=12,
     )
+    documents = FileSerializer(many=True)
+    
     class Meta:
         model = Loan
         fields = [
             'id',
             "loan_amount",
             "employee",
+            "documents", 
             "request_created_at",
             "loan_motivation",
             "payment_method",
