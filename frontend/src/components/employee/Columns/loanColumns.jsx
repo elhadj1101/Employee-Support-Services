@@ -72,7 +72,6 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 };
 
-
 export const loanColumns = (colsToHide = []) => {
   const cols = [
     {
@@ -99,30 +98,32 @@ export const loanColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "employee",
-      header: "ID de l'employer",
+      header: () => <div className="text-center">ID de l'employer</div>,
       // to filter ids
       accessorFn: (orow) => {
         return orow.employee.toString();
       },
       cell: ({ row }) => (
-        <div className="text-left font-medium">{row.getValue("employee")}</div>
+        <div className="text-center font-medium">
+          {row.getValue("employee")}
+        </div>
       ),
     },
     {
       accessorKey: "id",
-      header: () => <div className="text-left">ID</div>,
+      header: () => <div className="text-center">ID</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">{row.getValue("id")}</div>
+          <div className="text-center font-medium">{row.getValue("id")}</div>
         );
       },
     },
     {
       accessorKey: "request_created_at",
-      header: () => <div className="text-left">Date Demande</div>,
+      header: () => <div className="text-center">Date Demande</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">
+          <div className="text-center font-medium">
             {row.getValue("request_created_at")}
           </div>
         );
@@ -130,13 +131,13 @@ export const loanColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "loan_status",
-      header: () => <div className="text-left">Status</div>,
+      header: () => <div className="text-center">Status</div>,
       cell: ({ row }) => {
         return (
           <div className="capitalize w-full">
             <div
               className={
-                "w-fit p-2 m-1 rounded-lg " +
+                "w-fit p-2 m-auto rounded-lg " +
                 statusColorMap[row.getValue("loan_status")]
               }
             >
@@ -148,19 +149,19 @@ export const loanColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "loan_amount",
-      header: "Montant par mois",
+      header: () => <div className="text-center">Montant par mois</div>,
       cell: ({ row }) => (
-        <div className="text-left font-medium">
+        <div className="text-center font-medium">
           {row.getValue("loan_amount")}DA
         </div>
       ),
     },
     {
       accessorKey: "loan_period",
-      header: () => <div className="text-left">Period (mois)</div>,
+      header: () => <div className="text-center">Period (mois)</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">
+          <div className="text-center font-medium">
             {row.getValue("loan_period")}
           </div>
         );
@@ -168,69 +169,66 @@ export const loanColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "payment_method",
-      header: () => <div className="text-left">Methode de payement</div>,
+      header: () => <div className="text-center">Methode de payement</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">
+          <div className="text-center font-medium">
             {row.getValue("payment_method")}
           </div>
         );
       },
     },
-  {
-    id: "actions",
-    header: () => <div className="text-left">Actions</div>,
+    {
+      id: "actions",
+      header: () => <div className="text-left">Actions</div>,
 
-    enableHiding: false,
-    cell: ({ row }) => {
-      console.log("roww", row);
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 ">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+      enableHiding: false,
+      cell: ({ row }) => {
+        console.log("roww", row);
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0 ">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-            <NavigateDropdownMenuItem
-              id={row.original.id}
-              text={"Détails de la demande"}
-            />
+              <NavigateDropdownMenuItem
+                id={row.original.id}
+                text={"Détails de la demande"}
+              />
 
-            <Dialog>
-              <DialogTrigger style={{ width: "100%" }}>
-                <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                  Supprimer
-                </div>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    Êtes-vous sûr de Supprimer Cette Demmande?
-                  </DialogTitle>
-                  <DialogDescription>
-                    Cette action va Supprimer definitivement la demmande
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose>
-                    <DeleteButton id={row.original.id} />
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+              <Dialog>
+                <DialogTrigger style={{ width: "100%" }}>
+                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                    Supprimer
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      Êtes-vous sûr de Supprimer Cette Demmande?
+                    </DialogTitle>
+                    <DialogDescription>
+                      Cette action va Supprimer definitivement la demmande
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose>
+                      <DeleteButton id={row.original.id} />
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
     },
-  },
-
-  
   ];
 
   return cols.filter((col) => !colsToHide.includes(col.accessorKey));
 };
-
