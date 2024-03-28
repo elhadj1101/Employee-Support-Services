@@ -184,7 +184,6 @@ export const loanColumns = (colsToHide = []) => {
 
       enableHiding: false,
       cell: ({ row }) => {
-        console.log("roww", row);
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -195,12 +194,16 @@ export const loanColumns = (colsToHide = []) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
               <NavigateDropdownMenuItem
                 id={row.original.id}
                 text={"Détails de la demande"}
               />
-
+              {row.original.loan_status === "draft" && (
+              <NavigateDropdownMenuItem
+                id={"/demande-pret/" +row.original.id}
+                text={"Modifier le broullion"}
+              />
+              )}
               <Dialog>
                 <DialogTrigger style={{ width: "100%" }}>
                   <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">

@@ -49,6 +49,8 @@ function App() {
             <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={[]} />} >
               <Route path="" element={<InitialDashboard />} />
               <Route path="demande-pret" element={<Loan />} />
+              <Route path="demande-pret/:lDId" element={<Loan />} />
+
               <Route path="demande-aide-financiere" element={<FinancialAid />} />
               <Route path="liste-demandes-pret" element={<ListLoans />} />
               <Route path="liste-demandes-pret/:dmId" element={<SingleDemandLoan employee={true}   />} />

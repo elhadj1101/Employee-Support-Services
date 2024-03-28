@@ -251,7 +251,7 @@ class FinancialaidCheckView(APIView):
 class UpdateRequestView(APIView):
     def patch(self, request, request_type, pk):
         # check if the url contains loan or financial-aid
-        if request_type in ["loan", "financial-aid"]:
+        if request_type in ["loans", "financial-aids"]:
             # check for the draft query parameter
             isDraft = request.query_params.get("draft")
             if isDraft == "true":
@@ -260,29 +260,29 @@ class UpdateRequestView(APIView):
                 aid_status = "waiting"
             else:
                 return Response(
-                    "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
+                    {"error":"Invalid query param value"}, status=status.HTTP_400_BAD_REQUEST
                 )
             files = request.FILES.getlist('files[]', [])
             # update the loan object
-            if request_type == "loan":
+            if request_type == "loans":
                 loan = get_object_or_404(Loan, pk=pk)
                 # only draft records can be updated
                 if loan.loan_status != "draft":
                     return Response(
-                        "this loan is not draft", status=status.HTTP_403_FORBIDDEN
+                        {"error":"this loan is not draft"}, status=status.HTTP_403_FORBIDDEN
                     )
                 serializer = LoanSerializer(loan, data=request.data, partial=True)
                 serializer.is_valid(raise_exception=True)
                 serializer.save(loan_status=aid_status)
-                return Response("loan updated succesfully")
+                return Response({"success":"loan updated succesfully"})
 
             # update the financial-aid object
-            elif request_type == "financial-aid":
+            elif request_type == "financial-aids":
                 financial_aid = get_object_or_404(Financial_aid, pk=pk)
                 # only draft records can be updated
                 if financial_aid.financial_aid_status != "draft":
                     return Response(
-                        "this financial-aid is not draft",
+                        {"error":"this financial-aid is not draft"},
                         status=status.HTTP_403_FORBIDDEN,
                     )
                 # family_member can only be changed if the financial_aid_type  is family_member_death
@@ -296,7 +296,7 @@ class UpdateRequestView(APIView):
                     and aid_type != "family_member_death"
                 ):
                     return Response(
-                        "you can't change family member",
+                        {"error":"you can't change family member"},
                         status=status.HTTP_403_FORBIDDEN,
                     )
 
@@ -305,7 +305,10 @@ class UpdateRequestView(APIView):
                 )
                 serializer.is_valid(raise_exception=True)
                 serializer.save(financial_aid_status=aid_status)
-                return Response("financial aid updated succesfully")
-
+                return Response({"success":"financial aid updated succesfully"})
+            else:
+                return Response(
+                    {"error":"page not found"}, status=status.HTTP_404_NOT_FOUND
+                )
         else:
             return Response({"error":"page not found"}, status=status.HTTP_404_NOT_FOUND)

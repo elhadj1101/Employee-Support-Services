@@ -102,7 +102,7 @@ export const aidsColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "employee",
-      header: "ID de l'employer",
+      header: () => <div className="text-center">ID de l'employer</div>,
       // to filter ids
       accessorFn: (orow) => {
         return orow.employee.toString();
