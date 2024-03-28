@@ -71,7 +71,6 @@ function Dashboard() {
     async function fetchAids() {
       const dat = await getAids();
       console.log("fetched Aids");
-      console.log(dat);
       setAids(dat);
       setFetchedAids(true);
     }
