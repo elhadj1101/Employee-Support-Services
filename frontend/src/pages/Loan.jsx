@@ -1,35 +1,52 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Card from "components/Card";
 import { useState } from "react";
 import Popup from "components/Popup";
 import useStore from "store/index.js";
 import { Link } from "react-router-dom";
 import { formatPrice } from "components/utils/utilFunctions";
-
+import { toast } from "sonner";
+import Axios from "api/axios";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/select";
 const Loan = () => {
-  const { user, canApplyLoan } = useStore();
+  const { user, loans, canApplyLoan, setUpdated, loanDraftId } = useStore();
+  const crrntLoan =
+    loanDraftId && loans && loans.filter((loan) => loan.id === loanDraftId)[0];
   const intmaxPayMois = user && user.salary * 0.3;
   const maxPayMois = formatPrice(intmaxPayMois, ",");
   const maxLoan = formatPrice(intmaxPayMois * 12, ",");
-
   const [Montant, setMontant] = useState(intmaxPayMois);
   const [Duration, setDuration] = useState(12);
+  const [motif, setMotif] = useState("");
+  const [payment_method, setPayment_method] = useState("ccp");
+
+  const [motifError, setMotifError] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [MontantError, setMontantError] = useState("");
   const [DurationError, setDurationError] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const montantRegex = /^\d{1,10}$/;
   const durationRegex = /^\d{1,2}$/;
 
+  useEffect(() => {
+    setMontant(!crrntLoan ? intmaxPayMois : crrntLoan?.loan_amount);
+    setDuration(!crrntLoan ? 12 : crrntLoan?.loan_period);
+    setMotif(!crrntLoan ? "" : crrntLoan?.loan_motivation);
+    setPayment_method(!crrntLoan ? "ccp" : crrntLoan?.payment_method);
+  }, [crrntLoan]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     let val = value;
-    if (value.trim) {
-      val = parseInt(value.replace(/[^0-9]/g, ""));
+    if (value.trim && name !== "payment_method") {
+      val = parseFloat(value.replace(/[^0-9]/g, ""));
     }
     if (name === "montant") {
-      if (!montantRegex.test(val)) {
-        setMontantError("Le montant est invalide.");
-      } else if (val <= 0) {
+      if (val <= 0) {
         setMontantError("Le montant ne peut pas etre negatif ou nulle.");
         setMontant(1);
         return;
@@ -45,7 +62,7 @@ const Loan = () => {
         setMontantError("");
       }
       setMontant(val);
-    } else {
+    } else if (name === "duration") {
       if (val < 1 || val > 12) {
         setDurationError("La durée doit être entre 1 et 12 mois.");
         setDuration(12);
@@ -54,31 +71,94 @@ const Loan = () => {
         setDurationError("");
       }
       setDuration(val);
+    } else {
+      setPayment_method(val);
     }
   };
-  const handleSubmit = (e) => {
+  const handleSelectChange = (value) => {
+    setPayment_method(value);
+  };
+
+  const handleShowPopup = (e) => {
     e.preventDefault();
     if (Montant === 0) {
       setMontantError("Veuillez entrer un montant de paiement par mois.");
-    } else if (!montantRegex.test(Montant)) {
-      setMontantError("Format invalide.(max 10 chiffres)");
+      return;
     } else {
       setMontantError("");
     }
     if (Duration === 0) {
       setDurationError("Veuillez entrer une durée.");
+      return;
     } else if (!durationRegex.test(Duration) || Duration > 12 || Duration < 1) {
       setDurationError("Format invalide.(max 2 chiffres et entre 1 et 12)");
+      return;
     } else {
       setDurationError("");
     }
-    if (Montant && Duration && !MontantError && !DurationError) {
-      setShowModal(!showModal);
+    if (Montant && Duration) {
+      setShowModal(true);
     }
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { name } = e.target;
+    let isDraft = "false";
+    if (name === "draft") isDraft = "true";
+    if (motif === "") {
+      setMotifError("Le motif est requis.");
+      return;
+    }
+    const endpoint = crrntLoan
+      ? "/requests/loans/?draft="
+      : `/requests/loans/${loanDraftId}/draft=`;
+    const formData = new FormData();
+    formData.append("loan_amount", parseFloat(Montant));
+    formData.append("loan_period", Duration);
+    formData.append("loan_motivation", motif);
+    formData.append("payment_method", payment_method);
+    Axios.post(endpoint + isDraft, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((res) => {
+        toast.success("La demande a été envoyée avec succès");
+        setUpdated("loans");
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.data?.detail) {
+            toast.error(err.response.data.detail);
+          } else if (err.response.data?.error) {
+            toast.error(err.response.data.error);
+          } else if (err.response.data) {
+            toast.error(
+              Object.keys(err.response.data)[0] +
+                ": " +
+                err.response.data[Object.keys(err.response.data)[0]]
+            );
+          }
+        } else {
+          toast.error(
+            "Une erreur s'est produite lors de l'envoi de la demande"
+          );
+        }
+      });
+
+    setShowModal(false);
   };
   return (
     <div className=" pt-2 bg-slate-200 h-[100vh]">
-      <h1 className="font-semibold tet-2xl ml-6 text-2xl my-2">Demande Loan</h1>
+      <h1 className="font-semibold tet-2xl ml-6 text-2xl my-2">
+        {loanDraftId === false
+          ? "Demande De Pret"
+          : "Modification d'un brouillon (N°:" + loanDraftId + ")"}
+      </h1>
       <div>
         <div className=" max-w-xs mx-auto sm:flex sm:justify-between sm:mx-6 sm:space-x-3 sm:max-w-full    ">
           <Card title="Montant max prét (12 mois)" price={maxLoan} />
@@ -93,7 +173,7 @@ const Loan = () => {
           </p>
         </div>
       </div>
-      {!canApplyLoan && (
+      {!canApplyLoan && !loanDraftId && (
         <div className="flex  items-start">
           <p className="text-red-800 mx-6 text-lg">
             Vous n'êtes pas éligible pour un prét pour le moment. Vous devez
@@ -105,48 +185,82 @@ const Loan = () => {
           </p>
         </div>
       )}
-      {canApplyLoan && (
+      {(canApplyLoan || loanDraftId) && (
         <form className=" sm:px-7 h-auto bg-slate-50 mx-5 rounded-xl p-4">
           <span className="  sm:mt-8 font-medium text-xl flex mb-7 ">
-            Nouvelle demande de prét
+            {loanDraftId === false
+              ? "Nouvelle demande de prét"
+              : "Modification d'un brouillon (N°:" + loanDraftId + ")"}
           </span>
-          <label htmlFor="Montant" className=" sm:flex  sm:mt-7 sm:mb-1    ">
+          <label htmlFor="Montant" className=" sm:flex  sm:mt-7 sm:mb-2    ">
             Montant que vous voulez payer par mois (prix totale:{" "}
             {formatPrice(Montant * Duration, ",")}DA)
           </label>
           <input
             name="montant"
-            className="  sm:flex   w-full   "
+            className="   w-full   "
             value={Montant}
             type="number"
             onChange={handleChange}
+            step="any"
             style={{ borderColor: MontantError ? "red" : "" }}
           />
-          <p className="error font-light text-red-600 ">{MontantError}</p>
+          <p className="error font-light text-red-600 mb-2">{MontantError}</p>
+          <div className="flex gap-2">
+            <div className="basis-1/2">
+              <label htmlFor="durée" className="  sm:mt-8    ">
+                Durée de remboursement souhaitée (en mois [1-12])
+              </label>
+              <input
+                className="  w-full  mt-2 "
+                name="duration"
+                value={Duration}
+                type="number"
+                max={12}
+                min={1}
+                onChange={handleChange}
+                style={{ borderColor: DurationError ? "red" : "" }}
+              />
+            </div>
+            <div className="basis-1/2">
+              <label htmlFor="payment_method" className="  sm:mt-8    ">
+                De quelle manière voulez-vous payer?
+              </label>
+              <Select
+                name="payment_method"
+                value={payment_method}
+                onValueChange={handleSelectChange}
+              >
+                <SelectTrigger className="w-full h-auto p-3 mt-2 rounded-lg">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ccp">CCP</SelectItem>
+                  <SelectItem value="banque">Virement Banquaire</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
 
-          <label htmlFor="durée" className=" sm:flex sm:mt-8  sm:mb-1  ">
-            Durée de remboursement souhaitée (en mois [1-12])
-          </label>
-          <input
-            className="  sm:flex  w-full   "
-            name="duration"
-            value={Duration}
-            type="number"
-            max={12}
-            min={1}
-            onChange={handleChange}
-            style={{ borderColor: DurationError ? "red" : "" }}
-          />
-          <p className="error font-light text-red-600 ">{DurationError}</p>
+          <p className="error font-light text-red-600 mb-2">{DurationError}</p>
           <button
-            onClick={handleSubmit}
+            onClick={handleShowPopup}
             className=" sm:mt-5  bg-blue-900 text-white w-36 py-2 rounded-lg"
           >
             Vérifier
           </button>
           {showModal && (
             <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-75 shadow-2xl">
-              <Popup handleClose={handleSubmit} />
+              <Popup
+                handleClose={handleClose}
+                motif={motif}
+                motifError={motifError}
+                setMotifError={setMotifError}
+                setMotif={setMotif}
+                uploadedFiles={uploadedFiles}
+                setUploadedFiles={setUploadedFiles}
+                handleSubmit={handleSubmit}
+              />
             </div>
           )}
         </form>

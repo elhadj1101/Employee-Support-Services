@@ -83,6 +83,15 @@ const useStore = create((set) => ({
   setFetchedAllLoans: (newStat) => set({fetchedAllLoans : newStat}),
   canApplyLoan: false,
   setCanApplyLoan: (newStat) => set({canApplyLoan : newStat}),
+
+  //this is for when a user create soomething we should refresh the loans or aids
+  updated: false, //[false, "loans", "aids"]
+  setUpdated: (newState) => set({updated: newState}),
+
+  loanDraftId: false, // [false, or id ]
+  setLoanDraftId: (newState) => set({loanDraftId: newState}),
+  aidDraftId: false,
+  setAidDraftId: (newState) => set({aidDraftId: newState}),
 }));
 
 export default useStore;

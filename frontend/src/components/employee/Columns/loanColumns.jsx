@@ -20,7 +20,6 @@ import {
   DialogClose,
   DialogFooter,
 } from "../../ui/dialog";
-
 import { statusColorMap } from "api/requests";
 
 import { useNavigate } from "react-router-dom";
@@ -67,7 +66,7 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
   const handleNavigate = () => {
     // setLoanRequestedId(id);
     // localStorage.setItem("setLoanRequestedId", id);
-     navigate(`${id}`);
+    navigate(`${id}`);
   };
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
@@ -109,9 +108,9 @@ export const loanColumns = [
   },
   // {
   //   accessorKey: "id",
-  //   header: () => <div className="text-center">ID</div>,
+  //   header: () => <div className="text-left">ID</div>,
   //   cell: ({ row }) => {
-  //     return <div className="text-center font-medium">{row.getValue("id")}</div>;
+  //     return <div className="text-left font-medium">{row.getValue("id")}</div>;
   //   },
   // },
   {
@@ -119,7 +118,7 @@ export const loanColumns = [
     header: () => <div className="text-center">Date Demande</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-center font-medium">
+        <div className="text-left  mx-auto font-medium">
           {row.getValue("request_created_at")}
         </div>
       );
@@ -127,13 +126,13 @@ export const loanColumns = [
   },
   {
     accessorKey: "loan_status",
-    header: () => <div className="text-center">Status</div>,
+    header: () => <div className="text-left">Status</div>,
     cell: ({ row }) => {
       return (
         <div className="capitalize w-full">
           <div
             className={
-              "w-fit mx-auto p-2 m-1 rounded-lg " +
+              "w-fit p-2 m-1 rounded-lg " +
               statusColorMap[row.getValue("loan_status")]
             }
           >
@@ -145,10 +144,10 @@ export const loanColumns = [
   },
   {
     accessorKey: "loan_amount",
-    header: () => <div className="text-center">Montant</div>, 
+    header: () => <div className="text-center">Montant</div>,
     cell: ({ row }) => (
       <div className="text-center font-medium">
-        {row.getValue("loan_amount")} DA
+        {row.getValue("loan_amount")}DA
       </div>
     ),
   },
@@ -169,7 +168,7 @@ export const loanColumns = [
 
     enableHiding: false,
     cell: ({ row }) => {
-      console.log('roww',row);
+      console.log("roww", row);
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -189,7 +188,7 @@ export const loanColumns = [
             <Dialog>
               <DialogTrigger style={{ width: "100%" }}>
                 <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                Supprimer
+                  Supprimer
                 </div>
               </DialogTrigger>
               <DialogContent>

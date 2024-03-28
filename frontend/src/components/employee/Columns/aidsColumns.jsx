@@ -132,30 +132,37 @@ export const aidsColumns = [
           >
             {row.getValue("financial_aid_status")}
           </div>
-        </div>
-      );
+          </div>
+        );
+      }
     },
-  },
-  {
-    accessorKey: "financial_aid_type",
-    header: "Type d'aide",
-    cell: ({ row }) => (
-      <div className="text-center font-medium">
-        {typeLabelMap[row.getValue("financial_aid_type")]}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "request_response_at",
-    header: () => <div className="text-center">Date de reponse</div>,
-    cell: ({ row }) => {
-      return (
-        <div className="text-center font-medium">
-          {row.getValue("request_response_at") || "--"}
-        </div>
-      );
+    {
+      accessorKey: "financial_aid_status",
+      header: () => <div className="text-left">Status</div>,
+      cell: ({ row }) => {
+        return (
+          <div className="capitalize w-full">
+            <div
+              className={
+                "w-fit p-2 m-1 rounded-lg " +
+                statusColorMap[row.getValue("financial_aid_status")]
+              }
+            >
+              {row.getValue("financial_aid_status")}
+            </div>
+          </div>
+        );
+      },
     },
-  },
+    {
+      accessorKey: "financial_aid_type",
+      header: "Type d'aide",
+      cell: ({ row }) => (
+        <div className="text-left font-medium">
+          {typeLabelMap[row.getValue("financial_aid_type")]}
+        </div>
+      ),
+    },
   {
     id: "actions",
     header: () => <div className="text-center">Actions</div>,
