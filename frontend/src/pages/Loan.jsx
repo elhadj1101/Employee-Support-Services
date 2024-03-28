@@ -161,9 +161,9 @@ const Loan = () => {
       </h1>
       <div>
         <div className=" max-w-xs mx-auto sm:flex sm:justify-between sm:mx-6 sm:space-x-3 sm:max-w-full    ">
-          <Card title="Montant max prét (12 mois)" price={maxLoan} />
-          <Card title="Max paiment/mois (12 mois)" price={maxPayMois} />
-          <Card title="éligible au prét?" isEligable={canApplyLoan} />
+          <Card title="Montant max prét (12 mois)" price={maxLoan} icon="/icons/loan.png" />
+          <Card title="Max paiment/mois (12 mois)" price={maxPayMois} icon="/icons/timese.png" />
+          <Card title="éligible au prét?" isEligable={canApplyLoan} icon="/icons/eligable.png" />
         </div>
         <div className=" sm:flex md:flex lg:flex mx-6 mb-6">
           <span className=" font-semibold">Remarque:</span>

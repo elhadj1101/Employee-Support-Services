@@ -56,14 +56,14 @@ const Popup = ({
         <div className="  space-x-3 ml-5 mb-5  ">
           <button
             name="not-draft"
-            className=" bg-indigo-800 text-slate-50 py-3 px-6 rounded-md "
+            className=" bg-blue-900 text-slate-50 py-3 px-6 rounded-md "
             onClick={handleSubmit}
           >
             Envoyer la demande
           </button>
           <button
             name="draft"
-            className=" bg-indigo-800 text-slate-50 py-3 px-6 rounded-md "
+            className=" bg-blue-900 text-slate-50 py-3 px-6 rounded-md "
             onClick={handleSubmit}
           >
             Sauvegarder comme brouillon

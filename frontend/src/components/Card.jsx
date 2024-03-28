@@ -1,11 +1,11 @@
 import React from "react";
 
-const Card = ({ title, price, isEligable }) => {
+const Card = ({ title, price, isEligable,icon }) => {
   return (
     <div className=" h-28  sm:basis-1/3 mb-4 flex items-center justify-start gap-7 p-3 bg-slate-50 rounded-lg  ">
       <img
-        className=" mr-2 h-[60px] w-[60px] p-2 rounded-full bg-slate-300"
-        src="/icons/work.svg"
+        className=" mr-2 h-[70px] w-[70px] p-2 rounded-full bg-slate-300"
+        src={icon}
         alt="case"
       />
       <div className=" flex-col justify-start items-start mx-1">
