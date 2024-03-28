@@ -60,7 +60,7 @@ function FileInput({
     },
     [files]
   );
-    const handleDelete = (e) => {
+  const handleDelete = (e) => {
     e.preventDefault();
     const { name } = e.target.dataset;
     const newFiles = files.filter((file) => file.name !== name);
@@ -70,8 +70,8 @@ function FileInput({
     });
     uploadInputElRef.current.files = container.files;
     setFiles(newFiles);
-  }; 
- 
+  };
+
   if (!uploadInputElRef || typeof uploadInputElRef !== "object") {
     uploadInputElRef = uploadInputEltest;
   }
@@ -130,7 +130,7 @@ function FileInput({
       <div className="mt-2 flex items-center justify-center w-full">
         <label
           htmlFor="dropzone-file"
-          className="flex  flex-col items-center justify-center w-full mx-auto h-56 border-1 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
+          className="flex  flex-col items-center justify-center w-full mx-auto h-full border-1 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
         >
           <div
             onDragEnter={handleDragEnter}
@@ -141,8 +141,6 @@ function FileInput({
               isDragActive ? "border-blue-500" : "border-gray-300"
             }  py-8 border-2 justify-center p-5 `}
           >
-       
-
             <img src="/icons/cloud.png" alt="" />
 
             <p className="mb-2 text-gray-600">
@@ -188,9 +186,8 @@ function FileInput({
       </div>
       {files.length > 0 && (
         <div className="flex flex-wrap gap-3 mt-4">
-          
           {files.map((file) => (
-          /*      <div
+            /*      <div
               className="flex items-center bg-green-500 text-slate-100 p-2 rounded-md"
               key={file.name}
             >
@@ -199,15 +196,13 @@ function FileInput({
               <button data-name={file.name} onClick={handleDelete}>
                 X
               </button>
-            </div>  */  
-           <FileUploaded
-             name={file.name}
-             size={file.size}
-             Delete={handleDelete}
-           />  
-            
+            </div>  */
+            <FileUploaded
+              name={file.name}
+              size={file.size}
+              Delete={handleDelete}
+            />
           ))}
-          
         </div>
       )}
     </div>

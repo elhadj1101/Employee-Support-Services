@@ -113,7 +113,7 @@ const Loan = () => {
       setMotifError("Le motif est requis.");
       return;
     }
-    const endpoint = crrntLoan
+    const endpoint = (!crrntLoan || loanDraftId == false)
       ? "/requests/loans/?draft="
       : `/requests/loans/${loanDraftId}/draft=`;
     const formData = new FormData();
@@ -250,7 +250,7 @@ const Loan = () => {
             Vérifier
           </button>
           {showModal && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-75 shadow-2xl">
+            <div className="absolute min-h-full h-max inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-75 shadow-2xl">
               <Popup
                 handleClose={handleClose}
                 motif={motif}

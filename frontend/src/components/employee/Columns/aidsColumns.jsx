@@ -77,7 +77,9 @@ const NavigateDropdownMenuItem = ({ id, email, text }) => {
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 };
-export const aidsColumns = [
+export const aidsColumns = (colsToHide=[]) => {
+
+const cols = [
   {
     id: "select",
     header: ({ table }) => (
@@ -101,10 +103,23 @@ export const aidsColumns = [
     enableHiding: false,
   },
   {
+    accessorKey: "employee",
+    header: "ID de l'employer",
+    // to filter ids
+    accessorFn: (orow) => {
+      return orow.employee.toString();
+    },
+    cell: ({ row }) => (
+      <div className="text-left font-medium">{row.getValue("employee")}</div>
+    ),
+  },
+  {
     accessorKey: "id",
     header: () => <div className="text-center">ID</div>,
     cell: ({ row }) => {
-      return <div className="text-center font-medium">{row.getValue("id")}</div>;
+      return (
+        <div className="text-center font-medium">{row.getValue("id")}</div>
+      );
     },
   },
   {
@@ -132,37 +147,37 @@ export const aidsColumns = [
           >
             {row.getValue("financial_aid_status")}
           </div>
-          </div>
-        );
-      }
-    },
-    {
-      accessorKey: "financial_aid_status",
-      header: () => <div className="text-left">Status</div>,
-      cell: ({ row }) => {
-        return (
-          <div className="capitalize w-full">
-            <div
-              className={
-                "w-fit p-2 m-1 rounded-lg " +
-                statusColorMap[row.getValue("financial_aid_status")]
-              }
-            >
-              {row.getValue("financial_aid_status")}
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "financial_aid_type",
-      header: "Type d'aide",
-      cell: ({ row }) => (
-        <div className="text-left font-medium">
-          {typeLabelMap[row.getValue("financial_aid_type")]}
         </div>
-      ),
+      );
     },
+  },
+  {
+    accessorKey: "financial_aid_status",
+    header: () => <div className="text-left">Status</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="capitalize w-full">
+          <div
+            className={
+              "w-fit p-2 m-1 rounded-lg " +
+              statusColorMap[row.getValue("financial_aid_status")]
+            }
+          >
+            {row.getValue("financial_aid_status")}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "financial_aid_type",
+    header: "Type d'aide",
+    cell: ({ row }) => (
+      <div className="text-left font-medium">
+        {typeLabelMap[row.getValue("financial_aid_type")]}
+      </div>
+    ),
+  },
   {
     id: "actions",
     header: () => <div className="text-center">Actions</div>,
@@ -171,46 +186,49 @@ export const aidsColumns = [
     cell: ({ row }) => {
       return (
         <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <DotsHorizontalIcon className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <DotsHorizontalIcon className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <NavigateDropdownMenuItem
-            email={row.original.email}
-            id={row.original.id}
-            text={"Détails de la demande"}
-          />
+            <NavigateDropdownMenuItem
+              email={row.original.email}
+              id={row.original.id}
+              text={"Détails de la demande"}
+            />
 
-          <Dialog>
-            <DialogTrigger style={{ width: "100%" }}>
-              <div className=" w-full cursor-pointer text-center  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-              Supprimer
-              </div>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  Êtes-vous sûr de Supprimer Cette Demmande?
-                </DialogTitle>
-                <DialogDescription>
-                  Cette action va Supprimer definitivement la demmande
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <DialogClose>
-                  <DeleteButton id={row.original.id} />
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <Dialog>
+              <DialogTrigger style={{ width: "100%" }}>
+                <div className=" w-full cursor-pointer text-center  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                  Supprimer
+                </div>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>
+                    Êtes-vous sûr de Supprimer Cette Demmande?
+                  </DialogTitle>
+                  <DialogDescription>
+                    Cette action va Supprimer definitivement la demmande
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose>
+                    <DeleteButton id={row.original.id} />
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },
 ];
+
+return cols.filter((col) => !colsToHide.includes(col.accessorKey));
+}

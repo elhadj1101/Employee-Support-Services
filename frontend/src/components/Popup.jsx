@@ -1,27 +1,27 @@
 import React, { useRef } from "react";
 import FileInput from "./utils/FileInput";
 const Popup = ({
-  handleClose = (value) => {},
+  handleClose = () => {},
   motif = "",
-  setMotifError = (value)=>{},
-  setMotif = (value) => {},
+  setMotifError = () => {},
+  setMotif = () => {},
   motifError = "",
   uploadedFiles = [],
-  setUploadedFiles = (value) => {},
-  handleSubmit = (value) => {},
+  setUploadedFiles = () => {},
+  handleSubmit = () => {},
 }) => {
   const filesRef = useRef(null);
   const handleChange = (e) => {
-    setMotif(e.target.value)
+    setMotif(e.target.value);
     if (e.target.value !== "") {
-      setMotifError("")
-    }else {
-      setMotifError("Le motif est requis.")
+      setMotifError("");
+    } else {
+      setMotifError("Le motif est requis.");
     }
-}
+  };
   return (
-    <div className="  justify-center items-center flex">
-      <div className="     h-auto sm:w-[800px] w-full border-blue-900 border  rounded-lg my-4   ">
+    <div className="justify-center items-center flex h-full">
+      <div className=" bg-white h-auto sm:w-[800px] w-full border-blue-900 border  rounded-lg my-4   ">
         <h1 className=" p-5 font-medium">Completer la demande</h1>
         <div className=" ml-5">
           <label className=" mb-3 flex" htmlFor="Motif">
@@ -42,6 +42,7 @@ const Popup = ({
             uploadInputElRef={filesRef}
             files={uploadedFiles}
             setFiles={setUploadedFiles}
+            maxFiles={5}
             accepts="application/pdf"
             fileTypes="PDF"
             multpl={true}
@@ -56,7 +57,7 @@ const Popup = ({
             Envoyer la demande
           </button>
           <button
-          name="draft"
+            name="draft"
             className=" bg-indigo-800 text-slate-50 py-3 px-6 rounded-md "
             onClick={handleSubmit}
           >

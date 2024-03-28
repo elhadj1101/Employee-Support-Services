@@ -69,15 +69,16 @@ function FinancialAid() {
       );
       return;
     }
-    if (isDraft === "true" && (uploadedFiles.length > fileNames.length)) {
+    if (isDraft === "true" && uploadedFiles.length > fileNames.length) {
       toast.error(
         `Vous ne pouvez pas ajouter plus de fichiers que nécessaire. (max: ${fileNames.length} fichiers)`
       );
       return;
     }
-    const endpoint = crrntAid
-      ? "/requests/financial-aids/?draft="
-      : `/requests/financial-aids/${aidDraftId}/draft=` ;
+    const endpoint =
+      !crrntAid || aidDraftId == false
+        ? "/requests/financial-aids/?draft="
+        : `/requests/financial-aids/${aidDraftId}/draft=`;
     const formData = new FormData();
     formData.append("financial_aid_type", aidData.aidType);
     formData.append("family_member", aidData.familyMember);
