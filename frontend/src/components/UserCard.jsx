@@ -28,7 +28,7 @@ export default function UserCard({ user }) {
           employé details
         </h1>
         <Link href="#" className="underline font-semibold pb-2 cursor-pointer">
-          Plus de détails
+         Tout Les Demmandes
         </Link>
       </div>
       <div className="my-2 flex justify-between items-center">

@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-import {  DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
   DialogContent,
@@ -64,171 +64,174 @@ const DeleteButton = ({ id }) => {
     </Button>
   );
 };
-const NavigateDropdownMenuItem = ({ id, email, text }) => {
-  const { setProfileRequsted } = useStore();
+const NavigateDropdownMenuItem = ({ id, text }) => {
+  // const { setLoanRequestedId } = useStore();
 
   const navigate = useNavigate();
+  const parts = window.location.pathname
+    .split("/")
+    .filter((part) => part.trim() !== "");
+  let employee = parts[parts.length - 1];
   const handleNavigate = () => {
-    // setProfileRequsted(id);
-    // localStorage.setItem("profileRequsted", id);
-
-    // navigate(`${id}`);
+    // setLoanRequestedId(id);
+    // localStorage.setItem("setLoanRequestedId", id);
+    if (employee === "liste-demandes-aide-financiere") {
+      navigate(`${id}`);
+    } else navigate(`aid/${id}`);
   };
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 };
-export const aidsColumns = (colsToHide=[]) => {
-
-const cols = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "employee",
-    header: "ID de l'employer",
-    // to filter ids
-    accessorFn: (orow) => {
-      return orow.employee.toString();
+export const aidsColumns = (colsToHide = []) => {
+  const cols = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
     },
-    cell: ({ row }) => (
-      <div className="text-left font-medium">{row.getValue("employee")}</div>
-    ),
-  },
-  {
-    accessorKey: "id",
-    header: () => <div className="text-center">ID</div>,
-    cell: ({ row }) => {
-      return (
-        <div className="text-center font-medium">{row.getValue("id")}</div>
-      );
+    {
+      accessorKey: "employee",
+      header: "ID de l'employer",
+      // to filter ids
+      accessorFn: (orow) => {
+        return orow.employee.toString();
+      },
+      cell: ({ row }) => (
+        <div className="text-left font-medium">{row.getValue("employee")}</div>
+      ),
     },
-  },
-  {
-    accessorKey: "request_created_at",
-    header: () => <div className="text-center">Date Demande</div>,
-    cell: ({ row }) => {
-      return (
-        <div className="text-center font-medium">
-          {row.getValue("request_created_at")}
-        </div>
-      );
+    {
+      accessorKey: "id",
+      header: () => <div className="text-center">ID</div>,
+      cell: ({ row }) => {
+        return (
+          <div className="text-center font-medium">{row.getValue("id")}</div>
+        );
+      },
     },
-  },
-  {
-    accessorKey: "financial_aid_status",
-    header: () => <div className="text-center">Status</div>,
-    cell: ({ row }) => {
-      return (
-        <div className="capitalize w-full">
-          <div
-            className={
-              "w-fit p-2 m-1 rounded-lg " +
-              statusColorMap[row.getValue("financial_aid_status")]
-            }
-          >
-            {row.getValue("financial_aid_status")}
+    {
+      accessorKey: "request_created_at",
+      header: () => <div className="text-center">Date Demande</div>,
+      cell: ({ row }) => {
+        return (
+          <div className="text-center font-medium">
+            {row.getValue("request_created_at")}
           </div>
-        </div>
-      );
+        );
+      },
     },
-  },
-  {
-    accessorKey: "financial_aid_status",
-    header: () => <div className="text-left">Status</div>,
-    cell: ({ row }) => {
-      return (
-        <div className="capitalize w-full">
-          <div
-            className={
-              "w-fit p-2 m-1 rounded-lg " +
-              statusColorMap[row.getValue("financial_aid_status")]
-            }
-          >
-            {row.getValue("financial_aid_status")}
+    {
+      accessorKey: "financial_aid_status",
+      header: () => <div className="text-center">Status</div>,
+      cell: ({ row }) => {
+        return (
+          <div className="capitalize w-full">
+            <div
+              className={
+                "w-fit p-2 m-1 rounded-lg " +
+                statusColorMap[row.getValue("financial_aid_status")]
+              }
+            >
+              {row.getValue("financial_aid_status")}
+            </div>
           </div>
+        );
+      },
+    },
+    {
+      accessorKey: "financial_aid_status",
+      header: () => <div className="text-left">Status</div>,
+      cell: ({ row }) => {
+        return (
+          <div className="capitalize w-full">
+            <div
+              className={
+                "w-fit p-2 m-1 rounded-lg " +
+                statusColorMap[row.getValue("financial_aid_status")]
+              }
+            >
+              {row.getValue("financial_aid_status")}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "financial_aid_type",
+      header: "Type d'aide",
+      cell: ({ row }) => (
+        <div className="text-left font-medium">
+          {typeLabelMap[row.getValue("financial_aid_type")]}
         </div>
-      );
+      ),
     },
-  },
-  {
-    accessorKey: "financial_aid_type",
-    header: "Type d'aide",
-    cell: ({ row }) => (
-      <div className="text-left font-medium">
-        {typeLabelMap[row.getValue("financial_aid_type")]}
-      </div>
-    ),
-  },
-  {
-    id: "actions",
-    header: () => <div className="text-center">Actions</div>,
+    {
+      id: "actions",
+      header: () => <div className="text-center">Actions</div>,
 
-    enableHiding: false,
-    cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+      enableHiding: false,
+      cell: ({ row }) => {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-            <NavigateDropdownMenuItem
-              email={row.original.email}
-              id={row.original.id}
-              text={"Détails de la demande"}
-            />
+              <NavigateDropdownMenuItem
+                id={row.original.id}
+                text={"Détails de la demande"}
+              />
 
-            <Dialog>
-              <DialogTrigger style={{ width: "100%" }}>
-                <div className=" w-full cursor-pointer text-center  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                  Supprimer
-                </div>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    Êtes-vous sûr de Supprimer Cette Demmande?
-                  </DialogTitle>
-                  <DialogDescription>
-                    Cette action va Supprimer definitivement la demmande
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose>
-                    <DeleteButton id={row.original.id} />
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+              <Dialog>
+                <DialogTrigger style={{ width: "100%" }}>
+                  <div className=" w-full cursor-pointer text-center  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                    Supprimer
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      Êtes-vous sûr de Supprimer Cette Demmande?
+                    </DialogTitle>
+                    <DialogDescription>
+                      Cette action va Supprimer definitivement la demmande
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose>
+                      <DeleteButton id={row.original.id} />
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
     },
-  },
-];
+  ];
 
-return cols.filter((col) => !colsToHide.includes(col.accessorKey));
-}
+  return cols.filter((col) => !colsToHide.includes(col.accessorKey));
+};

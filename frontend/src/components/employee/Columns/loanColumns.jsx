@@ -63,15 +63,21 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
   // const { setLoanRequestedId } = useStore();
 
   const navigate = useNavigate();
+  const parts = window.location.pathname
+    .split("/")
+    .filter((part) => part.trim() !== "");
+  let employee = parts[parts.length - 1];
+
   const handleNavigate = () => {
     // setLoanRequestedId(id);
     // localStorage.setItem("setLoanRequestedId", id);
-    navigate(`${id}`);
+    if (employee === "liste-demandes-pret") {
+      navigate(`${id}`);
+    } else navigate(`pret/${id}`);
   };
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 };
-
 
 export const loanColumns = (colsToHide = []) => {
   const cols = [
@@ -177,60 +183,57 @@ export const loanColumns = (colsToHide = []) => {
         );
       },
     },
-  {
-    id: "actions",
-    header: () => <div className="text-left">Actions</div>,
+    {
+      id: "actions",
+      header: () => <div className="text-left">Actions</div>,
 
-    enableHiding: false,
-    cell: ({ row }) => {
-      console.log("roww", row);
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 ">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+      enableHiding: false,
+      cell: ({ row }) => {
+        console.log("roww", row);
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0 ">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-            <NavigateDropdownMenuItem
-              id={row.original.id}
-              text={"Détails de la demande"}
-            />
+              <NavigateDropdownMenuItem
+                id={row.original.id}
+                text={"Détails de la demande"}
+              />
 
-            <Dialog>
-              <DialogTrigger style={{ width: "100%" }}>
-                <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                  Supprimer
-                </div>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    Êtes-vous sûr de Supprimer Cette Demmande?
-                  </DialogTitle>
-                  <DialogDescription>
-                    Cette action va Supprimer definitivement la demmande
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose>
-                    <DeleteButton id={row.original.id} />
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+              <Dialog>
+                <DialogTrigger style={{ width: "100%" }}>
+                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                    Supprimer
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      Êtes-vous sûr de Supprimer Cette Demmande?
+                    </DialogTitle>
+                    <DialogDescription>
+                      Cette action va Supprimer definitivement la demmande
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose>
+                      <DeleteButton id={row.original.id} />
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
     },
-  },
-
-  
   ];
 
   return cols.filter((col) => !colsToHide.includes(col.accessorKey));
 };
-
