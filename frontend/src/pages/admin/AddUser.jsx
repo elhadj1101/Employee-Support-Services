@@ -13,85 +13,92 @@ import { createUser, getUsers } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
 
 export default function AddUser() {
-  const { AddUserData, setAddUserData , setAdminUsers } = useStore();
+  const { AddUserData, setAddUserData, setAdminUsers } = useStore();
   const [newErrors, setNewErrors] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem('formCleared') !== 'true') {
-      localStorage.setItem('formCleared', 'true');
+    if (localStorage.getItem("formCleared") !== "true") {
+      localStorage.setItem("formCleared", "true");
       window.location.reload();
     }
   }, []);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    let formattedValue = '';
-  
+    let formattedValue = "";
+
     switch (name) {
       case "last_name":
-        formattedValue = value.replace(/[^a-zA-Z ]/g, '');
+        formattedValue = value.replace(/[^a-zA-Z ]/g, "");
         break;
       case "first_name":
-        formattedValue = value.replace(/[^a-zA-Z ]/g, '');
+        formattedValue = value.replace(/[^a-zA-Z ]/g, "");
         break;
       case "id_number":
-        formattedValue = value.replace(/[^0-9]/, '');
+        formattedValue = value.replace(/[^0-9]/, "");
         formattedValue = formattedValue.replace(/(\d{2})(?=\d)/g, "$1 ");
 
         break;
       case "salary":
-        formattedValue = value.replace(/[^0-9]/, '');
+        formattedValue = value.replace(/[^0-9]/, "");
         formattedValue = formattedValue.replace(/(\d{3})(?=\d)/g, "$1,");
-
 
         break;
       case "bank_rib":
-        formattedValue = value.replace(/[^0-9]/, '');
+        formattedValue = value.replace(/[^0-9]/, "");
         formattedValue = formattedValue.replace(/(\d{4})(?=\d)/g, "$1 ");
         break;
-        case "rip":
-          formattedValue = value.replace(/[^0-9]/g, '');
-          formattedValue = formattedValue.replace(/(\d{10})/, "$1 ");
-          break;
-        
-          case "phone_number":
-            // Remove all non-digit characters from the input value
-            const digitsOnly = value.replace(/[^0-9]/g, '');
+      case "rip":
+        formattedValue = value.replace(/[^0-9]/g, "");
+        formattedValue = formattedValue.replace(/(\d{10})/, "$1 ");
+        break;
+      case "retired":
+        formattedValue = (!AddUserData.retired)
+        break;
 
-            // Check if the first digit is 0
-            const firstDigit = digitsOnly.charAt(0);
-            if (firstDigit === '0') {
-                if (digitsOnly.length === 1) {
-                    // If only one digit is entered and it's 0, keep it
-                    formattedValue = digitsOnly.charAt(0);
-                } else if (digitsOnly.length >= 2) {
-                    // If more than one digit is entered, check the second digit
-                    const secondDigit = digitsOnly.charAt(1);
-                    if (['5', '6', '7'].includes(secondDigit)) {
-                        // If the second digit is 5, 6, or 7, format the phone number
-                        if (digitsOnly.length <= 2) {
-                            formattedValue = digitsOnly;
-                        } else if (digitsOnly.length <= 6) {
-                            formattedValue = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(2)}`;
-                        } else {
-                            formattedValue = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(2, 6)} ${digitsOnly.slice(6, 10)}`;
-                        }
-                    } else {
-                        // If the second digit is not 5, 6, or 7, reset the value
-                        formattedValue = digitsOnly.charAt(0);
-                      }
-                }
+      case "phone_number":
+        // Remove all non-digit characters from the input value
+        const digitsOnly = value.replace(/[^0-9]/g, "");
+
+        // Check if the first digit is 0
+        const firstDigit = digitsOnly.charAt(0);
+        if (firstDigit === "0") {
+          if (digitsOnly.length === 1) {
+            // If only one digit is entered and it's 0, keep it
+            formattedValue = digitsOnly.charAt(0);
+          } else if (digitsOnly.length >= 2) {
+            // If more than one digit is entered, check the second digit
+            const secondDigit = digitsOnly.charAt(1);
+            if (["5", "6", "7"].includes(secondDigit)) {
+              // If the second digit is 5, 6, or 7, format the phone number
+              if (digitsOnly.length <= 2) {
+                formattedValue = digitsOnly;
+              } else if (digitsOnly.length <= 6) {
+                formattedValue = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(
+                  2
+                )}`;
+              } else {
+                formattedValue = `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(
+                  2,
+                  6
+                )} ${digitsOnly.slice(6, 10)}`;
+              }
             } else {
-                // If the first digit is not 0, reset the value
-                formattedValue = '';
+              // If the second digit is not 5, 6, or 7, reset the value
+              formattedValue = digitsOnly.charAt(0);
             }
-            break;
+          }
+        } else {
+          // If the first digit is not 0, reset the value
+          formattedValue = "";
+        }
+        break;
       default:
         formattedValue = value;
         break;
     }
-  
+
     localStorage.setItem(`form/${name}`, formattedValue);
     const prev = { ...AddUserData, [name]: formattedValue };
     setAddUserData(prev);
@@ -104,7 +111,7 @@ export default function AddUser() {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (newErrors.email) delete newErrors.email;
-    if (!formData.email.replace(/ /g, '')|| !emailRegex.test(formData.email)) {
+    if (!formData.email.replace(/ /g, "") || !emailRegex.test(formData.email)) {
       newErrors.email = "Veuillez saisir une adresse e-mail valide.";
     }
 
@@ -112,65 +119,85 @@ export default function AddUser() {
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
     if (newErrors.password) delete newErrors.password;
 
-    if (!formData.password.replace(/ /g, '')|| !passwordRegex.test(formData.password.replace(/ /g, ''))) {
+    if (
+      !formData.password.replace(/ /g, "") ||
+      !passwordRegex.test(formData.password.replace(/ /g, ""))
+    ) {
       newErrors.password =
         "Le mot de passe doit comporter au moins 8 caractères et contenir au moins une lettre majuscule, une lettre minuscule et un chiffre.";
     }
     if (newErrors.bank_rib) delete newErrors.bank_rib;
 
     // Validate RIB length
-    console.log('ribbbb' , formData.bank_rib.replace(/ /g, ''));
+    console.log("ribbbb", formData.bank_rib.replace(/ /g, ""));
     if (
-      (formData.bank_rib.replace(/ /g, '')&& formData.bank_rib.replace(/ /g, '').length !== 20)
+      formData.bank_rib.replace(/ /g, "") &&
+      formData.bank_rib.replace(/ /g, "").length !== 20
     ) {
       newErrors.bank_rib = "Le RIB doit comporter exactement 20 chiffres.";
     }
     if (newErrors.phone_number) delete newErrors.phone_number;
-    console.log('phone' , formData.phone_number.replace(/ /g, ''));
 
     // Validate phone number length
     if (
-      !formData.phone_number.replace(/ /g, '') ||
-      formData.phone_number.replace(/ /g, '').length !== 10) {
+      !formData.phone_number.replace(/ /g, "") ||
+      formData.phone_number.replace(/ /g, "").length !== 10
+    ) {
       newErrors.phone_number =
         "Le numéro de téléphone doit comporter exactement 10 chiffres.";
     }
     if (newErrors.rip) delete newErrors.rip;
-    console.log('ripp' , formData.rip.replace(/ /g, ''));
 
     // Validate RIP length
     if (
-      !formData.rip.replace(/ /g, '')||
-      formData.rip.replace(/ /g, '').length +"00799999".length !== 20 ) {
+      !formData.rip.replace(/ /g, "") ||
+      formData.rip.replace(/ /g, "").length + "00799999".length !== 20
+    ) {
       newErrors.rip = "Le RIP doit comporter exactement 20 chiffres.";
     }
 
     if (newErrors.id_number) delete newErrors.id_number;
 
     // Validate ID number length
-    if (!formData.id_number.replace(/ /g, '')|| formData.id_number.replace(/ /g, '').length !== 18) {
+    if (
+      !formData.id_number.replace(/ /g, "") ||
+      formData.id_number.replace(/ /g, "").length !== 18
+    ) {
       newErrors.id_number =
         "Le numéro d'identification doit comporter exactement 18 caractères.";
     }
+    console.log('form' ,formData.retired ,formData.retired_at);
 
+    // retired and retired_at
+    if(formData.retired && formData.retired_at ===''){
+      newErrors.retired_at  =
+      "date de Retirement est requis.";
+    }
     Object.keys(formData).forEach((key) => {
       if (newErrors.key) delete newErrors.key;
-      if (!formData[key] && key !== "is_active") {
-        newErrors[key] = `${key} est requis.`;
+      if (!formData[key] && key !== "is_active" && key !=='retired_at') {
+        newErrors[key] = `${key.replace('_' ,' ')} est requis.`;
       }
     });
+
+    console.log('form data' , formData);
     // Check if any errors occurred
     if (Object.keys(newErrors).length !== 0) {
       setNewErrors(newErrors);
       return;
     }
+
     Object.keys(formData).forEach((key) => {
-      if (formData[key] && key !== "is_active") {
-        formData[key] = formData[key].replace(/ /g, '')
+      if (formData[key] && key !== "is_active" && key !=='retired') {
+        formData[key] = formData[key].replace(/ /g, "");
       }
     });
     try {
-      const newUser = await createUser({ ...AddUserData, rip: '00799999' + AddUserData.rip.replace(/ /g, '') , salary: AddUserData.salary.replace(/,/g, '') });
+      const newUser = await createUser({
+        ...AddUserData,
+        rip: "00799999" + AddUserData.rip.replace(/ /g, ""),
+        salary: AddUserData.salary.replace(/,/g, ""),
+      });
       if (newUser.status === 201) {
         toast.success("Utilisateur créé avec succès");
         Object.keys(localStorage).forEach((key) => {
@@ -178,19 +205,18 @@ export default function AddUser() {
             localStorage.removeItem(key);
           }
         });
-        localStorage.setItem('formCleared', 'true');
+        localStorage.setItem("formCleared", "true");
 
-        try{
+        try {
           const updatedUsers = await getUsers();
-          console.log('u', updatedUsers);
-         if(updatedUsers){
-          setAdminUsers(updatedUsers);
-          navigate("/utilisateurs");
-         }
-        }catch(err){
+          console.log("u", updatedUsers);
+          if (updatedUsers) {
+            setAdminUsers(updatedUsers);
+            navigate("/utilisateurs");
+          }
+        } catch (err) {
           console.log(err);
         }
-
       }
     } catch (error) {
       console.log("errror", error);
@@ -204,8 +230,6 @@ export default function AddUser() {
       }
     }
   };
-
-
 
   return (
     <div className="w-full flex-grow flex flex-col  bg-lightgray">
@@ -297,14 +321,13 @@ export default function AddUser() {
                   N° Pièce d'identification
                   <span style={{ color: "red" }}> * </span>
                 </label>
-                
+
                 <input
                   id="id_number"
                   name="id_number"
                   type="text"
                   placeholder="XX XX XX XX XX XX XX XX XX"
                   maxLength={26}
-
                   className=" relative w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                   value={AddUserData.id_number}
                   onChange={(e) => handleChange(e)}
@@ -314,7 +337,6 @@ export default function AddUser() {
                       : " rgb(229 231 235 / var(--tw-border-opacity))",
                   }}
                 />
-              
 
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.id_number}
@@ -387,6 +409,26 @@ export default function AddUser() {
                   {newErrors?.password}
                 </p>
               </div>
+             <div className=" mt-5 flex flex-col gap-1">
+                <label className="pb-1" htmlFor="recruted_at">
+                date de Recrutement
+                  <span
+                    style={{ color: "red" }}
+                  >
+                    {" "}
+                    *
+                  </span>
+                </label>
+                <DatePickerDemo
+                  id="dateNaissance"
+                  name="dateNaissance"
+                  value={AddUserData.recruted_at}
+                  input='recruted_at'
+                />
+                <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
+                  {newErrors?.recruted_at}
+                </p>
+              </div>
               <div className="flex flex-col gap-1">
                 <label htmlFor="role">
                   Role<span style={{ color: "red" }}> * </span>
@@ -423,44 +465,43 @@ export default function AddUser() {
                   {newErrors?.role}
                 </p>
               </div>
-              {/* <div className="flex flex-col gap-1"> 
-                <label htmlFor="upload" className="mb-2">
-                  Photo de l'utilisateur
-                  <span style={{ color: "red" }}> * </span>
+              
+              <div className="flex items-center gap-2 mt-4">
+                <input
+                  id="retired"
+                  name="retired"
+                  type="checkbox"
+                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  checked={AddUserData.retired}
+                  onChange={(e) =>handleChange(e)}
+                />
+                <label htmlFor="retired">
+                  Est-il retraité ?
                 </label>
-                <div className="flex items-center justify-center w-full">
-                  <label
-                    htmlFor="dropzone-file"
-                    className="flex flex-col items-center justify-center w-full mx-auto h-56 border-1 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
+              </div>
+          
+
+
+              { AddUserData.retired && <div className=" mt-5 flex flex-col gap-1">
+                <label htmlFor="retired_at">
+                date de Retirement
+                  <span
+                    style={{ color: "red" }}
                   >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg
-                        className="w-8 h-8 mb-4 text-gray-500"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                        />
-                      </svg>
-                      <p className="mb-2 text-sm  text-gray-500">
-                        <span className="font-semibold">Click to upload</span>{" "}
-                        or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        SVG, PNG or JPG (MAX. 800x400px)
-                      </p>
-                    </div>
-                    <input id="dropzone-file" type="file" className="hidden" />
-                  </label>
-                </div>
-              </div> */}
+                    {" "}
+                    *
+                  </span>
+                </label>
+                <DatePickerDemo
+                  id="dateNaissance"
+                  name="dateNaissance"
+                  value={AddUserData.retired_at}
+                  input='retired_at'
+                />
+                <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
+                  {newErrors?.retired_at}
+                </p>
+              </div>}
             </div>
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold py-2 mb-2 mt-4 border-l-4 border-light-blue px-3 bg-[#e2e8ff] text-light-blue text-lg  ">
@@ -493,22 +534,28 @@ export default function AddUser() {
                   CCP Rip<span style={{ color: "red" }}> * </span>
                 </label>
                 <div className="relative">
-                <input
-                  id="rip"
-                  name="rip"
-                  type="text"
-                  maxLength={13}
-                  placeholder="XXXXXXXXXX XX"
-                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base pl-20"
-                  value={AddUserData.rip}
-                  onChange={(e) => handleChange(e)}
-                  style={{
-                    borderColor: newErrors?.rip
-                      ? "red"
-                      : " rgb(229 231 235 / var(--tw-border-opacity))",
-                  }}
-                />
-                <p className={`pl-2 absolute top-1/2 left-0 -translate-y-1/2  ${AddUserData?.rip.length !== 0 ?'':'text-gray-500'} `}>00799999</p>
+                  <input
+                    id="rip"
+                    name="rip"
+                    type="text"
+                    maxLength={13}
+                    placeholder="XXXXXXXXXX XX"
+                    className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base pl-20"
+                    value={AddUserData.rip}
+                    onChange={(e) => handleChange(e)}
+                    style={{
+                      borderColor: newErrors?.rip
+                        ? "red"
+                        : " rgb(229 231 235 / var(--tw-border-opacity))",
+                    }}
+                  />
+                  <p
+                    className={`pl-2 absolute top-1/2 left-0 -translate-y-1/2  ${
+                      AddUserData?.rip.length !== 0 ? "" : "text-gray-500"
+                    } `}
+                  >
+                    00799999
+                  </p>
                 </div>
                 <p className="text-red-500 text-[11px]   font-light mb-1 h-3">
                   {newErrors?.rip}
@@ -620,9 +667,7 @@ export default function AddUser() {
                 <label htmlFor="birth_date">
                   Date de naissance
                   <span
-                    style={{
-                      color: " rgb(229 231 235 / var(--tw-border-opacity))",
-                    }}
+                   style={{ color: "red" }}
                   >
                     {" "}
                     *{" "}
@@ -633,6 +678,7 @@ export default function AddUser() {
                   id="dateNaissance"
                   name="dateNaissance"
                   value={AddUserData.birth_date}
+                  input="birth_date"
                 />
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
                   {newErrors?.birth_date}

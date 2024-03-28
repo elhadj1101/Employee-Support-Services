@@ -71,7 +71,7 @@ function Dashboard() {
     async function fetchAids() {
       const dat = await getAids();
       console.log("fetched Aids");
-
+      console.log(dat);
       setAids(dat);
       setFetchedAids(true);
     }
@@ -100,7 +100,7 @@ function Dashboard() {
 
   }, []);
   return (
-    <div className=" ">
+    <div className="h-screen  ">
       <div
         className={`   ${
           open ? "z-[99] fixed top-0 -translate-x-full" : " hidden  lg:block "
@@ -109,7 +109,7 @@ function Dashboard() {
         <Sidebar />
       </div>
       <div className=" lg:ml-[250px] flex flex-col h-screen   ">
-        <div className=" flex items-center cursor-pointer ml-3    ">
+        <div className=" flex items-center cursor-pointer pl-3    ">
           <img
             className=" h-7 w-7 lg:hidden  "
             src="/icons/menu.png"
@@ -118,7 +118,7 @@ function Dashboard() {
           />
           <Navbar />
         </div>
-        <div onClick={hideSidebar}>
+        <div onClick={hideSidebar} className="h-full  overflow-auto">
           <Outlet />
         </div>
       </div>

@@ -9,7 +9,68 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter,
+} from "../../ui/dialog";
 import { statusColorMap } from "api/requests";
+
+import { useNavigate } from "react-router-dom";
+import useStore from "../../../store/index";
+import { toast } from "sonner";
+
+const DeleteButton = ({ id }) => {
+  const { setAdminUsers } = useStore();
+
+  const handleDeleteClick = async (e) => {
+    // try {
+    //   const response = await deleteUser(id);
+    //   if (response.success) {
+    //     toast.success("Le compte utilisateur a été désactivé avec succès.");
+    //   }
+    //   const updatedUsers = await getUsers();
+    //   setAdminUsers(updatedUsers);
+    // } catch (error) {
+    //   if (error.detail) {
+    //     toast.error(error.detail);
+    //   } else if (error.error) {
+    //     toast.error(error.error);
+    //   } else {
+    //     toast.error(
+    //       "Une erreur s'est produite lors de desactivation du compte."
+    //     );
+    //   }
+    // }
+  };
+  return (
+    <Button
+      variant="danger"
+      className="hover:bg-red-600 hover:text-white border border-red-800 text-red-800"
+      onClick={(e) => handleDeleteClick(e)}
+    >
+      Supprimer{" "}
+    </Button>
+  );
+};
+const NavigateDropdownMenuItem = ({ id, text }) => {
+  // const { setLoanRequestedId } = useStore();
+
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    // setLoanRequestedId(id);
+    // localStorage.setItem("setLoanRequestedId", id);
+    navigate(`${id}`);
+  };
+
+  return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
+};
 
 export const loanColumns = [
   {
@@ -36,13 +97,13 @@ export const loanColumns = [
   },
   {
     accessorKey: "employee",
-    header: "ID de l'employer",
+    header: () => <div className="text-center">ID de l'employer</div>,
     // to filter ids
     accessorFn: (orow) => {
       return orow.employee.toString();
     },
     cell: ({ row }) => (
-      <div className="text-left font-medium">{row.getValue("employee")}</div>
+      <div className="text-center font-medium">{row.getValue("employee")}</div>
     ),
   },
   // {
@@ -54,10 +115,10 @@ export const loanColumns = [
   // },
   {
     accessorKey: "request_created_at",
-    header: () => <div className="text-left">Date Demande</div>,
+    header: () => <div className="text-center">Date Demande</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-left font-medium">
+        <div className="text-left  mx-auto font-medium">
           {row.getValue("request_created_at")}
         </div>
       );
@@ -83,51 +144,72 @@ export const loanColumns = [
   },
   {
     accessorKey: "loan_amount",
-    header: "Montant",
+    header: () => <div className="text-center">Montant</div>,
     cell: ({ row }) => (
-      <div className="text-left font-medium">
+      <div className="text-center font-medium">
         {row.getValue("loan_amount")}DA
       </div>
     ),
   },
   {
     accessorKey: "loan_period",
-    header: () => <div className="text-left">Period (mois)</div>,
+    header: () => <div className="text-center">Period (mois)</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-left font-medium">
+        <div className="text-center font-medium">
           {row.getValue("loan_period")}
         </div>
       );
     },
   },
-  // {
-  //   id: "actions",
-  //   enableHiding: false,
-  //   cell: ({ row }) => {
-  //     const payment = row.original;
+  {
+    id: "actions",
+    header: () => <div className="text-left">Actions</div>,
 
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="ghost" className="h-8 w-8 p-0">
-  //             <span className="sr-only">Open menu</span>
-  //             <DotsHorizontalIcon className="h-4 w-4" />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end">
-  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //           <DropdownMenuItem
-  //             onClick={() => navigator.clipboard.writeText(payment.id)}
-  //           >
-  //             Copy request ID
-  //           </DropdownMenuItem>
-  //           <DropdownMenuSeparator />
-  //           <DropdownMenuItem>View Request</DropdownMenuItem>
-  //           <DropdownMenuItem>Delete</DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
-  //   },
-  // },
+    enableHiding: false,
+    cell: ({ row }) => {
+      console.log("roww", row);
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 ">
+              <span className="sr-only">Open menu</span>
+              <DotsHorizontalIcon className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+            <NavigateDropdownMenuItem
+              id={row.original.id}
+              text={"Détails de la demande"}
+            />
+
+            <Dialog>
+              <DialogTrigger style={{ width: "100%" }}>
+                <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                  Supprimer
+                </div>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>
+                    Êtes-vous sûr de Supprimer Cette Demmande?
+                  </DialogTitle>
+                  <DialogDescription>
+                    Cette action va Supprimer definitivement la demmande
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose>
+                    <DeleteButton id={row.original.id} />
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
 ];

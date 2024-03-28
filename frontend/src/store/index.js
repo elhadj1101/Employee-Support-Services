@@ -18,6 +18,10 @@ const useStore = create((set) => ({
     role: localStorage.getItem("form/role") || "",
     phone_number: localStorage.getItem("form/phone_number") || "",
     is_active: false,
+    retired:localStorage.getItem("form/retired") || false,
+    retired_at:localStorage.getItem("form/retired_at") || "",
+    recruted_at:localStorage.getItem("form/recruted_at") || "",
+
   },
   UserProfileData:{
     email: localStorage.getItem("profile/email") || "",
@@ -34,6 +38,10 @@ const useStore = create((set) => ({
     role: localStorage.getItem("profile/role") || "",
     phone_number: localStorage.getItem("profile/phone_number") || "",
     is_active: false,
+    retired:localStorage.getItem("profile/retired") || false,
+    retired_at:localStorage.getItem("profile/retired_at") || "",
+    recruted_at:localStorage.getItem("profile/recruted_at") || "",
+
   },
   adminUsers: [],
   fetchedAdminUsers: false,
@@ -41,6 +49,8 @@ const useStore = create((set) => ({
   setAdminUsers: (newAdminUsers) => set({ adminUsers: [ ...newAdminUsers] }),
   profileRequsted: localStorage.getItem("profileRequsted") || null,
   setProfileRequsted: (newProfileRequsted) => set({ profileRequsted: newProfileRequsted }),
+  LoanRequestedId: sessionStorage.getItem("requestedLoanId") || null,
+  setLoanRequestedId: (newLoanRequestedId) => set({ LoanRequestedId: newLoanRequestedId}),
 
   setAddUserData: (newFormData) => set({ AddUserData: newFormData }),
   setProfileUserData : (newFormData) => set({ UserProfileData: newFormData }),
@@ -73,6 +83,15 @@ const useStore = create((set) => ({
   setFetchedAllLoans: (newStat) => set({fetchedAllLoans : newStat}),
   canApplyLoan: false,
   setCanApplyLoan: (newStat) => set({canApplyLoan : newStat}),
+
+  //this is for when a user create soomething we should refresh the loans or aids
+  updated: false, //[false, "loans", "aids"]
+  setUpdated: (newState) => set({updated: newState}),
+
+  loanDraftId: false, // [false, or id ]
+  setLoanDraftId: (newState) => set({loanDraftId: newState}),
+  aidDraftId: false,
+  setAidDraftId: (newState) => set({aidDraftId: newState}),
 }));
 
 export default useStore;

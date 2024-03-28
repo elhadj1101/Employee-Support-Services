@@ -18,7 +18,7 @@ import FinancialAid from "pages/employee/FinancialAid";
 import ListLoans from "pages/employee/ListLoans";
 import ListAids from "pages/employee/ListAids";
 import EmployeesRequests from "pages/commite/EmployeesRequests";
-import Popup from "components/Popup";
+import SingleDemandLoan from "pages/SingleDemandLoan";
 
 function App() {
   return (
@@ -51,9 +51,13 @@ function App() {
               <Route path="demande-pret" element={<Loan />} />
               <Route path="demande-aide-financiere" element={<FinancialAid />} />
               <Route path="liste-demandes-pret" element={<ListLoans />} />
+              <Route path="liste-demandes-pret/:dmId" element={<SingleDemandLoan employee={true}   />} />
+
               <Route path="liste-demandes-aide-financiere" element={<ListAids />} />
             <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={["employe"]} />} >
               <Route path="demandes-employe" element={<EmployeesRequests/>} />
+              <Route path="demandes-employe/:dmId" element={<SingleDemandLoan  employee={false} />} />
+
             </Route>
             </Route>
           </Route>

@@ -2,8 +2,16 @@ from rest_framework import serializers
 from .models import Loan, Document, Financial_aid
 
 
+
+class FileSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = ["id", "document_name", "document_file","document_uploaded_at" ]
+
+
+
 class LoanSerializer(serializers.ModelSerializer):
-    loan_amount = serializers.IntegerField()
+    loan_amount = serializers.FloatField()
     loan_period = serializers.IntegerField(
         min_value=1,
         max_value=12,
@@ -23,20 +31,16 @@ class LoanSerializer(serializers.ModelSerializer):
         extra_kwargs = {"loan_status": {"read_only": True} ,"employee": {"read_only": True} }
 
 
-class FileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Document
-        fields = ["document_name", "document_file"]
-
-
 class FinancialaidSerializer(serializers.ModelSerializer):
-    
+    documents = FileSerializer(many=True)
     class Meta:
         model = Financial_aid   
         fields = [
             "id",
+            "employee",
             "request_created_at",
             "financial_aid_type",
+            "documents",
             "family_member",
             "financial_aid_status",
             "request_response_at"
@@ -55,3 +59,4 @@ class FinancialaidSerializer(serializers.ModelSerializer):
                 "you must include family_member in your request"
             )
         return data
+

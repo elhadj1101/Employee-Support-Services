@@ -21,10 +21,10 @@ class Loan(models.Model):
 
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE   )
     request_created_at = models.DateField(auto_now_add = True)
-    loan_amount = models.IntegerField(null = False)
+    loan_amount = models.FloatField(null = False)
     payment_method = models.TextField(null=False , choices = payment_method_options)
     loan_motivation = models.TextField(null = False)
-    start_loan_date = models.DateField(null = True)
+    start_loan_date = models.DateField(null = True, blank=True)
     loan_period = models.IntegerField( null = False)
     loan_status = models.CharField(choices = status_options , max_length = 30  , null = False)
 
@@ -78,9 +78,9 @@ class Document(models.Model):
         return f'{instance.employee.pk}/docs/{rndm_filename}'
         
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE )
-    financial_aid = models.ForeignKey(Financial_aid , on_delete = models.CASCADE, related_name='documents')
+    loan = models.ForeignKey(Loan , on_delete = models.CASCADE , null =True)
+    financial_aid = models.ForeignKey(Financial_aid , on_delete = models.CASCADE, related_name='documents' , null = True)
     document_name = models.CharField(max_length = 255)
-    random_name = models.CharField(max_length = 255)
     document_file = models.FileField(upload_to=get_path )
     document_uploaded_at = models.DateField(auto_now_add = True)
     
