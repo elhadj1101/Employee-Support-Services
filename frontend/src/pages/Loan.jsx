@@ -77,7 +77,7 @@ const Loan = () => {
     }
   };
   return (
-    <div className=" pt-2 bg-slate-200 h-[100vh]">
+    <div className=" pt-2 bg-slate-50 h-[100vh]">
       <h1 className="font-semibold tet-2xl ml-6 text-2xl my-2">Demande Loan</h1>
       <div>
         <div className=" max-w-xs mx-auto sm:flex sm:justify-between sm:mx-6 sm:space-x-3 sm:max-w-full    ">
