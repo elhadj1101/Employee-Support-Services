@@ -230,7 +230,8 @@ const Loan = () => {
         </div>
       )}
 
-      {((canApplyLoan && !loanDraftId) || (crrntLoan && loanDraftId)) && (
+      {((canApplyLoan && !loanDraftId) ||
+        (crrntLoan && loanDraftId && crrntLoan.loan_type === "draft")) && (
         <form className=" sm:px-7 h-auto bg-slate-50 mx-5 rounded-xl p-4">
           <span className="  sm:mt-8 font-medium text-xl flex mb-7 ">
             {loanDraftId === false
@@ -311,7 +312,8 @@ const Loan = () => {
         </form>
       )}
 
-      {!crrntLoan && loanDraftId && (
+      {((!crrntLoan && loanDraftId) ||
+        (crrntLoan && crrntLoan.loan_type !== "draft")) && (
         <div className="flex  items-start">
           <p className="text-red-800 mx-6 text-lg">
             Vous n'avez aucun brouillon de demande de prêt avec le numéro:{" "}
