@@ -61,13 +61,12 @@ const DeleteButton = ({ id }) => {
   );
 };
 const NavigateDropdownMenuItem = ({ id, text }) => {
-  const { setProfileRequsted } = useStore();
+  // const { setLoanRequestedId } = useStore();
 
   const navigate = useNavigate();
   const handleNavigate = () => {
-    // setProfileRequsted(id);
-    // localStorage.setItem("profileRequsted", id);
-
+    // setLoanRequestedId(id);
+    // localStorage.setItem("setLoanRequestedId", id);
      navigate(`${id}`);
   };
 

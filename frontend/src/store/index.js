@@ -49,6 +49,8 @@ const useStore = create((set) => ({
   setAdminUsers: (newAdminUsers) => set({ adminUsers: [ ...newAdminUsers] }),
   profileRequsted: localStorage.getItem("profileRequsted") || null,
   setProfileRequsted: (newProfileRequsted) => set({ profileRequsted: newProfileRequsted }),
+  LoanRequestedId: sessionStorage.getItem("requestedLoanId") || null,
+  setLoanRequestedId: (newLoanRequestedId) => set({ LoanRequestedId: newLoanRequestedId}),
 
   setAddUserData: (newFormData) => set({ AddUserData: newFormData }),
   setProfileUserData : (newFormData) => set({ UserProfileData: newFormData }),
