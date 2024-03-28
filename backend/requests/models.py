@@ -78,7 +78,7 @@ class Document(models.Model):
         return f'{instance.employee.pk}/docs/{rndm_filename}'
         
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE )
-    loan = models.ForeignKey(Loan , on_delete = models.CASCADE , null =True)
+    loan = models.ForeignKey(Loan , on_delete = models.CASCADE , null =True,  related_name='documents')
     financial_aid = models.ForeignKey(Financial_aid , on_delete = models.CASCADE, related_name='documents' , null = True)
     document_name = models.CharField(max_length = 255)
     document_file = models.FileField(upload_to=get_path )
