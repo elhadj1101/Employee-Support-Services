@@ -63,10 +63,17 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
   // const { setLoanRequestedId } = useStore();
 
   const navigate = useNavigate();
+  const parts = window.location.pathname
+    .split("/")
+    .filter((part) => part.trim() !== "");
+  let employee = parts[parts.length - 1];
+
   const handleNavigate = () => {
     // setLoanRequestedId(id);
     // localStorage.setItem("setLoanRequestedId", id);
-    navigate(`${id}`);
+    if (employee === "liste-demandes-pret") {
+      navigate(`${id}`);
+    } else navigate(`pret/${id}`);
   };
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
