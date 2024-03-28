@@ -66,10 +66,10 @@ class LoanView(APIView):
                     {"error":"you can't create draft, already have one"},
                     status=status.HTTP_403_FORBIDDEN
                 )
-            
+            #files are not required for loans
             files = request.FILES.getlist("files[]", [])
-            if not  files and loan_status == 'waiting':
-                return Response('you must upload files' , status=status.HTTP_400_BAD_REQUEST)
+            # if not  files and loan_status == 'waiting':
+            #     return Response({"error":'you must upload files'} , status=status.HTTP_400_BAD_REQUEST)
 
 
             created_instance = serializer.save(employee=request.user, loan_status=loan_status)
@@ -83,7 +83,7 @@ class LoanView(APIView):
                 )
                 d.save()
             return Response({"sucess":"loan created succefully"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
     def get(self, request):

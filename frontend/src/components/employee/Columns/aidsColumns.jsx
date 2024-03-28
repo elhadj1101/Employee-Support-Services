@@ -114,7 +114,9 @@ export const aidsColumns = (colsToHide = []) => {
         return orow.employee.toString();
       },
       cell: ({ row }) => (
-        <div className="text-left font-medium">{row.getValue("employee")}</div>
+        <div className="text-center font-medium">
+          {row.getValue("employee")}
+        </div>
       ),
     },
     {
@@ -145,25 +147,7 @@ export const aidsColumns = (colsToHide = []) => {
           <div className="capitalize w-full">
             <div
               className={
-                "w-fit p-2 m-1 rounded-lg " +
-                statusColorMap[row.getValue("financial_aid_status")]
-              }
-            >
-              {row.getValue("financial_aid_status")}
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "financial_aid_status",
-      header: () => <div className="text-left">Status</div>,
-      cell: ({ row }) => {
-        return (
-          <div className="capitalize w-full">
-            <div
-              className={
-                "w-fit p-2 m-1 rounded-lg " +
+                "w-fit p-2 m-auto rounded-lg " +
                 statusColorMap[row.getValue("financial_aid_status")]
               }
             >
@@ -175,16 +159,16 @@ export const aidsColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "financial_aid_type",
-      header: "Type d'aide",
+      header: () => <div className="text-center">Type d'aide</div>,
       cell: ({ row }) => (
-        <div className="text-left font-medium">
+        <div className="text-center font-medium">
           {typeLabelMap[row.getValue("financial_aid_type")]}
         </div>
       ),
     },
     {
       id: "actions",
-      header: () => <div className="text-center">Actions</div>,
+      header: () => <div className="text-left">Actions</div>,
 
       enableHiding: false,
       cell: ({ row }) => {

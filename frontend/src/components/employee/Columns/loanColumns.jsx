@@ -105,30 +105,32 @@ export const loanColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "employee",
-      header: "ID de l'employer",
+      header: () => <div className="text-center">ID de l'employer</div>,
       // to filter ids
       accessorFn: (orow) => {
         return orow.employee.toString();
       },
       cell: ({ row }) => (
-        <div className="text-left font-medium">{row.getValue("employee")}</div>
+        <div className="text-center font-medium">
+          {row.getValue("employee")}
+        </div>
       ),
     },
     {
       accessorKey: "id",
-      header: () => <div className="text-left">ID</div>,
+      header: () => <div className="text-center">ID</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">{row.getValue("id")}</div>
+          <div className="text-center font-medium">{row.getValue("id")}</div>
         );
       },
     },
     {
       accessorKey: "request_created_at",
-      header: () => <div className="text-left">Date Demande</div>,
+      header: () => <div className="text-center">Date Demande</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">
+          <div className="text-center font-medium">
             {row.getValue("request_created_at")}
           </div>
         );
@@ -136,13 +138,13 @@ export const loanColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "loan_status",
-      header: () => <div className="text-left">Status</div>,
+      header: () => <div className="text-center">Status</div>,
       cell: ({ row }) => {
         return (
           <div className="capitalize w-full">
             <div
               className={
-                "w-fit p-2 m-1 rounded-lg " +
+                "w-fit p-2 m-auto rounded-lg " +
                 statusColorMap[row.getValue("loan_status")]
               }
             >
@@ -154,19 +156,19 @@ export const loanColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "loan_amount",
-      header: "Montant par mois",
+      header: () => <div className="text-center">Montant par mois</div>,
       cell: ({ row }) => (
-        <div className="text-left font-medium">
+        <div className="text-center font-medium">
           {row.getValue("loan_amount")}DA
         </div>
       ),
     },
     {
       accessorKey: "loan_period",
-      header: () => <div className="text-left">Period (mois)</div>,
+      header: () => <div className="text-center">Period (mois)</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">
+          <div className="text-center font-medium">
             {row.getValue("loan_period")}
           </div>
         );
@@ -174,10 +176,10 @@ export const loanColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "payment_method",
-      header: () => <div className="text-left">Methode de payement</div>,
+      header: () => <div className="text-center">Methode de payement</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">
+          <div className="text-center font-medium">
             {row.getValue("payment_method")}
           </div>
         );

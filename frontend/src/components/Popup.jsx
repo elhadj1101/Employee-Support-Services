@@ -27,8 +27,8 @@ const Popup = ({
           <label className=" mb-3 flex" htmlFor="Motif">
             Motif
           </label>
-          <input
-            className=" sm:flex sm:w-[97%] w-[94%]   h-20    "
+          <textarea
+            className=" sm:flex sm:w-[97%] w-[94%]   h-20 border border-gray-300 p-1 rounded-md text-md    "
             type="text"
             value={motif}
             onChange={handleChange}
@@ -36,6 +36,11 @@ const Popup = ({
             style={{ borderColor: motifError ? "red" : "" }}
           />
           <p className="error font-light text-red-600 ">{motifError}</p>
+          <div >
+            <h1 >Remarque:</h1>
+          <p className=" bg-slate-50 w-fit rounded-sm text-blue-800">Vous pouvez déposer les documents justificatifs nécessaires à l'appui de votre demande de prêt.</p>
+          </div>
+          
         </div>
         <div className="w-full p-4 ">
           <FileInput
