@@ -14,7 +14,7 @@ import RequestsTable from "components/employee/requestsTable/RequetsTable";
 import { loanColumns } from "components/employee/Columns/loanColumns";
 function InitialDashboard() {
   const { offres, loans } = useStore();
-  const cols = loanColumns["employee"] || [];
+  const cols = loanColumns(["employee"]) || [];
   return (
     <div className=" bg-gray-bg py-2 h-full">
       <div className=" mx-6 mb-4  text-2xl font-bold">Dernieres Offres</div>

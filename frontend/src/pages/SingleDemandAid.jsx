@@ -33,35 +33,35 @@ export default function SingleDemandLoan({ employee }) {
     refused: "text-red-900 bg-red-100",
     draft: "text-gray-500 bg-gray-100 border border-gray-200",
   };
-  // I will not store the requestedLoan because some of its information may change  and the user will not know.
-  const [requestedLoan, setReqeustedLoan] = useState({});
+  // I will not store the requestedAid because some of its information may change  and the user will not know.
+  const [requestedAid, setReqeustedAid] = useState({});
   const [Usr, setUsr] = useState(
-    JSON.parse(sessionStorage.getItem("requestedLoanUser")) || {}
+    JSON.parse(sessionStorage.getItem("requestedAidUser")) || {}
   );
 
   const {
-    loans,
-    allLoans,
-    LoanRequestedId,
-    setLoanRequestedId,
+    aids,
+    allAids,
+    AidRequestedId,
+    setAidRequestedId,
     user,
-    setLoanDraftId,
+    setAidDraftId,
   } = useStore();
   const parts = window.location.pathname
     .split("/")
     .filter((part) => part.trim() !== "");
-  let LoanId = parts[parts.length - 1];
+  let aidId = parts[parts.length - 1];
   const navigate = useNavigate();
 
   useEffect(() => {
-    // change it only when we  want new loan
-    console.log(LoanRequestedId, LoanId, loans);
+    // change it only when we  want new aid
+    console.log(AidRequestedId, aidId, aids);
     if (employee) {
-      // get the loan details from
-      if (loans.length !== 0) {
-        if (loans.filter((loan) => loan.id === Number(LoanId))[0]) {
-          setReqeustedLoan(
-            loans.filter((loan) => loan.id === Number(LoanId))[0]
+      // get the aid details from
+      if (aids.length !== 0) {
+        if (aids.filter((aid) => aid.id === Number(aidId))[0]) {
+          setReqeustedAid(
+            aids.filter((aid) => aid.id === Number(aidId))[0]
           );
         } else {
           navigate("/");
@@ -70,10 +70,10 @@ export default function SingleDemandLoan({ employee }) {
         }
       }
     } else {
-      if (allLoans.length !== 0) {
-        if (allLoans.filter((loan) => loan.id === Number(LoanId))[0]) {
-          setReqeustedLoan(
-            allLoans.filter((loan) => loan.id === Number(LoanId))[0]
+      if (allAids.length !== 0) {
+        if (allAids.filter((aid) => aid.id === Number(aidId))[0]) {
+          setReqeustedAid(
+            allAids.filter((aid) => aid.id === Number(aidId))[0]
           );
         } else {
           navigate("/");
@@ -81,25 +81,25 @@ export default function SingleDemandLoan({ employee }) {
         }
       }
     }
-  }, [allLoans, loans]);
+  }, [allAids, aids]);
 
   useEffect(() => {
-    console.log("req", requestedLoan);
+    console.log("req", requestedAid);
 
     if (
-      ((employee && allLoans.length !== 0) ||
-        (!employee && loans.length !== 0)) &&
-      requestedLoan &&
-      Object.keys(requestedLoan).length !== 0
+      ((employee && allAids.length !== 0) ||
+        (!employee && aids.length !== 0)) &&
+      requestedAid &&
+      Object.keys(requestedAid).length !== 0
     ) {
-      if (!employee && LoanRequestedId !== LoanId) {
-        setLoanRequestedId(LoanId);
-        sessionStorage.setItem("requestedLoanId", LoanId);
+      if (!employee && AidRequestedId !== aidId) {
+        setAidRequestedId(aidId);
+        sessionStorage.setItem("requestedAidId", aidId);
         const u = async () => {
           try {
-            const usr = await getUser(requestedLoan?.employee);
+            const usr = await getUser(requestedAid?.employee);
             if (usr) {
-              sessionStorage.setItem("requestedLoanUser", JSON.stringify(usr));
+              sessionStorage.setItem("requestedAidUser", JSON.stringify(usr));
               setUsr(usr);
             }
           } catch (err) {
@@ -109,10 +109,10 @@ export default function SingleDemandLoan({ employee }) {
         u();
       }
     }
-  }, [requestedLoan]);
+  }, [requestedAid]);
   const handleEdit = () => {
-    setLoanDraftId(LoanId);
-    navigate(`/demande-pret/${LoanId}`);
+    setAidDraftId(aidId);
+    navigate(`/demande-aide-financiere/${aidId}`);
   };
   return (
     <div className="w-full h-full flex flex-col bg-lightgray pt-5 pb-10 px-6  overflow-auto ">
@@ -120,7 +120,7 @@ export default function SingleDemandLoan({ employee }) {
         <h1 className=" pb-6 bg-lightgray text-xl lg:text-2xl text-black font-bold capitalize">
           Détails de la demande
         </h1>
-        {employee && requestedLoan?.loan_status === "draft" && (
+        {employee && requestedAid?.loan_status === "draft" && (
           <div className="pb-6 flex gap-2 justify-center items-center">
             <div className="flex gap-2 justify-center items-center">
               <div
@@ -133,9 +133,9 @@ export default function SingleDemandLoan({ employee }) {
           </div>
         )}
       </div>
-      {JSON.stringify(requestedLoan)}
+      {JSON.stringify(requestedAid)}
       <div className="w-full flex flex-grow flex-wrap lg:flex-nowrap gap-7 ">
-        {/* loan details card */}
+        {/* aid details card */}
 
         <div className="w-full">
           <div className="lg:min-w-[60%] xl:min-w-[65%] h-fit bg-white p-4 rounded-lg ">
@@ -149,7 +149,7 @@ export default function SingleDemandLoan({ employee }) {
                 </h3>
                 <p className="pl-2 font-semibold text-gray-500">
                   {" "}
-                  {requestedLoan?.loan_amount * requestedLoan?.loan_period} DA
+                  {requestedAid?.loan_amount * requestedAid?.loan_period} DA
                 </p>
               </div>
               <div className="">
@@ -158,17 +158,17 @@ export default function SingleDemandLoan({ employee }) {
                 </h3>
                 <p className="pl-2 font-semibold text-gray-500">
                   {" "}
-                  {requestedLoan?.loan_amount} DA
+                  {requestedAid?.loan_amount} DA
                 </p>
               </div>
 
               <div>
-                {/* {JSON.stringify(requestedLoan)} */}
+                {/* {JSON.stringify(requestedAid)} */}
                 <p className="font-bold capitalize text-gray-600 ">
                   demande créée le
                 </p>
                 <p className="pl-2 font-semibold text-gray-500 ">
-                  {requestedLoan?.request_created_at}
+                  {requestedAid?.request_created_at}
                 </p>
               </div>
               <div>
@@ -188,11 +188,11 @@ export default function SingleDemandLoan({ employee }) {
                         <DropdownMenuLabel>Statut</DropdownMenuLabel>
                         <Dialog>
                           {user?.role !== "tresorier" &&
-                            requestedLoan &&
+                            requestedAid &&
                             Object.keys(StatusColors)
                               .filter(
                                 (status) =>
-                                  status !== requestedLoan?.loan_status
+                                  status !== requestedAid?.loan_status
                               )
                               .map((status) => (
                                 <DialogTrigger
@@ -205,13 +205,13 @@ export default function SingleDemandLoan({ employee }) {
                                 </DialogTrigger>
                               ))}
                           {user?.role === "tresorier" &&
-                            requestedLoan &&
+                            requestedAid &&
                             Object.keys({
                               finished: "finished",
                               approved: "approved",
                             })
                               .filter(
-                                (status) => status !== requestedLoan.loan_status
+                                (status) => status !== requestedAid.loan_status
                               )
                               .map((status) => (
                                 <DialogTrigger
@@ -251,10 +251,10 @@ export default function SingleDemandLoan({ employee }) {
                 <div
                   className={
                     "w-fit py-1 px-3 rounded-3xl mt-1 " +
-                    StatusColors[requestedLoan?.loan_status]
+                    StatusColors[requestedAid?.loan_status]
                   }
                 >
-                  {requestedLoan?.loan_status}
+                  {requestedAid?.loan_status}
                 </div>
               </div>
               <div>
@@ -263,7 +263,7 @@ export default function SingleDemandLoan({ employee }) {
                 </p>
                 <p className="pl-2 font-semibold text-gray-500 capitalize">
                   {" "}
-                  {requestedLoan?.loan_period} mois
+                  {requestedAid?.loan_period} mois
                 </p>
               </div>
 
@@ -274,7 +274,7 @@ export default function SingleDemandLoan({ employee }) {
                 <p className="pl-2 font-semibold text-gray-500  uppercase ">
                   {" "}
                   <span className="lowercase">via</span>{" "}
-                  {requestedLoan?.payment_method}{" "}
+                  {requestedAid?.payment_method}{" "}
                 </p>
               </div>
             </div>
@@ -283,10 +283,10 @@ export default function SingleDemandLoan({ employee }) {
                 motivation du prêt
               </p>
               <p className="p-2 break-all  ">
-                {requestedLoan?.loan_motivation}
+                {requestedAid?.loan_motivation}
               </p>
             </div>
-            {/* {JSON.stringify(requestedLoan)} */}
+            {/* {JSON.stringify(requestedAid)} */}
           </div>
 
           {/* files */}

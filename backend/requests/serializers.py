@@ -16,7 +16,7 @@ class LoanSerializer(serializers.ModelSerializer):
         min_value=1,
         max_value=12,
     )
-    documents = FileSerializer(many=True)
+    documents = FileSerializer(many=True, read_only=True)
     
     class Meta:
         model = Loan
@@ -31,11 +31,11 @@ class LoanSerializer(serializers.ModelSerializer):
             "loan_period",
             "loan_status",
         ]
-        extra_kwargs = {"loan_status": {"read_only": True} ,"employee": {"read_only": True} }
+        extra_kwargs = {"loan_status": {"read_only": True} ,"employee": {"read_only": True}, "documents": {"read_only": True}}
 
 
 class FinancialaidSerializer(serializers.ModelSerializer):
-    documents = FileSerializer(many=True)
+    documents = FileSerializer(many=True, read_only=True)
     class Meta:
         model = Financial_aid   
         fields = [
@@ -49,7 +49,9 @@ class FinancialaidSerializer(serializers.ModelSerializer):
             "request_response_at"
         ]
         extra_kwargs = {
-            'financial_aid_status': {'read_only': True}
+            'financial_aid_status': {'read_only': True},
+            'employee': {'read_only': True},
+            'documents': {'read_only': True},
         }
 
     def validate(self, attrs):
