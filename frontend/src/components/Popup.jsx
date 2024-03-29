@@ -7,10 +7,13 @@ const Popup = ({
   setMotif = () => {},
   motifError = "",
   uploadedFiles = [],
+  oldFiles= [],
   setUploadedFiles = () => {},
   handleSubmit = () => {},
 }) => {
   const filesRef = useRef(null);
+  console.log("Popup ", oldFiles);
+
   const handleChange = (e) => {
     setMotif(e.target.value);
     if (e.target.value !== "") {
@@ -44,6 +47,7 @@ const Popup = ({
         </div>
         <div className="w-full p-4 ">
           <FileInput
+            oldFiles={oldFiles}
             uploadInputElRef={filesRef}
             files={uploadedFiles}
             setFiles={setUploadedFiles}

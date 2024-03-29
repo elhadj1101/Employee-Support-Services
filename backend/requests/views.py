@@ -79,7 +79,9 @@ class LoanView(APIView):
                 document_file=f,
                 document_name=f.name,
                 financial_aid=None,
-                loan = created_instance
+                loan = created_instance,
+                document_size=f.size/1024, # kb
+                
                 )
                 d.save()
             return Response({"sucess":"loan created succefully"}, status=status.HTTP_201_CREATED)
@@ -182,6 +184,7 @@ class FinancialaidView(generics.ListCreateAPIView):
                 employee=request.user,
                 document_file=f,
                 document_name=f.name,
+                document_size=f.size/1024, # kb
                 financial_aid=created_instance,
                 loan = None
             )
@@ -249,6 +252,44 @@ class FinancialaidCheckView(APIView):
 
 
 class UpdateRequestView(APIView):
+    
+    
+    def delete(self, request, request_type, pk):
+        if request_type in ["loans", "financial-aids"]:
+            match request_type:
+                case "loans":
+                    loan = get_object_or_404(Loan, pk=pk)
+                    if loan.employee != request.user:
+                        return Response(
+                            {"error":"you don't have permission to delete this loan"},
+                            status=status.HTTP_403_FORBIDDEN,
+                        )
+                    if loan.loan_status not in  ["draft", "waiting"]:
+                        return Response(
+                            {"error":"this loan is not draft or waiting"}, status=status.HTTP_403_FORBIDDEN
+                        )
+                    loan.delete()
+                    return Response({"success":"loan deleted succesfully"})
+                case "financial-aids":
+                    financial_aid = get_object_or_404(Financial_aid, pk=pk)
+                    if financial_aid.employee != request.user:
+                        return Response(
+                            {"error":"you don't have permission to delete this financial-aid"},
+                            status=status.HTTP_403_FORBIDDEN,
+                        )
+                    if financial_aid.financial_aid_status not in  ["draft", "waiting"]:
+                        return Response(
+                            {"error":"this financial-aid is not draft or waiting"},
+                            status=status.HTTP_403_FORBIDDEN,
+                        )
+                    financial_aid.delete()
+                    return Response({"success":"financial aid deleted succesfully"})
+
+        else:
+            return Response(
+                {"error":"page not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        
     def patch(self, request, request_type, pk):
         # check if the url contains loan or financial-aid
         if request_type in ["loans", "financial-aids"]:

@@ -280,4 +280,41 @@ const canApplyForLoan = async () => {
 
 };
 }
-export { getLoans , getAids, financial_aid_infos, statusColorMap, getAllAids, getAllLoans, canApplyForLoan};
+
+const deleteLoan = async (id) => {
+  try {
+    const response = await Axios.delete(`/requests/loans/${id}`);
+    return true;
+  } catch (error) {
+    if (error.response){
+      toast.error(error.response.data?.detail);
+      console.log(error.response);
+      return false;
+    }else{
+      console.log(error)
+    toast.error("Une erreur s'est produite lors de la suppression du pret.");
+    return  false;
+    }
+
+};
+
+}
+const deleteAid = async (id) => {
+  try {
+    const response = await Axios.delete(`/requests/financial-aids/${id}`);
+    return true;
+  } catch (error) {
+    if (error.response){
+      toast.error(error.response.data?.detail);
+      console.log(error.response);
+      return false;
+    }else{
+      console.log(error)
+    toast.error("Une erreur s'est produite lors de la suppression du pret.");
+    return  false;
+    }
+
+};
+
+}
+export { getLoans , getAids, financial_aid_infos, statusColorMap, getAllAids, getAllLoans, canApplyForLoan, deleteLoan, deleteAid};

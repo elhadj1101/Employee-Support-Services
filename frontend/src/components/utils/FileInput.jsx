@@ -1,9 +1,11 @@
 import FileUploaded from "components/FileUploaded";
 import React, { useState, useCallback, useRef } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 function FileInput({
   labell = "",
+  oldFiles = [],
   uploadInputElRef = null,
   files = null,
   maxFiles = -1,
@@ -184,8 +186,19 @@ function FileInput({
           )}
         </label>
       </div>
-      {files.length > 0 && (
+      {files.length + oldFiles.length > 0 && (
         <div className="flex flex-wrap gap-3 mt-4">
+          {oldFiles.map((file) => {
+            return (
+              <Link to={"http://127.0.0.1:8000" + file.url} target="blank">
+                <FileUploaded
+                  name={file.name}
+                  size={file.size}
+                  Delete={handleDelete}
+                />
+              </Link>
+            );
+          })}
           {files.map((file) => (
             /*      <div
               className="flex items-center bg-green-500 text-slate-100 p-2 rounded-md"

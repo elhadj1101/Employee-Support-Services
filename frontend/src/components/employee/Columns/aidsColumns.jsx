@@ -21,7 +21,7 @@ import {
   DialogFooter,
 } from "../../ui/dialog";
 import { statusColorMap } from "api/requests";
-import { financial_aid_infos } from "api/requests";
+import { financial_aid_infos, deleteAid, getAids } from "api/requests";
 
 import { useNavigate } from "react-router-dom";
 import useStore from "../../../store/index";
@@ -32,27 +32,26 @@ financial_aid_infos.forEach((e) => {
   typeLabelMap[e.name] = e.description;
 });
 const DeleteButton = ({ id }) => {
-  const { setAdminUsers } = useStore();
-
+  const {setAids} = useStore();
   const handleDeleteClick = async (e) => {
-    // try {
-    //   const response = await deleteUser(id);
-    //   if (response.success) {
-    //     toast.success("Le compte utilisateur a été désactivé avec succès.");
-    //   }
-    //   const updatedUsers = await getUsers();
-    //   setAdminUsers(updatedUsers);
-    // } catch (error) {
-    //   if (error.detail) {
-    //     toast.error(error.detail);
-    //   } else if (error.error) {
-    //     toast.error(error.error);
-    //   } else {
-    //     toast.error(
-    //       "Une erreur s'est produite lors de desactivation du compte."
-    //     );
-    //   }
-    // }
+    try {
+      const response = await deleteAid(id);
+      if (response) {
+        toast.success(`la demande (${id}) a été supprimée avec succès.`);
+      }
+      const updatedAids = await getAids();
+      setAids(updatedAids);
+    } catch (error) {
+      if (error.detail) {
+        toast.error(error.detail);
+      } else if (error.error) {
+        toast.error(error.error);
+      } else {
+        toast.error(
+          "Une erreur s'est produite lors de desactivation du compte."
+        );
+      }
+    }
   };
   return (
     <Button
@@ -187,10 +186,15 @@ export const aidsColumns = (colsToHide = []) => {
                 id={row.original.id}
                 text={"Détails de la demande"}
               />
-
+              {row.original.financial_aid_status === "draft" && (
+                <NavigateDropdownMenuItem
+                  id={"/demande-aide-financiere/" + row.original.id}
+                  text={"Modifier le broullion"}
+                />
+              )}
               <Dialog>
                 <DialogTrigger style={{ width: "100%" }}>
-                  <div className=" w-full cursor-pointer text-center  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
                     Supprimer
                   </div>
                 </DialogTrigger>

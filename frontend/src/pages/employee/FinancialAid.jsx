@@ -15,9 +15,16 @@ import { formatPrice } from "components/utils/utilFunctions";
 import { financial_aid_infos } from "api/requests";
 import useStore from "store";
 import Axios from "api/axios";
+import { Link } from "react-router-dom";
 
 function FinancialAid() {
-  const { user, setUpdated, aidDraftId, aids } = useStore();
+  const { user, setUpdated, aids } = useStore();
+  const [oldFiles, setOldFiles] = useState([]);
+  const parts = window.location.pathname
+    .split("/")
+    .filter((part) => part.trim() !== "");
+  let aidDraftId = parts[parts.length - 1];
+  aidDraftId = aidDraftId === "demande-pret" ? false : parseInt(aidDraftId);
   const crrntAid =
     aidDraftId && aids && aids.filter((aid) => aid.id === aidDraftId)[0];
   const employeeType = user?.retired ? "retired" : "non_retired";
@@ -78,37 +85,92 @@ function FinancialAid() {
     const endpoint =
       !crrntAid || aidDraftId == false
         ? "/requests/financial-aids/?draft="
-        : `/requests/financial-aids/${aidDraftId}/draft=`;
+        : `/requests/financial-aids/${aidDraftId}?draft=`;
     const formData = new FormData();
     formData.append("financial_aid_type", aidData.aidType);
-    formData.append("family_member", aidData.familyMember);
+
+    formData.append(
+      "family_member",
+      aidData.aidType === "family_member_death" ? aidData.familyMember : ""
+    );
     uploadedFiles.forEach((file) => {
       formData.append("files[]", file);
     });
-    Axios.post(endpoint + isDraft, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res) => {
-        setUpdated("aids");
-        toast.success("La demande a été envoyée avec succès");
+    if (!crrntAid || aidDraftId == false) {
+      Axios.post(endpoint + isDraft, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.data?.detail) {
-            toast.error(err.response.data?.detail);
-          } else if (err.response.data?.error) {
-            toast.error(err.response.data.error);
-          } else if (err.response.data) {
-            toast.error(err.response.data.toString());
-          }
-        } else {
-          toast.error(
-            "Une erreur s'est produite lors de l'envoi de la demande"
+        .then((res) => {
+          setUpdated("aids");
+          toast.success(
+            (isDraft === "true" ? "La demande" : "Le brouillon") +
+              " a été envoyée avec succès"
           );
-        }
-      });
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.data?.detail) {
+              toast.error(err.response.data?.detail);
+            } else if (err.response.data?.error) {
+              toast.error(err.response.data.error);
+            } else if (
+              err.response.data.errors ===
+              "you don't have permission to create financial-aid"
+            ) {
+              toast.error(
+                "Vous avez une demande de meme type en cours de traitement."
+              );
+            } else {
+              toast.error(
+                "Une erreur s'est produite lors de l'envoi de la demande"
+              );
+            }
+          } else {
+            toast.error(
+              "Une erreur s'est produite lors de l'envoi de la demande"
+            );
+          }
+        });
+    } else {
+      Axios.patch(endpoint + isDraft, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+        .then((res) => {
+          setUpdated("aids");
+          toast.success(
+            (isDraft === "true" ? "La demande" : "Le brouillon") +
+              " a été envoyée avec succès"
+          );
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.data?.detail) {
+              toast.error(err.response.data?.detail);
+            } else if (err.response.data?.error) {
+              toast.error(err.response.data.error);
+            } else if (
+              err.response.data.errors ===
+              "you don't have permission to create financial-aid"
+            ) {
+              toast.error(
+                "Vous avez une demande de meme type en cours de traitement."
+              );
+            } else {
+              toast.error(
+                "Une erreur s'est produite lors de l'envoi de la demande"
+              );
+            }
+          } else {
+            toast.error(
+              "Une erreur s'est produite lors de l'envoi de la demande"
+            );
+          }
+        });
+    }
   };
 
   useEffect(() => {
@@ -121,6 +183,13 @@ function FinancialAid() {
         : sessionStorage.getItem("aid/familyMember") || "",
       employeeType: employeeType,
     };
+
+    let oldF = crrntAid
+      ? crrntAid.documents.map((doc) => {
+          return { name: doc.document_name, url: doc.document_file, size: doc.document_size*1000 };
+        })
+      : [];
+    setOldFiles(oldF);
     if (data.aidType !== "") {
       let ff = financial_aid_infos[typeIndMap[data.aidType]].files;
       let amnt = 0;
@@ -149,265 +218,283 @@ function FinancialAid() {
       setAmount(amnt);
     }
     setAidData(data);
-  }, []);
+  }, [aids]);
   return (
-    <div className="w-full h-[100vh] flex-grow flex flex-col  bg-gray-bg px-6 py-4">
-      <h1 className="font-semibold text-2xl my-2">
+    <div className="w-full h-[100vh] flex-grow flex flex-col  bg-gray-bg  py-4">
+      <h1 className="font-semibold text-2xl px-6 my-2">
         {!crrntAid
           ? "Demande d'aide financière"
           : "Modification d'un brouillon (N°:" + crrntAid.id + ")"}
       </h1>
-      <form className="">
-        <label
-          htmlFor="aidType"
-          className="block mb-2  font-medium text-gray-900 dark:text-white"
-        >
-          Le type de l'aide financière
-        </label>
+      {(!crrntAid && aidDraftId) ||
+      (crrntAid && crrntAid.financial_aid_status !== "draft") ? (
+        <>
+          <div className="flex  items-start">
+            <p className="text-red-800 mx-6 text-lg">
+              Vous n'avez aucun brouillon de demande de prêt avec le numéro:{" "}
+              {aidDraftId}
+              <br />
+              <span className="ml-0 underline hover:text-darkblue">
+                <Link to="/liste-demandes-aide-financiere">
+                  Consulter votre demandes
+                </Link>
+              </span>
+            </p>
+          </div>
+        </>
+      ) : (
+        <form className="px-6">
+          <label
+            htmlFor="aidType"
+            className="block mb-2  font-medium text-gray-900 dark:text-white"
+          >
+            Le type de l'aide financière
+          </label>
 
-        <Select
-          id="aidType"
-          value={aidData.aidType}
-          name="aidType"
-          onValueChange={(value) => {
-            const emptyFiles = new DataTransfer();
-            filesRef.current.files = emptyFiles.files;
-            setUploadedFiles([]);
-            sessionStorage.setItem(`aid/type`, value);
-            setAidData((prev) => {
-              return { ...prev, ["aidType"]: value };
-            });
-            let ff = financial_aid_infos[typeIndMap[value]].files;
-            let fmember = sessionStorage.getItem("aid/familyMember") || "";
+          <Select
+            id="aidType"
+            value={aidData.aidType}
+            name="aidType"
+            onValueChange={(value) => {
+              const emptyFiles = new DataTransfer();
+              filesRef.current.files = emptyFiles.files;
+              setUploadedFiles([]);
+              sessionStorage.setItem(`aid/type`, value);
+              setAidData((prev) => {
+                return { ...prev, ["aidType"]: value };
+              });
+              let ff = financial_aid_infos[typeIndMap[value]].files;
+              let fmember = sessionStorage.getItem("aid/familyMember") || "";
 
-            if (value === "family_member_death") {
-              if (fmember !== "") {
-                Object.entries(
-                  financial_aid_infos[typeIndMap[value]].types
-                ).forEach((key) => {
-                  if (key[0] === fmember) {
-                    ff = ff.concat(key[1].files);
-                    setAmount(key[1].amount);
-                  }
-                });
+              if (value === "family_member_death") {
+                if (fmember !== "") {
+                  Object.entries(
+                    financial_aid_infos[typeIndMap[value]].types
+                  ).forEach((key) => {
+                    if (key[0] === fmember) {
+                      ff = ff.concat(key[1].files);
+                      setAmount(key[1].amount);
+                    }
+                  });
+                } else {
+                  setAmount(0);
+                }
+              } else if (value === "employee_death") {
+                if (aidData.employeeType) {
+                  setAmount(
+                    financial_aid_infos[typeIndMap[value]].types[
+                      aidData.employeeType
+                    ].amount
+                  );
+                } else {
+                  setAmount(0);
+                }
               } else {
-                setAmount(0);
+                setAmount(financial_aid_infos[typeIndMap[value]].amount);
               }
-            } else if (value === "employee_death") {
-              if (aidData.employeeType) {
-                setAmount(
-                  financial_aid_infos[typeIndMap[value]].types[
-                    aidData.employeeType
-                  ].amount
+              setFileNames(ff);
+            }}
+          >
+            <SelectTrigger className="w-full bg-white mb-2">
+              <SelectValue placeholder="Choissisez un type" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(categorizedInfo).map(([category, aids], ind) => {
+                return (
+                  <SelectGroup key={ind}>
+                    <SelectLabel>{category}</SelectLabel>
+                    {aids.map((aid, ind) => {
+                      return (
+                        <SelectItem key={ind} value={aid.name}>
+                          {aid.description}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectGroup>
                 );
-              } else {
-                setAmount(0);
-              }
-            } else {
-              setAmount(financial_aid_infos[typeIndMap[value]].amount);
-            }
-            setFileNames(ff);
-          }}
-        >
-          <SelectTrigger className="w-full bg-white mb-2">
-            <SelectValue placeholder="Choissisez un type" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(categorizedInfo).map(([category, aids], ind) => {
-              return (
-                <SelectGroup key={ind}>
-                  <SelectLabel>{category}</SelectLabel>
-                  {aids.map((aid, ind) => {
-                    return (
-                      <SelectItem key={ind} value={aid.name}>
-                        {aid.description}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectGroup>
-              );
-            })}
-            {/* {financial_aid_infos.map((option, ind) => {
+              })}
+              {/* {financial_aid_infos.map((option, ind) => {
               return (
                 <SelectItem key={ind} value={option.name}>
                   {option.description}
                 </SelectItem>
               );
             })} */}
-          </SelectContent>
-        </Select>
-        {aidData.aidType === "family_member_death" && (
-          <>
-            <label
-              htmlFor="familyMember"
-              className="block mb-2 font-medium text-gray-900 dark:text-white"
-            >
-              Le membre défunt de la famille
-            </label>
-            <Select
-              id="familyMember"
-              value={aidData.familyMember}
-              name="familyMember"
-              onValueChange={(value) => {
-                sessionStorage.setItem("aid/familyMember", value);
+            </SelectContent>
+          </Select>
+          {aidData.aidType === "family_member_death" && (
+            <>
+              <label
+                htmlFor="familyMember"
+                className="block mb-2 font-medium text-gray-900 dark:text-white"
+              >
+                Le membre défunt de la famille
+              </label>
+              <Select
+                id="familyMember"
+                value={aidData.familyMember}
+                name="familyMember"
+                onValueChange={(value) => {
+                  sessionStorage.setItem("aid/familyMember", value);
 
-                const prev = { ...aidData, ["familyMember"]: value };
-                const ff =
-                  financial_aid_infos[typeIndMap[aidData.aidType]].files;
+                  const prev = { ...aidData, ["familyMember"]: value };
+                  const ff =
+                    financial_aid_infos[typeIndMap[aidData.aidType]].files;
 
-                Object.entries(
-                  financial_aid_infos[typeIndMap[aidData.aidType]].types
-                ).forEach((key) => {
-                  if (key[0] === value) {
-                    setFileNames(ff.concat(key[1].files));
-                    setAmount(key[1].amount);
-                  }
-                });
-                setAidData(prev);
-              }}
-            >
-              <SelectTrigger className="w-full bg-white mb-2">
-                <SelectValue placeholder="Choissisez un membre de famille" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.keys(
-                  financial_aid_infos[typeIndMap[aidData.aidType]].types
-                ).map((option, ind) => {
-                  return (
-                    <SelectItem key={ind} value={option}>
-                      {
-                        financial_aid_infos[typeIndMap[aidData.aidType]].types[
-                          option
-                        ].desc
-                      }
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </>
-        )}
-        {aidData.aidType === "employee_death" && (
-          <>
-            <label
-              htmlFor="employeeType"
-              className="block mb-2 font-medium text-gray-900 dark:text-white"
-            >
-              Le type de l'employer
-            </label>
-            <Select
-              id="employeeType"
-              value={aidData.employeeType}
-              name="employeeType"
-              disabled
-              onValueChange={(value) => {
-                sessionStorage.setItem("aid/employeeType", value);
-                const prev = { ...aidData, ["employeeType"]: value };
-                setAidData(prev);
-                setAmount(
-                  financial_aid_infos[typeIndMap[aidData.aidType]].types[value]
-                    .amount
-                );
-              }}
-            >
-              <SelectTrigger className="w-full bg-white mb-2">
-                <SelectValue placeholder="Choissisez le type d'employer" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.keys(
-                  financial_aid_infos[typeIndMap[aidData.aidType]].types
-                ).map((option, ind) => {
-                  return (
-                    <SelectItem key={ind} value={option}>
-                      {
-                        financial_aid_infos[typeIndMap[aidData.aidType]].types[
-                          option
-                        ].desc
-                      }
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </>
-        )}
-        {amount !== 0 && (
-          <p className="text-lg font-semibold">
-            Le Montant bénéficié :
-            <span className="ml-3  text-light-blue ">
-              {formatPrice(amount, ",")}DA
-            </span>
-          </p>
-        )}
-        {aidData.aidType !== "" &&
-          aidData.aidType !== "family_member_death" &&
-          amount === 0 && (
-            <div className="text-lg font-semibold">
-              Le Montant bénéficié :
-              <ul className="pl-4 text-sm w- list-decimal font-light ">
-                {financial_aid_infos[
-                  typeIndMap[aidData.aidType]
-                ].amountNotes.map((note, ind) => {
-                  return (
-                    <li className="" key={ind}>
-                      {note}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+                  Object.entries(
+                    financial_aid_infos[typeIndMap[aidData.aidType]].types
+                  ).forEach((key) => {
+                    if (key[0] === value) {
+                      setFileNames(ff.concat(key[1].files));
+                      setAmount(key[1].amount);
+                    }
+                  });
+                  setAidData(prev);
+                }}
+              >
+                <SelectTrigger className="w-full bg-white mb-2">
+                  <SelectValue placeholder="Choissisez un membre de famille" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.keys(
+                    financial_aid_infos[typeIndMap[aidData.aidType]].types
+                  ).map((option, ind) => {
+                    return (
+                      <SelectItem key={ind} value={option}>
+                        {
+                          financial_aid_infos[typeIndMap[aidData.aidType]]
+                            .types[option].desc
+                        }
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </>
           )}
-        {aidData.aidType !== "" && (
-          <>
-            <h2 className="font-semibold text-lg mt-4">
-              Les fichiers nécessaires
-              <span style={{ color: "red" }}> * </span>
-            </h2>
-            <ul className="pl-4 text-sm w- list-decimal font-light ">
-              {fileNames &&
-                fileNames.map((file, ind) => {
-                  return (
-                    <li className="" key={ind}>
-                      {file}
-                    </li>
+          {aidData.aidType === "employee_death" && (
+            <>
+              <label
+                htmlFor="employeeType"
+                className="block mb-2 font-medium text-gray-900 dark:text-white"
+              >
+                Le type de l'employer
+              </label>
+              <Select
+                id="employeeType"
+                value={aidData.employeeType}
+                name="employeeType"
+                disabled
+                onValueChange={(value) => {
+                  sessionStorage.setItem("aid/employeeType", value);
+                  const prev = { ...aidData, ["employeeType"]: value };
+                  setAidData(prev);
+                  setAmount(
+                    financial_aid_infos[typeIndMap[aidData.aidType]].types[
+                      value
+                    ].amount
                   );
-                })}
-            </ul>
-          </>
-        )}
-        <div className="w-full my-4 ">
-          <FileInput
-            key={aidData.aidType}
-            uploadInputElRef={filesRef}
-            files={uploadedFiles}
-            setFiles={setUploadedFiles}
-            accepts="application/pdf"
-            fileTypes="PDF"
-            maxFiles={fileNames.length}
-            multpl={true}
-          />
-        </div>
-        <div className="flex gap-3">
-          <Button
-            type="submit"
-            onClick={handleSubmit}
-            name="not-draft"
-            className=" bg-light-blue py-5 text-lg text-white hover:text-white hover:bg-light-blue"
-            variant="outline"
-          >
-            Envoyer la demande
-          </Button>
-          <Button
-            type="submit"
-            onClick={handleSubmit}
-            name="draft"
-            className=" bg-white py-5 text-lg text-darkblue hover:border-darkblue hover:border-1"
-            variant="outline"
-          >
-            Sauvegarder comme brouillon
-          </Button>
-        </div>
-      </form>
+                }}
+              >
+                <SelectTrigger className="w-full bg-white mb-2">
+                  <SelectValue placeholder="Choissisez le type d'employer" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.keys(
+                    financial_aid_infos[typeIndMap[aidData.aidType]].types
+                  ).map((option, ind) => {
+                    return (
+                      <SelectItem key={ind} value={option}>
+                        {
+                          financial_aid_infos[typeIndMap[aidData.aidType]]
+                            .types[option].desc
+                        }
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </>
+          )}
+          {amount !== 0 && (
+            <p className="text-lg font-semibold">
+              Le Montant bénéficié :
+              <span className="ml-3  text-light-blue ">
+                {formatPrice(amount, ",")}DA
+              </span>
+            </p>
+          )}
+          {aidData.aidType !== "" &&
+            aidData.aidType !== "family_member_death" &&
+            amount === 0 && (
+              <div className="text-lg font-semibold">
+                Le Montant bénéficié :
+                <ul className="pl-4 text-sm w- list-decimal font-light ">
+                  {financial_aid_infos[
+                    typeIndMap[aidData.aidType]
+                  ].amountNotes.map((note, ind) => {
+                    return (
+                      <li className="" key={ind}>
+                        {note}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+          {aidData.aidType !== "" && (
+            <>
+              <h2 className="font-semibold text-lg mt-4">
+                Les fichiers nécessaires
+                <span style={{ color: "red" }}> * </span>
+              </h2>
+              <ul className="pl-4 text-sm w- list-decimal font-light ">
+                {fileNames &&
+                  fileNames.map((file, ind) => {
+                    return (
+                      <li className="" key={ind}>
+                        {file}
+                      </li>
+                    );
+                  })}
+              </ul>
+            </>
+          )}
+          <div className="w-full my-4 ">
+            <FileInput
+              oldFiles={oldFiles}
+              key={aidData.aidType}
+              uploadInputElRef={filesRef}
+              files={uploadedFiles}
+              setFiles={setUploadedFiles}
+              accepts="application/pdf"
+              fileTypes="PDF"
+              maxFiles={fileNames.length}
+              multpl={true}
+            />
+          </div>
+          <div className="flex gap-3">
+            <Button
+              type="submit"
+              onClick={handleSubmit}
+              name="not-draft"
+              className=" bg-light-blue py-5 text-lg text-white hover:text-white hover:bg-light-blue"
+              variant="outline"
+            >
+              Envoyer la demande
+            </Button>
+            <Button
+              type="submit"
+              onClick={handleSubmit}
+              name="draft"
+              className=" bg-white py-5 text-lg text-darkblue hover:border-darkblue hover:border-1"
+              variant="outline"
+            >
+              Sauvegarder comme brouillon
+            </Button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }
