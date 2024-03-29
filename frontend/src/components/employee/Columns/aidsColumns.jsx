@@ -187,10 +187,15 @@ export const aidsColumns = (colsToHide = []) => {
                 id={row.original.id}
                 text={"Détails de la demande"}
               />
-
+              {row.original.financial_aid_status === "draft" && (
+                <NavigateDropdownMenuItem
+                  id={"/demande-aide-financiere/" + row.original.id}
+                  text={"Modifier le broullion"}
+                />
+              )}
               <Dialog>
                 <DialogTrigger style={{ width: "100%" }}>
-                  <div className=" w-full cursor-pointer text-center  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
                     Supprimer
                   </div>
                 </DialogTrigger>

@@ -53,6 +53,8 @@ function App() {
               <Route path="demande-pret/:lDId" element={<Loan />} />
 
               <Route path="demande-aide-financiere" element={<FinancialAid />} />
+              <Route path="demande-aide-financiere/:aDId" element={<FinancialAid />} />
+
               <Route path="liste-demandes-pret" element={<ListLoans />} />
               <Route path="liste-demandes-pret/:dmId" element={<SingleDemandLoan employee={true}   />} />
               <Route path="liste-demandes-aide-financiere" element={<ListAids />} />

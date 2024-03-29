@@ -73,7 +73,8 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
     // localStorage.setItem("setLoanRequestedId", id);
     if (employee === "liste-demandes-pret") {
       navigate(`${id}`);
-    } else navigate(`pret/${id}`);
+    } else if (employee ==="demandes-employe")  navigate(`pret/${id}`)
+    else navigate(`/liste-demandes-pret/${id}`);
   };
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;

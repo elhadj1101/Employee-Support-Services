@@ -74,7 +74,7 @@ class Document(models.Model):
         chars = string.ascii_letters + string.digits + '!@#$%^&*()'
         random.seed = (os.urandom(1024))
         a = ''.join(random.choice(chars) for i in range(length))
-        rndm_filename = '%s%s%s' % (name,str(a),extension)
+        rndm_filename = '%s%s.%s' % (name,str(a),extension)
         return f'{instance.employee.pk}/docs/{rndm_filename}'
         
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE )
@@ -83,7 +83,7 @@ class Document(models.Model):
     document_name = models.CharField(max_length = 255)
     document_file = models.FileField(upload_to=get_path )
     document_uploaded_at = models.DateField(auto_now_add = True)
-    
+    document_size = models.FloatField(default=10.05)
     # for postDelete signal
     doc_field = "document_file"
     

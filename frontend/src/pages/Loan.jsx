@@ -34,23 +34,35 @@ const Loan = () => {
 
   const [motifError, setMotifError] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [oldFiles, setOldFiles] = useState([]);
   const [MontantError, setMontantError] = useState("");
   const [DurationError, setDurationError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const durationRegex = /^\d{1,2}$/;
 
   useEffect(() => {
-    console.log(crrntLoan);
     crrntLoan =
       loanDraftId &&
       loans &&
       loans.filter((loan) => loan.id === loanDraftId)[0];
-    crrntLoan = crrntLoan && crrntLoan.loan_type === "draft" ? crrntLoan : null;
+    crrntLoan =
+      crrntLoan && crrntLoan.loan_status === "draft" ? crrntLoan : null;
+    let oldF = crrntLoan
+      ? crrntLoan.documents.map((doc) => {
+          return {
+            name: doc.document_name,
+            url: doc.document_file,
+            size: doc.document_size * 1000,
+          };
+        })
+      : [];
+
+    setOldFiles(oldF);
     setMontant(!crrntLoan ? intmaxPayMois : crrntLoan?.loan_amount);
     setDuration(!crrntLoan ? 12 : crrntLoan?.loan_period);
     setMotif(!crrntLoan ? "" : crrntLoan?.loan_motivation);
     setPayment_method(!crrntLoan ? "ccp" : crrntLoan?.payment_method);
-  }, [crrntLoan]);
+  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     let val = value;
@@ -134,6 +146,10 @@ const Loan = () => {
     formData.append("loan_period", Duration);
     formData.append("loan_motivation", motif);
     formData.append("payment_method", payment_method);
+    uploadedFiles.forEach((file) => {
+      formData.append("files[]", file);
+    });
+    formData.append("old_files", JSON.stringify(oldFiles));
     if (!crrntLoan || loanDraftId == false) {
       Axios.post(endpoint + isDraft, formData, {
         headers: {
@@ -205,15 +221,27 @@ const Loan = () => {
       </h1>
       <div>
         <div className=" max-w-xs mx-auto sm:flex sm:justify-between sm:mx-6 sm:space-x-3 sm:max-w-full    ">
-          <Card title="Montant max prét (12 mois)" price={maxLoan} icon="/icons/loan.png" />
-          <Card title="Max paiment/mois (12 mois)" price={maxPayMois} icon="/icons/timese.png" />
-          <Card title="éligible au prét?" isEligable={canApplyLoan} icon="/icons/eligable.png" />
+          <Card
+            title="Montant max prét (12 mois)"
+            price={maxLoan}
+            icon="/icons/loan.png"
+          />
+          <Card
+            title="Max paiment/mois (12 mois)"
+            price={maxPayMois}
+            icon="/icons/timese.png"
+          />
+          <Card
+            title="éligible au prét?"
+            isEligable={canApplyLoan}
+            icon="/icons/eligable.png"
+          />
         </div>
         <div className=" sm:flex md:flex lg:flex mx-6 mb-6">
           <span className=" font-semibold">Remarque:</span>
           <p className=" text-md ml-2">
             Ces chiffres et informations basés sur votre salaire et le fonds de
-            la communauté{" "}
+            la commité{" "}
           </p>
         </div>
       </div>
@@ -231,7 +259,7 @@ const Loan = () => {
       )}
 
       {((canApplyLoan && !loanDraftId) ||
-        (crrntLoan && loanDraftId && crrntLoan.loan_type === "draft")) && (
+        (crrntLoan && loanDraftId && crrntLoan.loan_status === "draft")) && (
         <form className=" sm:px-7 h-auto bg-slate-50 mx-5 rounded-xl p-4">
           <span className="  sm:mt-8 font-medium text-xl flex mb-7 ">
             {loanDraftId === false
@@ -299,6 +327,7 @@ const Loan = () => {
             <div className="absolute min-h-full h-max inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-75 shadow-2xl">
               <Popup
                 handleClose={handleClose}
+                oldFiles={oldFiles}
                 motif={motif}
                 motifError={motifError}
                 setMotifError={setMotifError}
@@ -313,7 +342,7 @@ const Loan = () => {
       )}
 
       {((!crrntLoan && loanDraftId) ||
-        (crrntLoan && crrntLoan.loan_type !== "draft")) && (
+        (crrntLoan && crrntLoan.loan_status !== "draft")) && (
         <div className="flex  items-start">
           <p className="text-red-800 mx-6 text-lg">
             Vous n'avez aucun brouillon de demande de prêt avec le numéro:{" "}

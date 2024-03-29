@@ -6,7 +6,7 @@ from .models import Loan, Document, Financial_aid
 class FileSerializer (serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ["id", "document_name", "document_file","document_uploaded_at" ]
+        fields = ["id", "document_name", "document_file","document_uploaded_at","document_size" ]
 
 
 

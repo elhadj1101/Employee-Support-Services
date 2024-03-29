@@ -79,7 +79,9 @@ class LoanView(APIView):
                 document_file=f,
                 document_name=f.name,
                 financial_aid=None,
-                loan = created_instance
+                loan = created_instance,
+                document_size=f.size/1024, # kb
+                
                 )
                 d.save()
             return Response({"sucess":"loan created succefully"}, status=status.HTTP_201_CREATED)
@@ -182,6 +184,7 @@ class FinancialaidView(generics.ListCreateAPIView):
                 employee=request.user,
                 document_file=f,
                 document_name=f.name,
+                document_size=f.size/1024, # kb
                 financial_aid=created_instance,
                 loan = None
             )
