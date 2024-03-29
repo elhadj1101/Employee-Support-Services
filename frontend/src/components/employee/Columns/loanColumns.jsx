@@ -25,29 +25,28 @@ import { statusColorMap } from "api/requests";
 import { useNavigate } from "react-router-dom";
 import useStore from "../../../store/index";
 import { toast } from "sonner";
-
+import { deleteLoan, getLoans} from "api/requests";
 const DeleteButton = ({ id }) => {
-  const { setAdminUsers } = useStore();
-
+  const { setLoans } = useStore();
   const handleDeleteClick = async (e) => {
-    // try {
-    //   const response = await deleteUser(id);
-    //   if (response.success) {
-    //     toast.success("Le compte utilisateur a été désactivé avec succès.");
-    //   }
-    //   const updatedUsers = await getUsers();
-    //   setAdminUsers(updatedUsers);
-    // } catch (error) {
-    //   if (error.detail) {
-    //     toast.error(error.detail);
-    //   } else if (error.error) {
-    //     toast.error(error.error);
-    //   } else {
-    //     toast.error(
-    //       "Une erreur s'est produite lors de desactivation du compte."
-    //     );
-    //   }
-    // }
+    try {
+      const response = await deleteLoan(id);
+      if (response) {
+        toast.success(`la demande (${id}) a été supprimée avec succès.`);
+      }
+      const updatedLoans = await getLoans();
+      setLoans(updatedLoans);
+    } catch (error) {
+      if (error.detail) {
+        toast.error(error.detail);
+      } else if (error.error) {
+        toast.error(error.error);
+      } else {
+        toast.error(
+          "Une erreur s'est produite lors de desactivation du compte."
+        );
+      }
+    }
   };
   return (
     <Button

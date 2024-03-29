@@ -186,7 +186,7 @@ function FinancialAid() {
 
     let oldF = crrntAid
       ? crrntAid.documents.map((doc) => {
-          return { name: doc.document_name, url: doc.document_file, size: doc.document_size };
+          return { name: doc.document_name, url: doc.document_file, size: doc.document_size*1000 };
         })
       : [];
     setOldFiles(oldF);
