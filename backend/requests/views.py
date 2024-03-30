@@ -353,7 +353,8 @@ class UpdateRequestStatusView(APIView):
         )
 
         if old_status == "waiting" and updated_status in valid_status:
-            
+            # I had an error using request.user.has_perm function 
+            # so I remove it
             if  not request.user.role == 'president' and not request.user.role =='vice_president':
                 return Response(
                     {"error": "you don't have required permission"},
