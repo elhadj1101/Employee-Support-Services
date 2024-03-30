@@ -55,6 +55,9 @@ const getUser = async (id) => {
 const updateUser = async (data, id) => {
   try {
     const response = await Axios.put(`/users/${id}/`, data);
+    if (response.status === 200) {
+      toast.success("Utilisateur modifer avec succès");
+    }
     return response.data;
   } catch (error) {
     if (error.response) {

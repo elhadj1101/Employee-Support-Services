@@ -1,5 +1,4 @@
 import * as React from "react";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import {
@@ -10,17 +9,79 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-import { statusColorMap  } from "api/requests" ;
-import { financial_aid_infos } from "api/requests";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter,
+} from "../../ui/dialog";
+import { statusColorMap } from "api/requests";
+import { financial_aid_infos, deleteAid, getAids } from "api/requests";
 
+import { useNavigate } from "react-router-dom";
+import useStore from "../../../store/index";
+import { toast } from "sonner";
 
-let  typeLabelMap = {}
-financial_aid_infos.forEach(
-  (e) => {
-    typeLabelMap[e.name] = e.description ;
-  });
+let typeLabelMap = {};
+financial_aid_infos.forEach((e) => {
+  typeLabelMap[e.name] = e.description;
+});
+const DeleteButton = ({ id }) => {
+  const {setAids} = useStore();
+  const handleDeleteClick = async (e) => {
+    try {
+      const response = await deleteAid(id);
+      if (response) {
+        toast.success(`la demande (${id}) a été supprimée avec succès.`);
+      }
+      const updatedAids = await getAids();
+      setAids(updatedAids);
+    } catch (error) {
+      if (error.detail) {
+        toast.error(error.detail);
+      } else if (error.error) {
+        toast.error(error.error);
+      } else {
+        toast.error(
+          "Une erreur s'est produite lors de desactivation du compte."
+        );
+      }
+    }
+  };
+  return (
+    <Button
+      variant="danger"
+      className="hover:bg-red-600 hover:text-white border border-red-800 text-red-800"
+      onClick={(e) => handleDeleteClick(e)}
+    >
+      Supprimer{" "}
+    </Button>
+  );
+};
+const NavigateDropdownMenuItem = ({ id, text }) => {
+  // const { setLoanRequestedId } = useStore();
+
+  const navigate = useNavigate();
+  const parts = window.location.pathname
+    .split("/")
+    .filter((part) => part.trim() !== "");
+  let employee = parts[parts.length - 1];
+  const handleNavigate = () => {
+    // setLoanRequestedId(id);
+    // localStorage.setItem("setLoanRequestedId", id);
+    if (employee === "liste-demandes-aide-financiere") {
+      navigate(`${id}`);
+    } else navigate(`aid/${id}`);
+  };
+
+  return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
+};
 export const aidsColumns = (colsToHide = []) => {
-
   const cols = [
     {
       id: "select",
@@ -46,29 +107,32 @@ export const aidsColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "employee",
-      header: "ID de l'employer",
+      header: () => <div className="text-center">ID de l'employer</div>,
+      // to filter ids
       accessorFn: (orow) => {
         return orow.employee.toString();
       },
       cell: ({ row }) => (
-        <div className="text-left font-medium">{row.getValue("employee")}</div>
+        <div className="text-center font-medium">
+          {row.getValue("employee")}
+        </div>
       ),
     },
     {
       accessorKey: "id",
-      header: () => <div className="text-left">ID</div>,
+      header: () => <div className="text-center">ID</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">{row.getValue("id")}</div>
+          <div className="text-center font-medium">{row.getValue("id")}</div>
         );
       },
     },
     {
       accessorKey: "request_created_at",
-      header: () => <div className="text-left">Date Demande</div>,
+      header: () => <div className="text-center">Date Demande</div>,
       cell: ({ row }) => {
         return (
-          <div className="text-left font-medium">
+          <div className="text-center font-medium">
             {row.getValue("request_created_at")}
           </div>
         );
@@ -76,13 +140,13 @@ export const aidsColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "financial_aid_status",
-      header: () => <div className="text-left">Status</div>,
+      header: () => <div className="text-center">Status</div>,
       cell: ({ row }) => {
         return (
           <div className="capitalize w-full">
             <div
               className={
-                "w-fit p-2 m-1 rounded-lg " +
+                "w-fit p-2 m-auto rounded-lg " +
                 statusColorMap[row.getValue("financial_aid_status")]
               }
             >
@@ -94,30 +158,19 @@ export const aidsColumns = (colsToHide = []) => {
     },
     {
       accessorKey: "financial_aid_type",
-      header: "Type d'aide",
+      header: () => <div className="text-center">Type d'aide</div>,
       cell: ({ row }) => (
-        <div className="text-left font-medium">
+        <div className="text-center font-medium">
           {typeLabelMap[row.getValue("financial_aid_type")]}
         </div>
       ),
     },
     {
-      accessorKey: "request_response_at",
-      header: () => <div className="text-left">Date de reponse</div>,
-      cell: ({ row }) => {
-        return (
-          <div className="text-left font-medium">
-            {row.getValue("request_response_at") || "--"}
-          </div>
-        );
-      },
-    },
-    {
       id: "actions",
+      header: () => <div className="text-left">Actions</div>,
+
       enableHiding: false,
       cell: ({ row }) => {
-        const payment = row.original;
-
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -128,20 +181,45 @@ export const aidsColumns = (colsToHide = []) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                Copy request ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View Request</DropdownMenuItem>
-              <DropdownMenuItem>Delete</DropdownMenuItem>
+
+              <NavigateDropdownMenuItem
+                id={row.original.id}
+                text={"Détails de la demande"}
+              />
+              {row.original.financial_aid_status === "draft" && (
+                <NavigateDropdownMenuItem
+                  id={"/demande-aide-financiere/" + row.original.id}
+                  text={"Modifier le broullion"}
+                />
+              )}
+              <Dialog>
+                <DialogTrigger style={{ width: "100%" }}>
+                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                    Supprimer
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      Êtes-vous sûr de Supprimer Cette Demmande?
+                    </DialogTitle>
+                    <DialogDescription>
+                      Cette action va Supprimer definitivement la demmande
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose>
+                      <DeleteButton id={row.original.id} />
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </DropdownMenuContent>
           </DropdownMenu>
         );
       },
     },
   ];
+
   return cols.filter((col) => !colsToHide.includes(col.accessorKey));
- 
 };

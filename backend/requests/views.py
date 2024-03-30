@@ -1,9 +1,9 @@
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Loan, Financial_aid, Document
-from .serializers import LoanSerializer, FinancialaidSerializer
-from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
+from .models import  Loan 
+from .serializers import LoanSerializer , FileSerializer
+from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework import status
 from .permissions import (
     IsLoanApplier,
@@ -22,18 +22,22 @@ from django.http import HttpResponse
 # Create your views here.
 
 
+# 12 months duration
+DURATION = 12
+def calculate_max_loan(salary):
+    return float(salary)*0.3*DURATION
+
+
 # LoanView endpoint to create a loan with post request ,
 # or verify if you can apply to the loan with get request
 
 # IsLoanApplier is a permission class to verify if the user has the right to apply for a loan
 # for further information check permissions.py
 
-
 class LoanView(APIView):
-    permission_classes = [IsAuthenticated, CanViewRequests, IsLoanApplier]
-
-    def post(self, request):
-        serializer = LoanSerializer(data=request.data)
+    permission_classes = [IsAuthenticated , IsLoanApplier]
+    def post(self , request ):
+        serializer = LoanSerializer(data = request.data)
         if serializer.is_valid():
             max = calculate_max_loan(
                 request.user.salary, int(request.data["loan_period"])
@@ -114,14 +118,14 @@ class LoanCheckView(APIView):
 # This endpoint displays the loan history to see all the previous loans the employee has applied for.
 class LoanHistoryView(APIView):
     permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        loans = Loan.objects.filter(employee=request.user)
-
+    def get(self,request):
+        loans = Loan.objects.filter(employee = request.user)
+        serializer = LoanSerializer(loans , many = True)
         if loans:
-            serializer = LoanSerializer(loans, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response("you don't have any loans", status=status.HTTP_200_OK)
+            return Response(serializer.data)
+        return Response('you don\'t have any loans')
+
+    
 
 
 # This view will be used for uploading files in the financial aid functionnality
