@@ -1,8 +1,8 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import  Loan 
-from .serializers import LoanSerializer , FileSerializer
+from .models import  Loan , Financial_aid , Document
+from .serializers import LoanSerializer , FileSerializer  , FinancialaidSerializer
 from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework import status
 from .permissions import (
@@ -327,7 +327,7 @@ class UpdateRequestView(APIView):
 
 
 class UpdateRequestStatusView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated , (IsTresorier | IsPresident | IsVicePresident)]
 
     def patch(self, request, request_type, pk):
 
