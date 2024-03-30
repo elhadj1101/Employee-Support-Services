@@ -10,11 +10,14 @@ from .permissions import (
     CanViewRequests,
     IsFinancialaidApplier,
     IsPresident,
+    IsVicePresident,
+    IsTresorier,
 )
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .utils import calculate_max_loan
 from django.http import HttpResponse
+
 
 # Create your views here.
 
@@ -38,8 +41,8 @@ class LoanView(APIView):
             loan_amount = float(request.data["loan_amount"])
             if max < loan_amount:
                 return Response(
-                    {"error":"maximumn loan amount {} ".format(max)},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {"error": "maximumn loan amount {} ".format(max)},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             isDraft = request.query_params.get("draft", None)
             if isDraft == "true":
@@ -49,9 +52,8 @@ class LoanView(APIView):
             else:
 
                 return Response(
-                    {"error":"Invalid query param value"},
-                    status=status.HTTP_400_BAD_REQUEST
-
+                    {"error": "Invalid query param value"},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             if (
@@ -62,29 +64,32 @@ class LoanView(APIView):
                 ).exists()
             ):
                 return Response(
-
-                    {"error":"you can't create draft, already have one"},
-                    status=status.HTTP_403_FORBIDDEN
+                    {"error": "you can't create draft, already have one"},
+                    status=status.HTTP_403_FORBIDDEN,
                 )
-            
+
             files = request.FILES.getlist("files[]", [])
-            if not  files and loan_status == 'waiting':
-                return Response('you must upload files' , status=status.HTTP_400_BAD_REQUEST)
+            if not files and loan_status == "waiting":
+                return Response(
+                    "you must upload files", status=status.HTTP_400_BAD_REQUEST
+                )
 
-
-            created_instance = serializer.save(employee=request.user, loan_status=loan_status)
+            created_instance = serializer.save(
+                employee=request.user, loan_status=loan_status
+            )
             for f in files:
                 d = Document(
-                employee=request.user,
-                document_file=f,
-                document_name=f.name,
-                financial_aid=None,
-                loan = created_instance
+                    employee=request.user,
+                    document_file=f,
+                    document_name=f.name,
+                    financial_aid=None,
+                    loan=created_instance,
                 )
                 d.save()
-            return Response({"sucess":"loan created succefully"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"sucess": "loan created succefully"}, status=status.HTTP_201_CREATED
+            )
         return Response(serializer.errors)
-
 
     def get(self, request):
         execlution_criteria = {"loan_status": "draft"}
@@ -156,8 +161,11 @@ class FinancialaidView(generics.ListCreateAPIView):
                 financial_aid_status="draft",
             ).exists()
         ):
-            return Response({"error":"you can't create draft, already have one"}, status=status.HTTP_403_FORBIDDEN)
-        
+            return Response(
+                {"error": "you can't create draft, already have one"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         serializer.is_valid(raise_exception=True)
         if (
             request.data["financial_aid_type"] == "retirement_financial_aid"
@@ -173,7 +181,7 @@ class FinancialaidView(generics.ListCreateAPIView):
         )
         # now create the files
         files = request.FILES.getlist("files[]", [])
-        if not files and aid_status == 'waiting' :
+        if not files and aid_status == "waiting":
             return Response(
                 {"error": "you must upload files"}, status=status.HTTP_400_BAD_REQUEST
             )
@@ -183,7 +191,7 @@ class FinancialaidView(generics.ListCreateAPIView):
                 document_file=f,
                 document_name=f.name,
                 financial_aid=created_instance,
-                loan = None
+                loan=None,
             )
             d.save()
         return Response(
@@ -241,7 +249,7 @@ class FinancialaidCheckView(APIView):
                 "Missing 'aid_type' parameter in the request",
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
 
 # To use this view specify request_type (loan|financial-aid) as url
 # also use draft query parameter
@@ -262,7 +270,7 @@ class UpdateRequestView(APIView):
                 return Response(
                     "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
                 )
-            files = request.FILES.getlist('files[]', [])
+            files = request.FILES.getlist("files[]", [])
             # update the loan object
             if request_type == "loan":
                 loan = get_object_or_404(Loan, pk=pk)
@@ -308,4 +316,62 @@ class UpdateRequestView(APIView):
                 return Response("financial aid updated succesfully")
 
         else:
-            return Response({"error":"page not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "page not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+
+class UpdateRequestStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, request_type, pk):
+
+        model_class = {"loan": Loan, "financial-aid": Financial_aid}.get(request_type)
+
+        if not model_class:
+            return Response(
+                {"error": "page not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        if "new_status" not in request.data:
+            return Response(
+                {"error": "you must include new_status in your request"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        obj = get_object_or_404(model_class, pk=pk)
+        updated_status = request.data["new_status"]
+
+        valid_status = ("approved", "refused" )
+        old_status = (
+            obj.loan_status if model_class == Loan else obj.financial_aid_status
+        )
+
+        if old_status == "waiting" and updated_status in valid_status:
+            
+            if  not request.user.role == 'president' and not request.user.role =='vice_president':
+                return Response(
+                    {"error": "you don't have required permission"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+            if model_class == Loan:
+                obj.loan_status = updated_status
+            else:
+                obj.financial_aid_status = updated_status
+            obj.save()
+            return Response({"status updated successfully"}, status=status.HTTP_200_OK)
+        elif old_status == "approved" and updated_status == 'finished':
+            if  not request.user.role == 'tresorier':
+                return Response(
+                    {"error": "you don't have required permission"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+            obj.loan_status = updated_status
+            obj.save()
+            return Response({"status updated successfully"}, status=status.HTTP_200_OK)
+        
+        else:
+            return Response(
+                {"error": "status can't be updated"}, status=status.HTTP_400_BAD_REQUEST
+            )
