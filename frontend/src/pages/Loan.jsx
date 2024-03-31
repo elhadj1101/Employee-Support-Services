@@ -56,13 +56,13 @@ const Loan = () => {
           };
         })
       : [];
-
+    console.log(crrntLoan);
     setOldFiles(oldF);
     setMontant(!crrntLoan ? intmaxPayMois : crrntLoan?.loan_amount);
     setDuration(!crrntLoan ? 12 : crrntLoan?.loan_period);
     setMotif(!crrntLoan ? "" : crrntLoan?.loan_motivation);
     setPayment_method(!crrntLoan ? "ccp" : crrntLoan?.payment_method);
-  }, []);
+  }, [crrntLoan]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     let val = value;
@@ -221,9 +221,21 @@ const Loan = () => {
       </h1>
       <div>
         <div className=" max-w-xs mx-auto sm:flex sm:justify-between sm:mx-6 sm:space-x-3 sm:max-w-full    ">
-          <Card title="Montant max prét (12 mois)" price={maxLoan} icon="/icons/loan.png" />
-          <Card title="Max paiment/mois (12 mois)" price={maxPayMois} icon="/icons/timeloan.png" />
-          <Card title="éligible au prét?" isEligable={canApplyLoan} icon="/icons/eligable.png" />
+          <Card
+            title="Montant max prét (12 mois)"
+            price={maxLoan}
+            icon="/icons/loan.png"
+          />
+          <Card
+            title="Max paiment/mois (12 mois)"
+            price={maxPayMois}
+            icon="/icons/timeloan.png"
+          />
+          <Card
+            title="éligible au prét?"
+            isEligable={canApplyLoan}
+            icon="/icons/eligable.png"
+          />
         </div>
         <div className=" sm:flex md:flex lg:flex mx-6 mb-6">
           <span className=" font-semibold">Remarque:</span>

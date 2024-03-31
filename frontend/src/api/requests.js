@@ -89,7 +89,7 @@ const financial_aid_infos = [
       amount: 7000,
     },
     {
-      name: "retirement",
+      name: "retirement_financial_aid",
       category: "Les Prestations",
       description: "Retraite",
       files: [

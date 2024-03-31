@@ -22,11 +22,6 @@ from django.http import HttpResponse
 # Create your views here.
 
 
-# 12 months duration
-DURATION = 12
-def calculate_max_loan(salary):
-    return float(salary)*0.3*DURATION
-
 
 # LoanView endpoint to create a loan with post request ,
 # or verify if you can apply to the loan with get request
@@ -296,13 +291,13 @@ class UpdateRequestView(APIView):
 
         else:
             return Response(
-                {"error":"page not found"}, status=status.HTTP_404_NOT_FOUND
+                {"error":"page not found"}, status=status.HTTP_404_NOTpage_FOUND
             )
 
 
     def patch(self, request, request_type, pk):
         # check if the url contains loan or financial-aid
-        if request_type in ["loan", "financial-aid"]:
+        if request_type in ["loans", "financial-aids"]:
             # check for the draft query parameter
             isDraft = request.query_params.get("draft")
             if isDraft == "true":
@@ -315,7 +310,7 @@ class UpdateRequestView(APIView):
                 )
             files = request.FILES.getlist("files[]", [])
             # update the loan object
-            if request_type == "loan":
+            if request_type == "loans":
                 loan = get_object_or_404(Loan, pk=pk)
                 # only draft records can be updated
                 if loan.loan_status != "draft":
@@ -328,7 +323,7 @@ class UpdateRequestView(APIView):
                 return Response("loan updated succesfully")
 
             # update the financial-aid object
-            elif request_type == "financial-aid":
+            elif request_type == "financial-aids":
                 financial_aid = get_object_or_404(Financial_aid, pk=pk)
                 # only draft records can be updated
                 if financial_aid.financial_aid_status != "draft":
@@ -357,7 +352,10 @@ class UpdateRequestView(APIView):
                 serializer.is_valid(raise_exception=True)
                 serializer.save(financial_aid_status=aid_status)
                 return Response("financial aid updated succesfully")
-
+            else :
+                return Response(
+                    {"error": "page not found"}, status=status.HTTP_404_NOT_FOUND
+                )
         else:
             return Response(
                 {"error": "page not found"}, status=status.HTTP_404_NOT_FOUND

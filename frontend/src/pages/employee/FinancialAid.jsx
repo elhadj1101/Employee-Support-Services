@@ -88,11 +88,10 @@ function FinancialAid() {
         : `/requests/financial-aids/${aidDraftId}?draft=`;
     const formData = new FormData();
     formData.append("financial_aid_type", aidData.aidType);
+    if (aidData.aidType === "family_member_death"){
+      formData.append("family_member", aidData.familyMember);
 
-    formData.append(
-      "family_member",
-      aidData.aidType === "family_member_death" ? aidData.familyMember : ""
-    );
+    }
     uploadedFiles.forEach((file) => {
       formData.append("files[]", file);
     });
@@ -122,6 +121,8 @@ function FinancialAid() {
               toast.error(
                 "Vous avez une demande de meme type en cours de traitement."
               );
+            }else if (err.response.data) {
+                toast.error(err.response.data[Object.keys(err.response.data)[0]][0]);
             } else {
               toast.error(
                 "Une erreur s'est produite lors de l'envoi de la demande"

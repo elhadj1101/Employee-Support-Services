@@ -12,7 +12,6 @@ const Popup = ({
   handleSubmit = () => {},
 }) => {
   const filesRef = useRef(null);
-  console.log("Popup ", oldFiles);
 
   const handleChange = (e) => {
     setMotif(e.target.value);
