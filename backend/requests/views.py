@@ -17,6 +17,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .utils import calculate_max_loan
 from django.http import HttpResponse
+from ast import literal_eval
 
 
 # Create your views here.
@@ -308,15 +309,44 @@ class UpdateRequestView(APIView):
                 return Response(
                     "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
                 )
-            files = request.FILES.getlist("files[]", [])
             # update the loan object
             if request_type == "loans":
-                loan = get_object_or_404(Loan, pk=pk)
+                loan = get_object_or_404(Loan, pk=pk , employee = request.user)
                 # only draft records can be updated
                 if loan.loan_status != "draft":
                     return Response(
                         "this loan is not draft", status=status.HTTP_403_FORBIDDEN
                     )
+
+                # handling old files
+                # old files will be considered as string containing the paths for the old files
+                # this path we have in the database will be checked if it is contained in this string (old_files)
+                old_files = (
+                    request.data["old_files"] if "old_files" in request.data else []
+                )
+                loan_documents = Document.objects.filter(loan=pk)
+                
+                documents_paths = loan_documents.values_list("document_file", flat=True) if loan_documents else []
+                print(loan_documents)
+                print(documents_paths)
+
+                for document_path in documents_paths:
+                    if document_path not in old_files:
+                        Document.objects.filter(document_file=document_path).delete()
+
+                # creating new files
+                new_files = request.FILES.getlist("files[]", [])
+                if new_files:
+                    for f in new_files:
+                        d = Document(
+                            employee=request.user,
+                            document_file=f,
+                            document_name=f.name,
+                            financial_aid=None,
+                            loan=loan,
+                        )
+                        d.save()
+            
                 serializer = LoanSerializer(loan, data=request.data, partial=True)
                 serializer.is_valid(raise_exception=True)
                 serializer.save(loan_status=aid_status)
@@ -324,7 +354,7 @@ class UpdateRequestView(APIView):
 
             # update the financial-aid object
             elif request_type == "financial-aids":
-                financial_aid = get_object_or_404(Financial_aid, pk=pk)
+                financial_aid = get_object_or_404(Financial_aid, pk=pk , employee = request.user)
                 # only draft records can be updated
                 if financial_aid.financial_aid_status != "draft":
                     return Response(
@@ -345,6 +375,34 @@ class UpdateRequestView(APIView):
                         "you can't change family member",
                         status=status.HTTP_403_FORBIDDEN,
                     )
+                
+
+                old_files = (
+                    request.data["old_files"] if "old_files" in request.data else []
+                )
+                financial_aid_documents = Document.objects.filter(financial_aid=pk )
+                
+                documents_paths = financial_aid_documents.values_list("document_file", flat=True) if financial_aid_documents else []
+                print(financial_aid_documents)
+                print(documents_paths)
+
+                for document_path in documents_paths:
+                    if document_path not in old_files:
+                        Document.objects.filter(document_file=document_path).delete()
+
+                # creating new files
+                new_files = request.FILES.getlist("files[]", [])
+                if new_files:
+                    for f in new_files:
+                        d = Document(
+                            employee=request.user,
+                            document_file=f,
+                            document_name=f.name,
+                            financial_aid=financial_aid,
+                            loan=None,
+                        )
+                        d.save()
+
 
                 serializer = FinancialaidSerializer(
                     financial_aid, data=request.data, partial=True
