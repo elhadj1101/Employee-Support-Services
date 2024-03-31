@@ -88,9 +88,8 @@ function FinancialAid() {
         : `/requests/financial-aids/${aidDraftId}?draft=`;
     const formData = new FormData();
     formData.append("financial_aid_type", aidData.aidType);
-    if (aidData.aidType === "family_member_death"){
+    if (aidData.aidType === "family_member_death") {
       formData.append("family_member", aidData.familyMember);
-
     }
     uploadedFiles.forEach((file) => {
       formData.append("files[]", file);
@@ -121,8 +120,10 @@ function FinancialAid() {
               toast.error(
                 "Vous avez une demande de meme type en cours de traitement."
               );
-            }else if (err.response.data) {
-                toast.error(err.response.data[Object.keys(err.response.data)[0]][0]);
+            } else if (err.response.data) {
+              toast.error(
+                err.response.data[Object.keys(err.response.data)[0]][0]
+              );
             } else {
               toast.error(
                 "Une erreur s'est produite lors de l'envoi de la demande"
@@ -187,7 +188,11 @@ function FinancialAid() {
 
     let oldF = crrntAid
       ? crrntAid.documents.map((doc) => {
-          return { name: doc.document_name, url: doc.document_file, size: doc.document_size*1000 };
+          return {
+            name: doc.document_name,
+            url: doc.document_file,
+            size: doc.document_size * 1000,
+          };
         })
       : [];
     setOldFiles(oldF);
@@ -221,7 +226,7 @@ function FinancialAid() {
     setAidData(data);
   }, [aids]);
   return (
-    <div className="w-full h-[100vh] flex-grow flex flex-col  bg-gray-bg  py-4">
+    <div className="w-full min-h-[100vh] flex-grow flex flex-col  bg-gray-bg  pt-4 pb-6">
       <h1 className="font-semibold text-2xl px-6 my-2">
         {!crrntAid
           ? "Demande d'aide financière"
