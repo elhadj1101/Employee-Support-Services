@@ -17,8 +17,8 @@ export default function UserCard({ user }) {
     employe: "text-green-900 bg-green-100",
     president: "text-blue-900 bg-blue-100",
     tresorier: "text-yellow-900 bg-yellow-100",
-    "vice_president": "text-purple-900 bg-purple-100",
-    "membre_commute": "text-red-900 bg-red-100",
+    vice_president: "text-purple-900 bg-purple-100",
+    membre_commute: "text-red-900 bg-red-100",
     admin: "text-gray-900 bg-gray-100",
   };
   return (
@@ -28,7 +28,7 @@ export default function UserCard({ user }) {
           employé details
         </h1>
         <Link href="#" className="underline font-semibold pb-2 cursor-pointer">
-         Tout Les Demmandes
+          Tout Les Demmandes
         </Link>
       </div>
       <div className="my-2 flex justify-between items-center">
@@ -38,10 +38,10 @@ export default function UserCard({ user }) {
         <div
           className={
             "capitalize w-fit h-fit py-1 px-3  rounded-3xl " +
-            roleColors[user?.role]
+            roleColors[user?.role || "employe"]
           }
         >
-          {user?.role.replace('_' , ' ')}
+          {user && user?.role?.replace("_", " ")}
         </div>
       </div>
 
@@ -77,8 +77,12 @@ export default function UserCard({ user }) {
           <p className="h-7 text-gray-500">
             {" "}
             <span className="pr-2"> 00799999</span>
-            {user?.rip?.replace("00799999", "").slice(0, -2)}{"   "}
-            <span className=""  style={{ display: 'inline-block' }}> clé {user?.rip?.slice(-2)}</span>
+            {user?.rip?.replace("00799999", "").slice(0, -2)}
+            {"   "}
+            <span className="" style={{ display: "inline-block" }}>
+              {" "}
+              clé {user?.rip?.slice(-2)}
+            </span>
           </p>{" "}
           <TbCopy
             className="cursor-pointer  w-5 h-5 hover:text-green-600"

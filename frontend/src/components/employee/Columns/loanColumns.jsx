@@ -79,7 +79,7 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 };
 
-export const loanColumns = (colsToHide = []) => {
+export const loanColumns = (colsToHide = [], hideDelete = false) => {
   const cols = [
     {
       id: "select",
@@ -206,33 +206,36 @@ export const loanColumns = (colsToHide = []) => {
                 text={"Détails de la demande"}
               />
               {row.original.loan_status === "draft" && (
-              <NavigateDropdownMenuItem
-                id={"/demande-pret/" +row.original.id}
-                text={"Modifier le broullion"}
-              />
+                <NavigateDropdownMenuItem
+                  id={"/demande-pret/" + row.original.id}
+                  text={"Modifier le broullion"}
+                />
               )}
-              <Dialog>
-                <DialogTrigger style={{ width: "100%" }}>
-                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                    Supprimer
-                  </div>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>
-                      Êtes-vous sûr de Supprimer Cette Demmande?
-                    </DialogTitle>
-                    <DialogDescription>
-                      Cette action va Supprimer definitivement la demmande
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose>
-                      <DeleteButton id={row.original.id} />
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              {["draft", "waiting"].includes(row.original.loan_status) &&
+                !hideDelete && (
+                  <Dialog>
+                    <DialogTrigger style={{ width: "100%" }}>
+                      <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                        Supprimer
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>
+                          Êtes-vous sûr de Supprimer Cette Demmande?
+                        </DialogTitle>
+                        <DialogDescription>
+                          Cette action va Supprimer definitivement la demmande
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <DialogClose>
+                          <DeleteButton id={row.original.id} />
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

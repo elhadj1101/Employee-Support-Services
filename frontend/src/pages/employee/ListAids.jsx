@@ -28,7 +28,7 @@ function ListAids() {
       <RequestsTable
         data={aids}
         columns={cols}
-        filteredColumn="employee"
+        filteredColumn="id"
       />
     </div>
   );
