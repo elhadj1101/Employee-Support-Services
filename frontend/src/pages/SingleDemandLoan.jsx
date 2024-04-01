@@ -65,8 +65,7 @@ export default function SingleDemandLoan({ employee }) {
           );
         } else {
           navigate("/");
-          toast.error('La page demandée n\'existe pas.')
-
+          toast.error("La page demandée n'existe pas.");
         }
       }
     } else {
@@ -77,7 +76,7 @@ export default function SingleDemandLoan({ employee }) {
           );
         } else {
           navigate("/");
-          toast.error('La page demandée n\'existe pas.')
+          toast.error("La page demandée n'existe pas.");
         }
       }
     }
@@ -111,7 +110,6 @@ export default function SingleDemandLoan({ employee }) {
     }
   }, [requestedLoan]);
   const handleEdit = () => {
-    setLoanDraftId(LoanId);
     navigate(`/demande-pret/${LoanId}`);
   };
   return (
@@ -133,7 +131,6 @@ export default function SingleDemandLoan({ employee }) {
           </div>
         )}
       </div>
-      {JSON.stringify(requestedLoan)}
       <div className="w-full flex flex-grow flex-wrap lg:flex-nowrap gap-7 ">
         {/* loan details card */}
 
@@ -290,16 +287,30 @@ export default function SingleDemandLoan({ employee }) {
           </div>
 
           {/* files */}
+
           <div className="mt-5 h-fit bg-white p-4 rounded-lg ">
             <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
               Pièces jointes
             </h1>
-            <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
-              Pièces jointes
-            </h1>
-            <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
-              Pièces jointes
-            </h1>
+            <div className="flex gap-3 flex-wrap">
+              {requestedLoan?.documents?.length !== 0 ? (
+                requestedLoan?.documents?.map((doc) => (
+                  <div className=" flex bg-lightgray space-x-3  w-fit min-w-60 items-center rounded-sm py-3 px-4 border border-gray-300">
+                    <img src="/icons/Pdf-icon.png" alt="" />
+                    <div className="pr-4">
+                      <span className="text-gray-600 font-semibold">
+                        {doc?.document_name}
+                      </span>
+                      <p className=" text-gray-400 font-semibold text-sm ">
+                        {doc.document_size} kB
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="capitalize px-2 p-5 text-center w-full">Aucune pièce jointe</p>
+              )}
+            </div>
           </div>
         </div>
 

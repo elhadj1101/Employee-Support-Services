@@ -110,7 +110,6 @@ export default function SingleDemandLoan({ employee }) {
     }
   }, [requestedAid]);
   const handleEdit = () => {
-    setAidDraftId(aidId);
     navigate(`/demande-aide-financiere/${aidId}`);
   };
   return (
@@ -132,7 +131,6 @@ export default function SingleDemandLoan({ employee }) {
           </div>
         )}
       </div>
-      {JSON.stringify(requestedAid)}
       <div className="w-full flex flex-grow flex-wrap lg:flex-nowrap gap-7 ">
         {/* aid details card */}
 
@@ -147,7 +145,6 @@ export default function SingleDemandLoan({ employee }) {
                   montant Total de l'aide
                 </h3>
                 <p className="pl-2 font-semibold text-gray-500">
-                
                   {requestedAid?.loan_amount * requestedAid?.loan_period} DA
                 </p>
               </div>
@@ -316,12 +313,25 @@ export default function SingleDemandLoan({ employee }) {
             <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
               Pièces jointes
             </h1>
-            <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
-              Pièces jointes
-            </h1>
-            <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
-              Pièces jointes
-            </h1>
+            <div className="flex gap-3 flex-wrap">
+              {requestedAid?.documents?.length !== 0 ? (
+                requestedAid?.documents?.map((doc) => (
+                  <div className=" flex bg-lightgray space-x-3  w-fit min-w-60 items-center rounded-sm py-3 px-4 border border-gray-300">
+                    <img src="/icons/Pdf-icon.png" alt="" />
+                    <div className="pr-4">
+                      <span className="text-gray-600 font-semibold">
+                        {doc?.document_name}
+                      </span>
+                      <p className=" text-gray-400 font-semibold text-sm ">
+                        {doc.document_size} kB
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="capitalize px-2 p-5 text-center w-full">Aucune pièce jointe</p>
+              )}
+            </div>
           </div>
         </div>
 
