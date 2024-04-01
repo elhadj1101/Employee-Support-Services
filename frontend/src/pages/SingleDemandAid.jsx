@@ -25,7 +25,11 @@ import {
 } from "../components/ui/dialog";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
+import { financial_aid_infos } from "api/requests";
+let type = {};
+financial_aid_infos.forEach((e) => {
+  type[e.name] = e.description;
+});
 export default function SingleDemandLoan({ employee }) {
   const StatusColors = {
     approved: "text-green-900 bg-green-100",
@@ -60,24 +64,19 @@ export default function SingleDemandLoan({ employee }) {
       // get the aid details from
       if (aids.length !== 0) {
         if (aids.filter((aid) => aid.id === Number(aidId))[0]) {
-          setReqeustedAid(
-            aids.filter((aid) => aid.id === Number(aidId))[0]
-          );
+          setReqeustedAid(aids.filter((aid) => aid.id === Number(aidId))[0]);
         } else {
           navigate("/");
-          toast.error('La page demandée n\'existe pas.')
-
+          toast.error("La page demandée n'existe pas.");
         }
       }
     } else {
       if (allAids.length !== 0) {
         if (allAids.filter((aid) => aid.id === Number(aidId))[0]) {
-          setReqeustedAid(
-            allAids.filter((aid) => aid.id === Number(aidId))[0]
-          );
+          setReqeustedAid(allAids.filter((aid) => aid.id === Number(aidId))[0]);
         } else {
           navigate("/");
-          toast.error('La page demandée n\'existe pas.')
+          toast.error("La page demandée n'existe pas.");
         }
       }
     }
@@ -145,14 +144,14 @@ export default function SingleDemandLoan({ employee }) {
             <div className="grid grid-cols-3 gap-3">
               <div className="">
                 <h3 className="font-bold capitalize text-gray-600 ">
-                  montant Total du prêt
+                  montant Total de l'aide
                 </h3>
                 <p className="pl-2 font-semibold text-gray-500">
-                  {" "}
+                
                   {requestedAid?.loan_amount * requestedAid?.loan_period} DA
                 </p>
               </div>
-              <div className="">
+              {/* <div className="">
                 <h3 className="font-bold capitalize text-gray-600 ">
                   montant par Mois
                 </h3>
@@ -160,7 +159,7 @@ export default function SingleDemandLoan({ employee }) {
                   {" "}
                   {requestedAid?.loan_amount} DA
                 </p>
-              </div>
+              </div> */}
 
               <div>
                 {/* {JSON.stringify(requestedAid)} */}
@@ -174,7 +173,7 @@ export default function SingleDemandLoan({ employee }) {
               <div>
                 <div className="flex items gap-2">
                   <p className="font-bold  capitalize text-gray-600 ">
-                    statut du prêt
+                    statut de l'aide
                   </p>
                   {!employee && user?.role !== "employee" && (
                     <DropdownMenu>
@@ -192,7 +191,7 @@ export default function SingleDemandLoan({ employee }) {
                             Object.keys(StatusColors)
                               .filter(
                                 (status) =>
-                                  status !== requestedAid?.loan_status
+                                  status !== requestedAid?.financial_aid_status
                               )
                               .map((status) => (
                                 <DialogTrigger
@@ -211,7 +210,8 @@ export default function SingleDemandLoan({ employee }) {
                               approved: "approved",
                             })
                               .filter(
-                                (status) => status !== requestedAid.loan_status
+                                (status) =>
+                                  status !== requestedAid.financial_aid_status
                               )
                               .map((status) => (
                                 <DialogTrigger
@@ -251,13 +251,35 @@ export default function SingleDemandLoan({ employee }) {
                 <div
                   className={
                     "w-fit py-1 px-3 rounded-3xl mt-1 " +
-                    StatusColors[requestedAid?.loan_status]
+                    StatusColors[requestedAid?.financial_aid_status]
                   }
                 >
-                  {requestedAid?.loan_status}
+                  {requestedAid?.financial_aid_status}
                 </div>
               </div>
+
               <div>
+                <p className="font-bold capitalize text-gray-600 ">
+                  Type d'aide
+                </p>
+                <p className="pl-2 font-semibold text-gray-500 capitalize">
+                  {type[requestedAid?.financial_aid_type]}
+                </p>
+              </div>
+              {type[requestedAid?.financial_aid_type]?.startsWith("Décès") ? (
+                <div>
+                  <p className="font-bold capitalize text-gray-600 ">
+                    membre de la famille{" "}
+                  </p>
+                  <p className="pl-2 font-semibold text-gray-500 capitalize">
+                    {requestedAid?.family_member}
+                  </p>
+                </div>
+              ) : (
+                ""
+              )}
+
+              {/* <div>
                 <p className="font-bold capitalize text-gray-600 ">
                   durée du prêt
                 </p>
@@ -265,9 +287,9 @@ export default function SingleDemandLoan({ employee }) {
                   {" "}
                   {requestedAid?.loan_period} mois
                 </p>
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
                 <p className="font-bold capitalize text-gray-600 ">
                   méthode de paiement
                 </p>
@@ -276,16 +298,16 @@ export default function SingleDemandLoan({ employee }) {
                   <span className="lowercase">via</span>{" "}
                   {requestedAid?.payment_method}{" "}
                 </p>
-              </div>
+              </div> */}
             </div>
-            <div className="pt-10">
+            {/* <div className="pt-10">
               <p className="font-bold capitalize text-gray-600 ">
                 motivation du prêt
               </p>
               <p className="p-2 break-all  ">
                 {requestedAid?.loan_motivation}
               </p>
-            </div>
+            </div> */}
             {/* {JSON.stringify(requestedAid)} */}
           </div>
 
