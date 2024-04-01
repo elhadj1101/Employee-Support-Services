@@ -423,7 +423,7 @@ class UpdateRequestStatusView(APIView):
 
     def patch(self, request, request_type, pk):
 
-        model_class = {"loan": Loan, "financial-aid": Financial_aid}.get(request_type)
+        model_class = {"loans": Loan, "financial-aids": Financial_aid}.get(request_type)
 
         if not model_class:
             return Response(
