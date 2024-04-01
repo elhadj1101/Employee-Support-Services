@@ -383,8 +383,6 @@ class UpdateRequestView(APIView):
                 financial_aid_documents = Document.objects.filter(financial_aid=pk )
                 
                 documents_paths = financial_aid_documents.values_list("document_file", flat=True) if financial_aid_documents else []
-                print(financial_aid_documents)
-                print(documents_paths)
 
                 for document_path in documents_paths:
                     if document_path not in old_files:
