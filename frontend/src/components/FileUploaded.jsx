@@ -2,7 +2,7 @@ import React from 'react'
 
 function FileUploaded({name,size,Delete}) {
   return (
-    <div className=' flex bg-slate-200 space-x-3 items-center rounded-lg py-3 px-4'>
+    <div className=' flex bg-slate-200 space-x-3 items-center rounded-lg py-3 px-4 border border-gray-400'>
        <img src="/icons/Pdf-icon.png" alt="" />
        <div>
                <span>{name}</span>

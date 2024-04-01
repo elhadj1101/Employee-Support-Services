@@ -25,29 +25,28 @@ import { statusColorMap } from "api/requests";
 import { useNavigate } from "react-router-dom";
 import useStore from "../../../store/index";
 import { toast } from "sonner";
-
+import { deleteLoan, getLoans} from "api/requests";
 const DeleteButton = ({ id }) => {
-  const { setAdminUsers } = useStore();
-
+  const { setLoans } = useStore();
   const handleDeleteClick = async (e) => {
-    // try {
-    //   const response = await deleteUser(id);
-    //   if (response.success) {
-    //     toast.success("Le compte utilisateur a été désactivé avec succès.");
-    //   }
-    //   const updatedUsers = await getUsers();
-    //   setAdminUsers(updatedUsers);
-    // } catch (error) {
-    //   if (error.detail) {
-    //     toast.error(error.detail);
-    //   } else if (error.error) {
-    //     toast.error(error.error);
-    //   } else {
-    //     toast.error(
-    //       "Une erreur s'est produite lors de desactivation du compte."
-    //     );
-    //   }
-    // }
+    try {
+      const response = await deleteLoan(id);
+      if (response) {
+        toast.success(`la demande (${id}) a été supprimée avec succès.`);
+      }
+      const updatedLoans = await getLoans();
+      setLoans(updatedLoans);
+    } catch (error) {
+      if (error.detail) {
+        toast.error(error.detail);
+      } else if (error.error) {
+        toast.error(error.error);
+      } else {
+        toast.error(
+          "Une erreur s'est produite lors de desactivation du compte."
+        );
+      }
+    }
   };
   return (
     <Button
@@ -73,7 +72,8 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
     // localStorage.setItem("setLoanRequestedId", id);
     if (employee === "liste-demandes-pret") {
       navigate(`${id}`);
-    } else navigate(`pret/${id}`);
+    } else if (employee ==="demandes-employe")  navigate(`pret/${id}`)
+    else navigate(`/liste-demandes-pret/${id}`);
   };
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
@@ -191,7 +191,6 @@ export const loanColumns = (colsToHide = []) => {
 
       enableHiding: false,
       cell: ({ row }) => {
-        console.log("roww", row);
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -202,12 +201,16 @@ export const loanColumns = (colsToHide = []) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
               <NavigateDropdownMenuItem
                 id={row.original.id}
                 text={"Détails de la demande"}
               />
-
+              {row.original.loan_status === "draft" && (
+              <NavigateDropdownMenuItem
+                id={"/demande-pret/" +row.original.id}
+                text={"Modifier le broullion"}
+              />
+              )}
               <Dialog>
                 <DialogTrigger style={{ width: "100%" }}>
                   <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">

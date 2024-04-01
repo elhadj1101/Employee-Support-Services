@@ -55,3 +55,18 @@ class CanViewRequests(permissions.BasePermission):
 class IsPresident(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.role == 'president'
+    
+
+class IsVicePresident(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.role == 'vice_president'
+    
+class IsTresorier(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.role == 'tresorier'
+    
+
+class IsCommiteMember(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.role == 'membre'
+    

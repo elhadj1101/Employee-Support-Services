@@ -31,14 +31,14 @@ function App() {
         <Route path="/email" element={<Email />} />
         <Route path="/reset" element={<Reset />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-{/*         <Route path="/pop" element={<Popup />} />
- */}
+    {/*      <Route path="/pop" element={<Popup />} /> */}
+ 
 
      
-
-      {/*   <Route path="/test/" element={<Dashboard />} >
+{/* 
+         <Route path="/test/" element={<Dashboard />} >
             <Route path="demande-pret" element={<Loan />} /> 
-        </Route>   */}
+        </Route>    */}
         {/* protected routes */}
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
           <Route path="/" element={<Dashboard />}>
@@ -49,8 +49,12 @@ function App() {
             </Route>
             <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={[]} />} >
               <Route path="" element={<InitialDashboard />} />
-              <Route path="demande-pret" element={<Loan />} />
-              <Route path="demande-aide-financiere" element={<FinancialAid />} />
+              <Route path="demande-pret" element={<Loan key={2} />} />
+              <Route path="demande-pret/:lDId" element={<Loan key={1} />} />
+
+              <Route path="demande-aide-financiere" element={<FinancialAid key={2} />} />
+              <Route path="demande-aide-financiere/:aDId" element={< FinancialAid key={1} />} />
+
               <Route path="liste-demandes-pret" element={<ListLoans />} />
               <Route path="liste-demandes-pret/:dmId" element={<SingleDemandLoan employee={true}   />} />
               <Route path="liste-demandes-aide-financiere" element={<ListAids />} />
