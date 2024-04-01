@@ -8,6 +8,7 @@ const Popup = ({
   motifError = "",
   uploadedFiles = [],
   oldFiles= [],
+  setOldFiles = null , 
   setUploadedFiles = () => {},
   handleSubmit = () => {},
 }) => {
@@ -38,15 +39,18 @@ const Popup = ({
             style={{ borderColor: motifError ? "red" : "" }}
           />
           <p className="error font-light text-red-600 ">{motifError}</p>
-          <div >
-            <h1 >Remarque:</h1>
-          <p className=" bg-slate-50 w-fit rounded-sm text-blue-800">Vous pouvez déposer les documents justificatifs nécessaires à l'appui de votre demande de prêt.</p>
+          <div>
+            <h1>Remarque:</h1>
+            <p className=" bg-slate-50 w-fit rounded-sm text-blue-800">
+              Vous pouvez déposer les documents justificatifs nécessaires à
+              l'appui de votre demande de prêt.
+            </p>
           </div>
-          
         </div>
         <div className="w-full p-4 ">
           <FileInput
             oldFiles={oldFiles}
+            setOldFiles={setOldFiles}
             uploadInputElRef={filesRef}
             files={uploadedFiles}
             setFiles={setUploadedFiles}

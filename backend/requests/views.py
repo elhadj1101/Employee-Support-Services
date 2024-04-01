@@ -378,12 +378,13 @@ class UpdateRequestView(APIView):
                 
 
                 old_files = (
-                    request.data["old_files"] if "old_files" in request.data else []
+                    request.data.getlist("old_files", [])
                 )
+                print(old_files)
                 financial_aid_documents = Document.objects.filter(financial_aid=pk )
                 
                 documents_paths = financial_aid_documents.values_list("document_file", flat=True) if financial_aid_documents else []
-
+                print(documents_paths)
                 for document_path in documents_paths:
                     if document_path not in old_files:
                         Document.objects.filter(document_file=document_path).delete()

@@ -25,14 +25,17 @@ import { statusColorMap } from "api/requests";
 import { useNavigate } from "react-router-dom";
 import useStore from "../../../store/index";
 import { toast } from "sonner";
-import { deleteLoan, getLoans} from "api/requests";
+import { deleteLoan, getLoans, canApplyForLoan} from "api/requests";
 const DeleteButton = ({ id }) => {
-  const { setLoans } = useStore();
+  const { setLoans, setCanApplyLoan } = useStore();
   const handleDeleteClick = async (e) => {
     try {
       const response = await deleteLoan(id);
       if (response) {
         toast.success(`la demande (${id}) a été supprimée avec succès.`);
+        const canApply = await canApplyForLoan();
+        const cond = canApply === "True";
+        setCanApplyLoan(cond);
       }
       const updatedLoans = await getLoans();
       setLoans(updatedLoans);
