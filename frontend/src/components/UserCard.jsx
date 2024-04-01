@@ -17,8 +17,8 @@ export default function UserCard({ user }) {
     employe: "text-green-900 bg-green-100",
     president: "text-blue-900 bg-blue-100",
     tresorier: "text-yellow-900 bg-yellow-100",
-    "vice president": "text-purple-900 bg-purple-100",
-    "membre commute": "text-red-900 bg-red-100",
+    "vice_president": "text-purple-900 bg-purple-100",
+    "membre_commute": "text-red-900 bg-red-100",
     admin: "text-gray-900 bg-gray-100",
   };
   return (
@@ -41,7 +41,7 @@ export default function UserCard({ user }) {
             roleColors[user?.role]
           }
         >
-          {user?.role}
+          {user?.role.replace('_' , ' ')}
         </div>
       </div>
 
@@ -73,15 +73,15 @@ export default function UserCard({ user }) {
       <div className="my-2">
         <h3 className="font-bold capitalize text-gray-600 ">CCP rip</h3>
 
-        <p className="pl-2  text-gray-500 flex items-center gap-5">
+        <p className="pl-2 pb-4 text-gray-500 flex items-center gap-5">
           <p className="h-7 text-gray-500">
             {" "}
             <span className="pr-2"> 00799999</span>
-            {user?.rip?.replace("00799999", "").slice(0, -2)}{" "}
-            <span className="pl-2"> clé {user?.rip?.slice(-2)}</span>
+            {user?.rip?.replace("00799999", "").slice(0, -2)}{"   "}
+            <span className=""  style={{ display: 'inline-block' }}> clé {user?.rip?.slice(-2)}</span>
           </p>{" "}
           <TbCopy
-            className="cursor-pointer w-5 h-5 hover:text-green-600"
+            className="cursor-pointer  w-5 h-5 hover:text-green-600"
             onClick={() => {
               copyToClipboard(user?.rip);
             }}
@@ -90,7 +90,7 @@ export default function UserCard({ user }) {
       </div>
       <div className="my-2">
         <h3 className="font-bold capitalize text-gray-600 ">Banque RIB</h3>
-        <p className="pl-2  text-gray-500 flex items-center gap-5">
+        <p className="pl-2 pb-4 text-gray-500 flex items-center gap-5">
           <p className="h-7">{user?.bank_rib?.match(/.{1,4}/g)?.join(" ")}</p>
           <TbCopy
             className="cursor-pointer w-5 h-5 hover:text-green-600"
