@@ -17,4 +17,16 @@ class CreateExpenceIncome(generics.ListCreateAPIView):
 class ModifyExpenceIncome(generics.UpdateAPIView):
     queryset = ExpenceIncome.objects.all()
     serializer_class = ExpenseIncomeSerializer
+    permission_classes = [AllowAny]
     # permission_classes = [IsAuthenticated,IsTreasurer]
+
+class ListExpensesAndIncome(generics.ListAPIView):
+    queryset = ExpenceIncome.objects.all()
+    serializer_class = ExpenseIncomeSerializer
+    # permission_classes = [IsAuthenticated,IsTreasurer]
+
+class DeleteExpensesAndIncome(generics.DestroyAPIView):
+    queryset = ExpenceIncome.objects.all()
+    serializer_class = ExpenseIncomeSerializer
+    permission_classes = [AllowAny]
+    # permission_classes = [IsAuthenticated,IsTreasurer]   
