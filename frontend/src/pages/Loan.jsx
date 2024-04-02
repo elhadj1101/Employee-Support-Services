@@ -159,7 +159,7 @@ const Loan = () => {
       })
         .then((res) => {
           toast.success("La demande a été envoyée avec succès");
-          setUpdated("loans");          
+          setUpdated("loans");
         })
         .catch((err) => {
           if (err.response) {
@@ -214,7 +214,7 @@ const Loan = () => {
     setShowModal(false);
   };
   return (
-    <div className=" pt-2 bg-slate-200 h-[100vh]">
+    <div className=" pt-2 bg-lightgray h-[100vh]">
       <h1 className="font-semibold tet-2xl ml-6 text-2xl my-2">
         {loanDraftId === false
           ? "Demande De Pret"
@@ -247,21 +247,35 @@ const Loan = () => {
         </div>
       </div>
       {!canApplyLoan && !crrntLoan && (
-        <div className="flex  items-start">
-          <p className="text-red-800 mx-6 text-lg">
-            Vous n'êtes pas éligible pour un prét pour le moment. Vous devez
-            attendre que votre dernier prêt soit entièrement remboursé.
-            <br />
-            <span className="ml-0 underline hover:text-darkblue">
-              <Link to="/liste-demandes-pret">Consulter votre demandes</Link>
-            </span>
-          </p>
-        </div>
+       <div
+       className=" mx-5 w-fit   flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-[#fbd0d0] dark:bg-gray-800 dark:text-red-400"
+       role="alert"
+     >
+       <svg
+         className="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px] "
+         aria-hidden="true"
+         xmlns="http://www.w3.org/2000/svg"
+         fill="currentColor"
+         viewBox="0 0 20 20"
+       >
+         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+       </svg>
+       <span className="sr-only">Danger</span>
+       <div>
+         <span className="font-medium block mb-1">
+         Vous n'êtes pas éligible pour un prét pour le moment. Vous devez
+       attendre que votre dernier prêt soit entièrement remboursé.
+         </span>
+         <Link to="/liste-demandes-pret" className="underline font-semibold">Consulter votre demandes</Link>
+
+         
+       </div>
+     </div>
       )}
 
       {((canApplyLoan && !loanDraftId) ||
         (crrntLoan && loanDraftId && crrntLoan.loan_status === "draft")) && (
-        <form className=" sm:px-7 h-auto bg-slate-50 mx-5 rounded-xl p-4">
+        <form className=" sm:px-7 h-auto bg-white mx-5 rounded-xl p-4">
           <span className="  sm:mt-8 font-medium text-xl flex mb-7 ">
             {loanDraftId === false
               ? "Nouvelle demande de prét"
@@ -320,7 +334,7 @@ const Loan = () => {
           <p className="error font-light text-red-600 mb-2">{DurationError}</p>
           <button
             onClick={handleShowPopup}
-            className=" sm:mt-5  bg-blue-900 text-white w-36 py-2 rounded-lg"
+            className=" sm:mt-5  bg-light-blue text-white w-36 py-2 rounded-lg"
           >
             Vérifier
           </button>

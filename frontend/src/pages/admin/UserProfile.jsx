@@ -106,7 +106,7 @@ export default function UserProfile() {
 
         break;
         case "retired":
-        formattedValue = (!UserProfileData.retired)
+        formattedValue = (!UserProfileData?.retired)
         break;
       case "bank_rib":
         formattedValue = value.replace(/[^0-9]/, "");
@@ -301,7 +301,7 @@ Object.keys(formData).forEach((key) => {
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={UserProfileData.first_name}
+                  value={UserProfileData?.first_name}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.first_name
@@ -326,7 +326,7 @@ Object.keys(formData).forEach((key) => {
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={UserProfileData.last_name}
+                  value={UserProfileData?.last_name}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.last_name
@@ -353,7 +353,7 @@ Object.keys(formData).forEach((key) => {
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={UserProfileData.id_number}
+                  value={UserProfileData?.id_number}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.id_number
@@ -378,7 +378,7 @@ Object.keys(formData).forEach((key) => {
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={UserProfileData.email}
+                  value={UserProfileData?.email}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.email
@@ -404,7 +404,7 @@ Object.keys(formData).forEach((key) => {
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={UserProfileData.phone_number}
+                  value={UserProfileData?.phone_number}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.phone_number
@@ -429,7 +429,7 @@ Object.keys(formData).forEach((key) => {
                 {readOnly ? (
                   <input
                     placeholder="date"
-                    value={UserProfileData.recruted_at}
+                    value={UserProfileData?.recruted_at}
                     className={`w-full bg-transparent border-1 ${
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
@@ -439,7 +439,7 @@ Object.keys(formData).forEach((key) => {
                 <DatePickerDemo
                   id="dateNaissance"
                   name="dateNaissance"
-                  value={UserProfileData.recruted_at}
+                  value={UserProfileData?.recruted_at}
                   input='recruted_at'
                 />}
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
@@ -458,7 +458,7 @@ Object.keys(formData).forEach((key) => {
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
-                    value={UserProfileData.role}
+                    value={UserProfileData?.role}
                   />
                 ) : (
                   <Select
@@ -469,14 +469,14 @@ Object.keys(formData).forEach((key) => {
                       const prev = { ...UserProfileData, ["role"]: value };
                       setProfileUserData(prev);
                     }}
-                    value={UserProfileData.role}
+                    value={UserProfileData?.role}
                   >
                     <SelectTrigger
                       className={`w-full bg-transparent border-1 ${
                         readOnly ? "border-none" : "border-gray-200"
                       } outline-none h-12 rounded-lg px-4 text-base`}
                       readOnly={readOnly}
-                      value={UserProfileData.role}
+                      value={UserProfileData?.role}
                     >
                       <SelectValue placeholder="Choisir un rôle" />
                     </SelectTrigger>
@@ -508,18 +508,18 @@ Object.keys(formData).forEach((key) => {
                   type="checkbox"
                   readOnly={readOnly}
                   className="h-4 w-4 border-gray-300 rounded text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  checked={UserProfileData.retired}
+                  checked={UserProfileData?.retired}
                   onChange={(e) =>handleChange(e)}
                 />}
                 <label htmlFor="retired">
                   Est-il retraité ?
                 </label>
-                {readOnly && (UserProfileData.retired?'Oui':'Non')}
+                {readOnly && (UserProfileData?.retired?'Oui':'Non')}
               </div>
           
 
 
-              { UserProfileData.retired && <div className=" mt-5 flex flex-col gap-1">
+              { UserProfileData?.retired && <div className=" mt-5 flex flex-col gap-1">
                 <label htmlFor="retired_at">
                 date de Retirement
                   <span
@@ -532,7 +532,7 @@ Object.keys(formData).forEach((key) => {
                 {readOnly ? (
                   <input
                     placeholder="date"
-                    value={UserProfileData.retired_at}
+                    value={UserProfileData?.retired_at}
                     className={`w-full bg-transparent border-1 ${
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
@@ -542,7 +542,7 @@ Object.keys(formData).forEach((key) => {
                 <DatePickerDemo
                   id="dateNaissance"
                   name="dateNaissance"
-                  value={UserProfileData.retired_at}
+                  value={UserProfileData?.retired_at}
                   input='retired_at'
                 />}
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
@@ -570,7 +570,7 @@ Object.keys(formData).forEach((key) => {
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={UserProfileData.salary}
+                  value={UserProfileData?.salary}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.salary
@@ -597,7 +597,7 @@ Object.keys(formData).forEach((key) => {
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
-                    value={UserProfileData.rip}
+                    value={UserProfileData?.rip}
                     onChange={(e) => handleChange(e)}
                     style={{
                       borderColor: newErrors?.rip
@@ -629,7 +629,7 @@ Object.keys(formData).forEach((key) => {
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={UserProfileData.bank_rib}
+                  value={UserProfileData?.bank_rib}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.bank_rib
@@ -656,11 +656,11 @@ Object.keys(formData).forEach((key) => {
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
-                    value={UserProfileData.sexe}
+                    value={UserProfileData?.sexe}
                   />
                 ) : (
                   <Select
-                    value={UserProfileData.sexe}
+                    value={UserProfileData?.sexe}
                     name="sexe"
                     onValueChange={(value) => {
                       localStorage.setItem(`profile/sexe`, value);
@@ -698,11 +698,11 @@ Object.keys(formData).forEach((key) => {
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
-                    value={UserProfileData.martial_situation}
+                    value={UserProfileData?.martial_situation}
                   />
                 ) : (
                   <Select
-                    value={UserProfileData.martial_situation}
+                    value={UserProfileData?.martial_situation}
                     onValueChange={(value) => {
                       localStorage.setItem(`profile/martial_situation`, value);
                       const prev = {
@@ -717,7 +717,7 @@ Object.keys(formData).forEach((key) => {
                         readOnly ? "border-none" : "border-gray-200"
                       } outline-none h-12 rounded-lg px-4 text-base`}
                       readOnly={readOnly}
-                      value={UserProfileData.martial_situation}
+                      value={UserProfileData?.martial_situation}
                     >
                       <SelectValue placeholder="Choisir la situation familiale" />
                     </SelectTrigger>
@@ -746,7 +746,7 @@ Object.keys(formData).forEach((key) => {
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
-                  value={UserProfileData.birth_adress}
+                  value={UserProfileData?.birth_adress}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.birth_adress
@@ -774,7 +774,7 @@ Object.keys(formData).forEach((key) => {
                 {readOnly ? (
                   <input
                     placeholder="date"
-                    value={UserProfileData.birth_date}
+                    value={UserProfileData?.birth_date}
                     className={`w-full bg-transparent border-1 ${
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
@@ -784,7 +784,7 @@ Object.keys(formData).forEach((key) => {
                   <DatePickerDemo
                     id="dateNaissance"
                     name="dateNaissance"
-                    value={UserProfileData.birth_date}
+                    value={UserProfileData?.birth_date}
                     input={'birth_date'}
                   />
                 )}
