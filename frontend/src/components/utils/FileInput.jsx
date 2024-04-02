@@ -6,6 +6,7 @@ import { toast } from "sonner";
 function FileInput({
   labell = "",
   oldFiles = [],
+  setOldFiles = null,
   uploadInputElRef = null,
   files = null,
   maxFiles = -1,
@@ -39,7 +40,7 @@ function FileInput({
       e.preventDefault();
       setIsDragActive(false);
       const droppedFiles = Array.from(e.dataTransfer.files);
-      if (maxFiles !== -1 && files.length + droppedFiles.length > maxFiles) {
+      if (maxFiles !== -1 && files?.length + droppedFiles.length + oldFiles.length > maxFiles) {
         toast.warning(
           `Vous ne pouvez pas ajouter plus de ${maxFiles} fichiers`
         );
@@ -65,7 +66,10 @@ function FileInput({
   const handleDelete = (e) => {
     e.preventDefault();
     const { name } = e.target.dataset;
-    const newFiles = files.filter((file) => file.name !== name);
+    const  newFiles = files.filter((file) => file.name !== name);
+    const newOlds = oldFiles.filter((f) => f.name !== name )
+    setOldFiles(newOlds)
+
     let container = new DataTransfer();
     newFiles.forEach((file) => {
       container.items.add(file);
@@ -83,13 +87,24 @@ function FileInput({
       e.preventDefault();
       setIsDragActive(false);
       const droppedFiles = Array.from(e.target.files);
-      if (maxFiles !== -1 && files.length + droppedFiles.length > maxFiles) {
+      let accptedF = []
+      droppedFiles.forEach((f) =>{
+        let chk1 = oldFiles.filter ((of) => of.name === f.name)
+        let chk2 = files.filter ((ff) => ff.name === f.name)
+        if (chk1.length + chk2.length > 0) {
+          toast.error ("Vous ne pouvez pas ajouter des fichiers ayont le meme nom.")
+
+        }else{
+          accptedF.push(f)
+        }
+      })
+      if (maxFiles !== -1 && files.length + accptedF.length + oldFiles.length > maxFiles) {
         toast.warning(
           `Vous ne pouvez pas ajouter plus de ${maxFiles} fichiers`
         );
         return;
       }
-      const acceptedFiles = droppedFiles.filter((file) => {
+      const acceptedFiles = accptedF.filter((file) => {
         const ext = file.name.split(".").pop();
         const accpted = fileTypes.includes(ext.toUpperCase());
         if (!accpted) {

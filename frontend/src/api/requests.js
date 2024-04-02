@@ -229,8 +229,11 @@ const getAllAids = async () => {
     }
   } catch (error) {
     if (error.response){
-      toast.error(error.response.data?.detail);
-      console.log(error.response);
+      if (error.response.data){
+        toast.error(error.response.data.detail);
+
+      }
+      
       return [];
     }else{
       console.log(error)
@@ -251,8 +254,10 @@ const getAllLoans = async () => {
     }
   } catch (error) {
     if (error.response){
-      toast.error(error.response.data?.detail);
-      console.log(error.response);
+      if (error.response.data){
+        toast.error(error.response.data.detail);
+
+      }
       return [];
     }else{
       console.log(error)

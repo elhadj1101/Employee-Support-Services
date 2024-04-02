@@ -25,14 +25,17 @@ import { statusColorMap } from "api/requests";
 import { useNavigate } from "react-router-dom";
 import useStore from "../../../store/index";
 import { toast } from "sonner";
-import { deleteLoan, getLoans} from "api/requests";
+import { deleteLoan, getLoans, canApplyForLoan} from "api/requests";
 const DeleteButton = ({ id }) => {
-  const { setLoans } = useStore();
+  const { setLoans, setCanApplyLoan } = useStore();
   const handleDeleteClick = async (e) => {
     try {
       const response = await deleteLoan(id);
       if (response) {
         toast.success(`la demande (${id}) a été supprimée avec succès.`);
+        const canApply = await canApplyForLoan();
+        const cond = canApply === "True";
+        setCanApplyLoan(cond);
       }
       const updatedLoans = await getLoans();
       setLoans(updatedLoans);
@@ -79,7 +82,7 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 };
 
-export const loanColumns = (colsToHide = []) => {
+export const loanColumns = (colsToHide = [], hideDelete = false) => {
   const cols = [
     {
       id: "select",
@@ -206,33 +209,36 @@ export const loanColumns = (colsToHide = []) => {
                 text={"Détails de la demande"}
               />
               {row.original.loan_status === "draft" && (
-              <NavigateDropdownMenuItem
-                id={"/demande-pret/" +row.original.id}
-                text={"Modifier le broullion"}
-              />
+                <NavigateDropdownMenuItem
+                  id={"/demande-pret/" + row.original.id}
+                  text={"Modifier le broullion"}
+                />
               )}
-              <Dialog>
-                <DialogTrigger style={{ width: "100%" }}>
-                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                    Supprimer
-                  </div>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>
-                      Êtes-vous sûr de Supprimer Cette Demmande?
-                    </DialogTitle>
-                    <DialogDescription>
-                      Cette action va Supprimer definitivement la demmande
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose>
-                      <DeleteButton id={row.original.id} />
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              {["draft", "waiting"].includes(row.original.loan_status) &&
+                !hideDelete && (
+                  <Dialog>
+                    <DialogTrigger style={{ width: "100%" }}>
+                      <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                        Supprimer
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>
+                          Êtes-vous sûr de Supprimer Cette Demmande?
+                        </DialogTitle>
+                        <DialogDescription>
+                          Cette action va Supprimer definitivement la demmande
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <DialogClose>
+                          <DeleteButton id={row.original.id} />
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

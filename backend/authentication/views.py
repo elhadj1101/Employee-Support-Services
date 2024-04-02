@@ -4,8 +4,11 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import check_password
 from .models import Employee
-from .serializers import EmployeeSerializer, SignupSerializer, EmployeeDetailsSerializer
+from .serializers import EmployeeSerializer, SignupSerializer, EmployeeDetailsSerializer , PartiallyUpdateEmployeeSerializer
 from .permissions import IsAdmin, canViewDetails
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import permission_classes
+
 
 # this is just for testing our add user enpoint 
 class CreateUserView(generics.ListCreateAPIView):
@@ -36,6 +39,15 @@ class UserDetailsView(generics.RetrieveUpdateDestroyAPIView):
         user.save()
         
         return Response({"success":"User deleted successfuly"}, status=status.HTTP_200_OK)
+    
+    def partial_update(self, request, pk , *args, **kwargs):
+        if request.user.is_superuser: 
+            employee = get_object_or_404(Employee , pk = pk )
+            serializer = PartiallyUpdateEmployeeSerializer(employee , data = request.data , partial = True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({'employee updated'})
+        return Response({"error":"you don't have required permissions"} , status=status.HTTP_403_FORBIDDEN)
 
 
 class UserDataView(APIView):

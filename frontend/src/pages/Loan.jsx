@@ -56,7 +56,6 @@ const Loan = () => {
           };
         })
       : [];
-    console.log(crrntLoan);
     setOldFiles(oldF);
     setMontant(!crrntLoan ? intmaxPayMois : crrntLoan?.loan_amount);
     setDuration(!crrntLoan ? 12 : crrntLoan?.loan_period);
@@ -149,7 +148,9 @@ const Loan = () => {
     uploadedFiles.forEach((file) => {
       formData.append("files[]", file);
     });
-    formData.append("old_files", JSON.stringify(oldFiles));
+    oldFiles.forEach((of) => {
+      formData.append("old_files", of.url.replace("/documents/", ""));
+    });
     if (!crrntLoan || loanDraftId == false) {
       Axios.post(endpoint + isDraft, formData, {
         headers: {
@@ -158,7 +159,7 @@ const Loan = () => {
       })
         .then((res) => {
           toast.success("La demande a été envoyée avec succès");
-          setUpdated("loans");
+          setUpdated("loans");          
         })
         .catch((err) => {
           if (err.response) {
@@ -328,6 +329,7 @@ const Loan = () => {
               <Popup
                 handleClose={handleClose}
                 oldFiles={oldFiles}
+                setOldFiles={setOldFiles}
                 motif={motif}
                 motifError={motifError}
                 setMotifError={setMotifError}

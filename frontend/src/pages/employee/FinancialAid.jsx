@@ -68,15 +68,23 @@ function FinancialAid() {
       toast.error("Veuillez choisir un type d'employer");
       return;
     }
-    if (uploadedFiles.length !== fileNames.length && !(isDraft === "true")) {
-      toast.error(
-        `Veuillez ajouter tous les fichiers nécessaires, il vous manque ${Math.abs(
-          uploadedFiles.length - fileNames.length
-        )} fichier(s)`
-      );
+    if (uploadedFiles.length + oldFiles.length !== fileNames.length && !(isDraft === "true")) {
+      if (uploadedFiles.length + oldFiles.length > fileNames.length) {
+        toast.error(
+          `Veuillez supprimer ${Math.abs(
+            uploadedFiles.length + oldFiles.length - fileNames.length
+          )} fichier(s)`
+        );
+      }else {
+        toast.error(
+          `Veuillez ajouter tous les fichiers nécessaires, il vous manque ${Math.abs(
+            uploadedFiles.length + oldFiles.length - fileNames.length
+          )} fichier(s)`
+        );
+      }
       return;
     }
-    if (isDraft === "true" && uploadedFiles.length > fileNames.length) {
+    if (isDraft === "true" && uploadedFiles.length+ oldFiles.length > fileNames.length) {
       toast.error(
         `Vous ne pouvez pas ajouter plus de fichiers que nécessaire. (max: ${fileNames.length} fichiers)`
       );
@@ -93,6 +101,10 @@ function FinancialAid() {
     }
     uploadedFiles.forEach((file) => {
       formData.append("files[]", file);
+    });
+    oldFiles.forEach((of) => {
+      console.log(of);
+      formData.append("old_files", of.url.replace("/documents/", ""));
     });
     if (!crrntAid || aidDraftId == false) {
       Axios.post(endpoint + isDraft, formData, {
@@ -469,6 +481,7 @@ function FinancialAid() {
           <div className="w-full my-4 ">
             <FileInput
               oldFiles={oldFiles}
+              setOldFiles={setOldFiles}
               key={aidData.aidType}
               uploadInputElRef={filesRef}
               files={uploadedFiles}
