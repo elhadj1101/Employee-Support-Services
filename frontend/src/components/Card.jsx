@@ -2,9 +2,9 @@ import React from "react";
 
 const Card = ({ title, price, isEligable,icon }) => {
   return (
-    <div className=" h-28  sm:basis-1/3 mb-4 flex items-center justify-start gap-7 p-3 bg-slate-50 rounded-lg  ">
+    <div className=" h-28  sm:basis-1/3 mb-4 flex items-center justify-start gap-7 p-3 bg-white rounded-lg  ">
       <img
-        className=" mr-2 h-[70px] w-[70px] p-2 rounded-full bg-slate-300"
+        className=" mr-2 h-[70px] w-[70px] p-2 rounded-full bg-white "
         src={icon}
         alt="case"
       />

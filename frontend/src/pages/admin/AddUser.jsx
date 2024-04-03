@@ -54,7 +54,7 @@ export default function AddUser() {
         formattedValue = formattedValue.replace(/(\d{10})/, "$1 ");
         break;
       case "retired":
-        formattedValue = (!AddUserData.retired)
+        formattedValue = (!AddUserData?.retired)
         break;
 
       case "phone_number":
@@ -195,8 +195,8 @@ export default function AddUser() {
     try {
       const newUser = await createUser({
         ...AddUserData,
-        rip: "00799999" + AddUserData.rip.replace(/ /g, ""),
-        salary: AddUserData.salary.replace(/,/g, ""),
+        rip: "00799999" + AddUserData?.rip.replace(/ /g, ""),
+        salary: AddUserData?.salary.replace(/,/g, ""),
       });
       if (newUser.status === 201) {
         toast.success("Utilisateur créé avec succès");
@@ -282,7 +282,7 @@ export default function AddUser() {
                   type="text"
                   placeholder="Nom"
                   className=" w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
-                  value={AddUserData.first_name}
+                  value={AddUserData?.first_name}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.first_name
@@ -304,7 +304,7 @@ export default function AddUser() {
                   type="text"
                   placeholder="Prénom"
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
-                  value={AddUserData.last_name}
+                  value={AddUserData?.last_name}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.last_name
@@ -329,7 +329,7 @@ export default function AddUser() {
                   placeholder="XX XX XX XX XX XX XX XX XX"
                   maxLength={26}
                   className=" relative w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
-                  value={AddUserData.id_number}
+                  value={AddUserData?.id_number}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.id_number
@@ -352,7 +352,7 @@ export default function AddUser() {
                   type="email"
                   placeholder="example@gmail.com"
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
-                  value={AddUserData.email}
+                  value={AddUserData?.email}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.email
@@ -375,7 +375,7 @@ export default function AddUser() {
                   placeholder="0X XXXX XXXX"
                   maxLength={12}
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
-                  value={AddUserData.phone_number}
+                  value={AddUserData?.phone_number}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.phone_number
@@ -397,7 +397,7 @@ export default function AddUser() {
                   type="text"
                   placeholder="mot de passe"
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
-                  value={AddUserData.password}
+                  value={AddUserData?.password}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.password
@@ -422,7 +422,7 @@ export default function AddUser() {
                 <DatePickerDemo
                   id="dateNaissance"
                   name="dateNaissance"
-                  value={AddUserData.recruted_at}
+                  value={AddUserData?.recruted_at}
                   input='recruted_at'
                 />
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
@@ -442,7 +442,7 @@ export default function AddUser() {
                     const prev = { ...AddUserData, ["role"]: value };
                     setAddUserData(prev);
                   }}
-                  value={AddUserData.role}
+                  value={AddUserData?.role}
                 >
                   <SelectTrigger className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
                     <SelectValue placeholder="Choisir un rôle" />
@@ -472,7 +472,7 @@ export default function AddUser() {
                   name="retired"
                   type="checkbox"
                   className="h-4 w-4 border-gray-300 rounded text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  checked={AddUserData.retired}
+                  checked={AddUserData?.retired}
                   onChange={(e) =>handleChange(e)}
                 />
                 <label htmlFor="retired">
@@ -482,7 +482,7 @@ export default function AddUser() {
           
 
 
-              { AddUserData.retired && <div className=" mt-5 flex flex-col gap-1">
+              { AddUserData?.retired && <div className=" mt-5 flex flex-col gap-1">
                 <label htmlFor="retired_at">
                 date de Retirement
                   <span
@@ -495,7 +495,7 @@ export default function AddUser() {
                 <DatePickerDemo
                   id="dateNaissance"
                   name="dateNaissance"
-                  value={AddUserData.retired_at}
+                  value={AddUserData?.retired_at}
                   input='retired_at'
                 />
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
@@ -517,7 +517,7 @@ export default function AddUser() {
                   type="text"
                   placeholder="XXXXXX"
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
-                  value={AddUserData.salary}
+                  value={AddUserData?.salary}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.salary
@@ -541,7 +541,7 @@ export default function AddUser() {
                     maxLength={13}
                     placeholder="XXXXXXXXXX XX"
                     className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base pl-20"
-                    value={AddUserData.rip}
+                    value={AddUserData?.rip}
                     onChange={(e) => handleChange(e)}
                     style={{
                       borderColor: newErrors?.rip
@@ -570,7 +570,7 @@ export default function AddUser() {
                   placeholder="XXXX XXXX XXXX XXXX"
                   maxLength={24}
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
-                  value={AddUserData.bank_rib}
+                  value={AddUserData?.bank_rib}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.bank_rib
@@ -591,7 +591,7 @@ export default function AddUser() {
                   Sexe<span style={{ color: "red" }}> * </span>
                 </label>
                 <Select
-                  value={AddUserData.sexe}
+                  value={AddUserData?.sexe}
                   name="sexe"
                   onValueChange={(value) => {
                     localStorage.setItem(`form/sexe`, value);
@@ -617,7 +617,7 @@ export default function AddUser() {
                   Situation Familiale<span style={{ color: "red" }}> * </span>
                 </label>
                 <Select
-                  value={AddUserData.martial_situation}
+                  value={AddUserData?.martial_situation}
                   onValueChange={(value) => {
                     localStorage.setItem(`form/martial_situation`, value);
                     const prev = {
@@ -651,7 +651,7 @@ export default function AddUser() {
                   type="text"
                   placeholder="Lieu de naissance"
                   className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
-                  value={AddUserData.birth_adress}
+                  value={AddUserData?.birth_adress}
                   onChange={(e) => handleChange(e)}
                   style={{
                     borderColor: newErrors?.birth_adress
@@ -677,7 +677,7 @@ export default function AddUser() {
                 <DatePickerDemo
                   id="dateNaissance"
                   name="dateNaissance"
-                  value={AddUserData.birth_date}
+                  value={AddUserData?.birth_date}
                   input="birth_date"
                 />
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">

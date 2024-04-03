@@ -23,7 +23,7 @@ import {
   DialogClose,
   DialogFooter,
 } from "../components/ui/dialog";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function SingleDemandLoan({ employee }) {
@@ -295,7 +295,8 @@ export default function SingleDemandLoan({ employee }) {
             <div className="flex gap-3 flex-wrap">
               {requestedLoan?.documents?.length !== 0 ? (
                 requestedLoan?.documents?.map((doc) => (
-                  <div className=" flex bg-lightgray space-x-3  w-fit min-w-60 items-center rounded-sm py-3 px-4 border border-gray-300">
+                  <Link to={"http://127.0.0.1:8000/" + doc.document_file} target="_blank">
+                  <div className=" cursor-pointer flex bg-lightgray space-x-3  w-fit min-w-60 items-center rounded-sm py-3 px-4 border border-gray-300">
                     <img src="/icons/Pdf-icon.png" alt="" />
                     <div className="pr-4">
                       <span className="text-gray-600 font-semibold">
@@ -306,9 +307,12 @@ export default function SingleDemandLoan({ employee }) {
                       </p>
                     </div>
                   </div>
+                </Link>
                 ))
               ) : (
-                <p className="capitalize px-2 p-5 text-center w-full">Aucune pièce jointe</p>
+                <p className="capitalize px-2 p-5 text-center w-full">
+                  Aucune pièce jointe
+                </p>
               )}
             </div>
           </div>

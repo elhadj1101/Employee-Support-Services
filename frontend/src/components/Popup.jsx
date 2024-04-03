@@ -24,7 +24,7 @@ const Popup = ({
   };
   return (
     <div className="justify-center items-center flex h-full">
-      <div className=" bg-white h-auto sm:w-[800px] w-full border-blue-900 border  rounded-lg my-4   ">
+      <div className=" bg-white h-auto sm:w-[800px] w-full border-light-blue border  rounded-lg my-4   ">
         <h1 className=" p-5 font-medium">Completer la demande</h1>
         <div className=" ml-5">
           <label className=" mb-3 flex" htmlFor="Motif">
@@ -63,21 +63,21 @@ const Popup = ({
         <div className="  space-x-3 ml-5 mb-5  ">
           <button
             name="not-draft"
-            className=" bg-blue-900 text-slate-50 py-3 px-6 rounded-md "
+            className=" bg-light-blue text-slate-50 py-2 px-6 rounded-md "
             onClick={handleSubmit}
           >
             Envoyer la demande
           </button>
           <button
             name="draft"
-            className=" bg-blue-900 text-slate-50 py-3 px-6 rounded-md "
+            className=" bg-light-blue text-slate-50 py-2 px-6 rounded-md "
             onClick={handleSubmit}
           >
             Sauvegarder comme brouillon
           </button>
           <button
             onClick={handleClose}
-            className=" bg-slate-50 text-slate-950 py-3 px-7 rounded-md border-solid border-black border-2 "
+            className=" bg-slate-50 text-slate-950 py-2 px-7 rounded-md border-solid border-black border-2 "
           >
             Annuler
           </button>

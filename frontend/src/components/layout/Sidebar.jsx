@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 export default function Sidebar() {
   const { user } = useStore();
   return (
-    <div className="w-[250px] fixed top-0 h-screen sidebar ">
+    <div className="w-[235px] fixed top-0 h-screen sidebar ">
       <div className="  bg-gradient-to-b flex flex-col from-[#131C55] to-[#131c556a] w-full h-screen ">
         {user && user.is_superuser && (
           <SideButton
@@ -37,6 +37,7 @@ export default function Sidebar() {
                 title="Dashboard"
                 icon={HiOutlineUserGroup}
                 nestedBtns={[]}
+                to="/"
               />
             </Link>
             <SideButton
@@ -80,6 +81,7 @@ export default function Sidebar() {
                 title="Demande Des Employés"
                 icon={HiOutlineUserGroup}
                 nestedBtns={[]}
+                to="/demandes-employe"
               />
             </Link>
           </>
