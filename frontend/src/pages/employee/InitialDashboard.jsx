@@ -34,7 +34,7 @@ function InitialDashboard() {
           <CarouselContent>
             {offres.map((offre) => {
               return (
-                <CarouselItem key={offre.id} className={" h-[300px]"}>
+                <CarouselItem key={offre.id} className={" h-[230px]"}>
                   <div className="bg-[#C0CAF8] w-ful h-full md:mx-6 rounded-xl flex flex-wrap md:flex-nowrap justify-between items-center">
                     <div className="text-darkblue basis-full h-full px-7 py-5 md:basis-3/5 lg:basis-2/3 gap-4 flex flex-col justify-center  ">
                       <div className="text-3xl font-bold">
