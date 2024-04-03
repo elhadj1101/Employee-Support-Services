@@ -25,7 +25,7 @@ class ListExpensesAndIncome(generics.ListAPIView):
     serializer_class = ExpenseIncomeSerializer
     # permission_classes = [IsAuthenticated,IsTreasurer]
 
-class DeleteExpensesAndIncome(generics.DestroyAPIView):
+class DeleteExpensesAndIncome(generics.RetrieveDestroyAPIView):
     queryset = ExpenceIncome.objects.all()
     serializer_class = ExpenseIncomeSerializer
     permission_classes = [AllowAny]
