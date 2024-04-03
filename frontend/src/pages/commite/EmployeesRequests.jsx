@@ -6,8 +6,8 @@ import { loanColumns } from "components/employee/Columns/loanColumns";
 
 function EmployeesRequests() {
   const { allAids, allLoans } = useStore();
-  const loancols = loanColumns(["id"], true) || [];
-  const aidscols = aidsColumns(["id"], true) || [];
+  const loancols = loanColumns([], true) || [];
+  const aidscols = aidsColumns([], true) || [];
 
   return (
     <div className="bg-gray-bg py-2 h-full">

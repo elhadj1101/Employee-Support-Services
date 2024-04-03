@@ -12,7 +12,7 @@ import {
 } from "../components/ui/dropdown-menu";
 import { FiEdit3 } from "react-icons/fi";
 import { Button } from "../components/ui/button";
-
+import { updateStatus } from "api/requests";
 import {
   Dialog,
   DialogContent,
@@ -31,7 +31,7 @@ export default function SingleDemandLoan({ employee }) {
     approved: "text-green-900 bg-green-100",
     waiting: "text-yellow-900 bg-yellow-100",
     refused: "text-red-900 bg-red-100",
-    draft: "text-gray-500 bg-gray-100 border border-gray-200",
+    // draft: "text-gray-500 bg-gray-100 border border-gray-200",
   };
   // I will not store the requestedLoan because some of its information may change  and the user will not know.
   const [requestedLoan, setReqeustedLoan] = useState({});
@@ -45,17 +45,22 @@ export default function SingleDemandLoan({ employee }) {
     LoanRequestedId,
     setLoanRequestedId,
     user,
-    setLoanDraftId,
   } = useStore();
   const parts = window.location.pathname
     .split("/")
     .filter((part) => part.trim() !== "");
   let LoanId = parts[parts.length - 1];
   const navigate = useNavigate();
-
+  const handleChangeStatus = async (e) => {
+    const newStatus = e.target.dataset.status;
+    const res = await updateStatus(LoanId,"loans", newStatus );
+    if (res) {
+      navigate("")
+      toast.success("Le statut de la demande a été changé avec succès.");
+    }
+  }
   useEffect(() => {
     // change it only when we  want new loan
-    console.log(LoanRequestedId, LoanId, loans);
     if (employee) {
       // get the loan details from
       if (loans.length !== 0) {
@@ -83,7 +88,6 @@ export default function SingleDemandLoan({ employee }) {
   }, [allLoans, loans]);
 
   useEffect(() => {
-    console.log("req", requestedLoan);
 
     if (
       ((employee && allLoans.length !== 0) ||
@@ -192,14 +196,39 @@ export default function SingleDemandLoan({ employee }) {
                                   status !== requestedLoan?.loan_status
                               )
                               .map((status) => (
-                                <DialogTrigger
-                                  key={status}
-                                  style={{ width: "100%" }}
-                                >
-                                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                                    {status}
-                                  </div>
-                                </DialogTrigger>
+                                <>
+                                  <DialogTrigger
+                                    key={status}
+                                    style={{ width: "100%" }}
+                                  >
+                                    <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                                      {status}
+                                    </div>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>
+                                        Êtes-vous sûr de changer le statut de
+                                        cet demmande?
+                                      </DialogTitle>
+                                      <DialogDescription>
+                                        Cette action va changer le statut de la
+                                        demmande
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <DialogFooter>
+                                      <DialogClose>
+                                        <Button
+                                          onClick={handleChangeStatus}
+                                          data-status={status}
+                                          className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
+                                        >
+                                          changer
+                                        </Button>
+                                      </DialogClose>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </>
                               ))}
                           {user?.role === "tresorier" &&
                             requestedLoan &&
@@ -211,34 +240,40 @@ export default function SingleDemandLoan({ employee }) {
                                 (status) => status !== requestedLoan.loan_status
                               )
                               .map((status) => (
-                                <DialogTrigger
-                                  key={status}
-                                  style={{ width: "100%" }}
-                                >
-                                  <div className="w-full cursor-pointer text-left px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                                    {status}
-                                  </div>
-                                </DialogTrigger>
+                                <>
+                                  <DialogTrigger
+                                    key={status}
+                                    style={{ width: "100%" }}
+                                  >
+                                    <div className="w-full cursor-pointer text-left px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                                      {status}
+                                    </div>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>
+                                        Êtes-vous sûr de changer le statut de
+                                        cet demmande?
+                                      </DialogTitle>
+                                      <DialogDescription>
+                                        Cette action va changer le statut de la
+                                        demmande
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <DialogFooter>
+                                      <DialogClose>
+                                        <Button
+                                          onClick={handleChangeStatus}
+                                          data-status={status}
+                                          className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
+                                        >
+                                          changer
+                                        </Button>
+                                      </DialogClose>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </>
                               ))}
-
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>
-                                Êtes-vous sûr de changer le statut de cet
-                                demmande?
-                              </DialogTitle>
-                              <DialogDescription>
-                                Cette action va changer le statut de la demmande
-                              </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter>
-                              <DialogClose>
-                                <Button className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue">
-                                  changer
-                                </Button>
-                              </DialogClose>
-                            </DialogFooter>
-                          </DialogContent>
                         </Dialog>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -295,19 +330,22 @@ export default function SingleDemandLoan({ employee }) {
             <div className="flex gap-3 flex-wrap">
               {requestedLoan?.documents?.length !== 0 ? (
                 requestedLoan?.documents?.map((doc) => (
-                  <Link to={"http://127.0.0.1:8000/" + doc.document_file} target="_blank">
-                  <div className=" cursor-pointer flex bg-lightgray space-x-3  w-fit min-w-60 items-center rounded-sm py-3 px-4 border border-gray-300">
-                    <img src="/icons/Pdf-icon.png" alt="" />
-                    <div className="pr-4">
-                      <span className="text-gray-600 font-semibold">
-                        {doc?.document_name}
-                      </span>
-                      <p className=" text-gray-400 font-semibold text-sm ">
-                        {doc.document_size} kB
-                      </p>
+                  <Link
+                    to={"http://127.0.0.1:8000" + doc.document_file}
+                    target="_blank"
+                  >
+                    <div className=" cursor-pointer flex bg-lightgray space-x-3  w-fit min-w-60 items-center rounded-sm py-3 px-4 border border-gray-300">
+                      <img src="/icons/Pdf-icon.png" alt="" />
+                      <div className="pr-4">
+                        <span className="text-gray-600 font-semibold">
+                          {doc?.document_name}
+                        </span>
+                        <p className=" text-gray-400 font-semibold text-sm ">
+                          {doc.document_size} kB
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
                 ))
               ) : (
                 <p className="capitalize px-2 p-5 text-center w-full">

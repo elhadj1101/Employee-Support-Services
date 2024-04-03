@@ -322,4 +322,37 @@ const deleteAid = async (id) => {
 };
 
 }
-export { getLoans , getAids, financial_aid_infos, statusColorMap, getAllAids, getAllLoans, canApplyForLoan, deleteLoan, deleteAid};
+
+
+const updateStatus = async (id, type, newStatus) => {
+  try {
+    const response = await Axios.patch(`/requests/commite/${type}/${id}`, {new_status: newStatus});
+    return response.data?.success || false;
+  } catch (error) {
+    if (error.response){
+      if (error.response.data){
+        if ( error.response.data.detail){
+          toast.error(error.response.data);
+        }
+        else if (error.response.data.error){
+          toast.error(error.response.data.error);
+        }
+      }else{
+        toast.error("Une erreur s'est produite lors de la mise à jour du statut.");
+        console.log(error.response);
+      }
+      return false;
+    }else{
+      console.log(error)
+    toast.error("Une erreur s'est produite lors de la mise à jour du statut.");
+    return  false;
+    }
+
+};
+
+
+}
+export { getLoans , getAids, financial_aid_infos,
+    statusColorMap, getAllAids, getAllLoans,
+    canApplyForLoan, deleteLoan, deleteAid,
+    updateStatus};

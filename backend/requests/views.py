@@ -71,7 +71,7 @@ class LoanView(APIView):
             files = request.FILES.getlist("files[]", [])
             if not files and loan_status == "waiting":
                 return Response(
-                    "you must upload files", status=status.HTTP_400_BAD_REQUEST
+                    {"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST
                 )
 
             created_instance = serializer.save(
@@ -457,7 +457,7 @@ class UpdateRequestStatusView(APIView):
             else:
                 obj.financial_aid_status = updated_status
             obj.save()
-            return Response({"status updated successfully"}, status=status.HTTP_200_OK)
+            return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
         elif old_status == "approved" and updated_status == 'finished':
             if  not request.user.role == 'tresorier':
                 return Response(
@@ -466,7 +466,7 @@ class UpdateRequestStatusView(APIView):
                 )
             obj.loan_status = updated_status
             obj.save()
-            return Response({"status updated successfully"}, status=status.HTTP_200_OK)
+            return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
         
         else:
             return Response(

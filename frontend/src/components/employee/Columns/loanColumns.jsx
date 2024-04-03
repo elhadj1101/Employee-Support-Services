@@ -107,28 +107,28 @@ export const loanColumns = (colsToHide = [], hideDelete = false) => {
       enableHiding: false,
     },
     {
-      accessorKey: "employee",
-      header: () => <div className="text-center">ID de l'employer</div>,
-      // to filter ids
-      accessorFn: (orow) => {
-        return orow.employee.toString();
-      },
-      cell: ({ row }) => (
-        <div className="text-center font-medium">
-          {row.getValue("employee")}
-        </div>
-      ),
-    },
-    {
       accessorKey: "id",
-      header: () => <div className="text-center">ID</div>,
+      header: () => <div className="text-center">ID-Demande</div>,
       cell: ({ row }) => {
         return (
           <div className="text-center font-medium">{row.getValue("id")}</div>
-        );
+          );
+        },
       },
-    },
-    {
+      {
+        accessorKey: "employee",
+        header: () => <div className="text-center">ID-Employer</div>,
+        // to filter ids
+        accessorFn: (orow) => {
+          return orow.employee.toString();
+        },
+        cell: ({ row }) => (
+          <div className="text-center font-medium">
+            {row.getValue("employee")}
+          </div>
+        ),
+      },
+      {
       accessorKey: "request_created_at",
       header: () => <div className="text-center">Date Demande</div>,
       cell: ({ row }) => {
