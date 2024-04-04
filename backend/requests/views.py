@@ -17,7 +17,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .utils import calculate_max_loan
 from django.http import HttpResponse
-from ast import literal_eval
+from datetime import date
 
 
 # Create your views here.
@@ -303,8 +303,10 @@ class UpdateRequestView(APIView):
             isDraft = request.query_params.get("draft")
             if isDraft == "true":
                 aid_status = "draft"
+                request_created_at = None
             elif isDraft == "false":
                 aid_status = "waiting"
+                request_created_at = date.today()
             else:
                 return Response(
                     "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
@@ -346,10 +348,10 @@ class UpdateRequestView(APIView):
                             loan=loan,
                         )
                         d.save()
-            
+                
                 serializer = LoanSerializer(loan, data=request.data, partial=True)
                 serializer.is_valid(raise_exception=True)
-                serializer.save(loan_status=aid_status)
+                serializer.save(loan_status=aid_status , request_created_at = request_created_at)
                 return Response("loan updated succesfully")
 
             # update the financial-aid object
@@ -405,7 +407,7 @@ class UpdateRequestView(APIView):
                     financial_aid, data=request.data, partial=True
                 )
                 serializer.is_valid(raise_exception=True)
-                serializer.save(financial_aid_status=aid_status)
+                serializer.save(financial_aid_status=aid_status , request_created_at = request_created_at)
                 return Response("financial aid updated succesfully")
             else :
                 return Response(
@@ -456,6 +458,7 @@ class UpdateRequestStatusView(APIView):
                 obj.loan_status = updated_status
             else:
                 obj.financial_aid_status = updated_status
+            obj.request_response_at = date.today()
             obj.save()
             return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
         elif old_status == "approved" and updated_status == 'finished'and model_class == Loan:
