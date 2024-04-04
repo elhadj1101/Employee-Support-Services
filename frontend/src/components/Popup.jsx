@@ -3,6 +3,7 @@ import FileInput from "./utils/FileInput";
 const Popup = ({
   handleClose = () => {},
   motif = "",
+  requiredFiles = [],
   setMotifError = () => {},
   setMotif = () => {},
   motifError = "",
@@ -39,13 +40,29 @@ const Popup = ({
             style={{ borderColor: motifError ? "red" : "" }}
           />
           <p className="error font-light text-red-600 ">{motifError}</p>
-          <div>
+          {/* <div>
             <h1>Remarque:</h1>
             <p className=" bg-slate-50 w-fit rounded-sm text-blue-800">
               Vous pouvez déposer les documents justificatifs nécessaires à
               l'appui de votre demande de prêt.
             </p>
-          </div>
+          </div> */}
+          <>
+            <h2 className="font-semibold text-lg mt-4">
+              Les fichiers nécessaires
+              <span style={{ color: "red" }}> * </span>
+            </h2>
+            <ul className="pl-4 text-sm w- list-decimal font-light ">
+              {requiredFiles &&
+                requiredFiles.map((file, ind) => {
+                  return (
+                    <li className="" key={ind}>
+                      {file}
+                    </li>
+                  );
+                })}
+            </ul>
+          </>
         </div>
         <div className="w-full p-4 ">
           <FileInput
@@ -54,7 +71,7 @@ const Popup = ({
             uploadInputElRef={filesRef}
             files={uploadedFiles}
             setFiles={setUploadedFiles}
-            maxFiles={5}
+            maxFiles={requiredFiles.length}
             accepts="application/pdf"
             fileTypes="PDF"
             multpl={true}
