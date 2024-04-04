@@ -349,6 +349,12 @@ class UpdateRequestView(APIView):
                         )
                         d.save()
                 
+                if not new_files and not  Document.objects.filter(loan=pk) and aid_status == 'waiting':
+                    return Response(
+                        {"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                
                 serializer = LoanSerializer(loan, data=request.data, partial=True)
                 serializer.is_valid(raise_exception=True)
                 serializer.save(loan_status=aid_status , request_created_at = request_created_at)
@@ -401,6 +407,10 @@ class UpdateRequestView(APIView):
                             loan=None,
                         )
                         d.save()
+                if not new_files and not  Document.objects.filter(financial_aid=pk ) and aid_status == 'waiting':
+                    return Response(
+                        {"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST
+                    )
 
 
                 serializer = FinancialaidSerializer(
