@@ -36,7 +36,7 @@ export default function SingleDemandLoan({ employee }) {
     approved: "text-green-900 bg-green-100",
     waiting: "text-yellow-900 bg-yellow-100",
     refused: "text-red-900 bg-red-100",
-    draft: "text-gray-500 bg-gray-100 border border-gray-200",
+    // draft: "text-gray-500 bg-gray-100 border border-gray-200",
   };
   // I will not store the requestedAid because some of its information may change  and the user will not know.
   const [requestedAid, setReqeustedAid] = useState({});
@@ -44,13 +44,8 @@ export default function SingleDemandLoan({ employee }) {
     JSON.parse(sessionStorage.getItem("requestedAidUser")) || {}
   );
 
-  const {
-    aids,
-    allAids,
-    AidRequestedId,
-    setAidRequestedId,
-    user,
-  } = useStore();
+  const { aids, allAids, setUpdated, AidRequestedId, setAidRequestedId, user } =
+    useStore();
   const parts = window.location.pathname
     .split("/")
     .filter((part) => part.trim() !== "");
@@ -58,9 +53,11 @@ export default function SingleDemandLoan({ employee }) {
   const navigate = useNavigate();
   const handleChangeStatus = async (e) => {
     const newStatus = e.target.dataset.status;
+    console.log(newStatus);
     const res = await updateStatus(aidId, "financial-aids", newStatus);
     if (res) {
-      navigate("");
+      setUpdated("aids");
+      requestedAid.financial_aid_status = newStatus;
       toast.success("Le statut de la demande a été changé avec succès.");
     }
   };
@@ -89,7 +86,6 @@ export default function SingleDemandLoan({ employee }) {
   }, [allAids, aids]);
 
   useEffect(() => {
-
     if (
       ((employee && allAids.length !== 0) ||
         (!employee && aids.length !== 0)) &&
@@ -187,95 +183,89 @@ export default function SingleDemandLoan({ employee }) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Statut</DropdownMenuLabel>
-                        <Dialog>
-                          {user?.role !== "tresorier" &&
-                            requestedAid &&
-                            Object.keys(StatusColors)
-                              .filter(
-                                (status) =>
-                                  status !== requestedAid?.financial_aid_status
-                              )
-                              .map((status) => (
-                                <>
-                                  <DialogTrigger
-                                    key={status}
-                                    style={{ width: "100%" }}
-                                  >
-                                    <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                                      {status}
-                                    </div>
-                                  </DialogTrigger>
-                                  <DialogContent>
-                                    <DialogHeader>
-                                      <DialogTitle>
-                                        Êtes-vous sûr de changer le statut de
-                                        cet demmande?
-                                      </DialogTitle>
-                                      <DialogDescription>
-                                        Cette action va changer le statut de la
-                                        demmande
-                                      </DialogDescription>
-                                    </DialogHeader>
-                                    <DialogFooter>
-                                      <DialogClose>
-                                        <Button
-                                          onClick={handleChangeStatus}
-                                          data-status={status}
-                                          className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
-                                        >
-                                          changer
-                                        </Button>
-                                      </DialogClose>
-                                    </DialogFooter>
-                                  </DialogContent>
-                                </>
-                              ))}
-                          {user?.role === "tresorier" &&
-                            requestedAid &&
-                            Object.keys({
-                              finished: "finished",
-                              approved: "approved",
-                            })
-                              .filter(
-                                (status) =>
-                                  status !== requestedAid.financial_aid_status
-                              )
-                              .map((status) => (
-                                <>
-                                  <DialogTrigger
-                                    key={status}
-                                    style={{ width: "100%" }}
-                                  >
-                                    <div className="w-full cursor-pointer text-left px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                                      {status}
-                                    </div>
-                                  </DialogTrigger>
-                                  <DialogContent>
-                                    <DialogHeader>
-                                      <DialogTitle>
-                                        Êtes-vous sûr de changer le statut de
-                                        cet demmande?
-                                      </DialogTitle>
-                                      <DialogDescription>
-                                        Cette action va changer le statut de la
-                                        demmande
-                                      </DialogDescription>
-                                    </DialogHeader>
-                                    <DialogFooter>
-                                      <DialogClose>
-                                        <Button
-                                          onClick={handleChangeStatus}
-                                          data-status={status}
-                                          className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
-                                        >
-                                          changer
-                                        </Button>
-                                      </DialogClose>
-                                    </DialogFooter>
-                                  </DialogContent>
-                                </>
-                              ))}
-                        </Dialog>
+
+                        {user?.role !== "tresorier" &&
+                          requestedAid &&
+                          Object.keys(StatusColors)
+                            .filter(
+                              (status) =>
+                                status !== requestedAid?.financial_aid_status &&
+                                status !== "waiting"
+                            )
+                            .map((status) => (
+                              <Dialog key={status}>
+                                <DialogTrigger style={{ width: "100%" }}>
+                                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                                    {status}
+                                  </div>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Êtes-vous sûr de changer le statut de cet
+                                      demmande?
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Cette action va changer le statut de la
+                                      demmande
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <DialogFooter>
+                                    <DialogClose>
+                                      <Button
+                                        onClick={handleChangeStatus}
+                                        data-status={status}
+                                        className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
+                                      >
+                                        changer
+                                      </Button>
+                                    </DialogClose>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            ))}
+                        {user?.role === "tresorier" &&
+                          requestedAid &&
+                          Object.keys({
+                            finished: "finished",
+                            approved: "approved",
+                          })
+                            .filter(
+                              (status) =>
+                                status !== requestedAid.financial_aid_status
+                            )
+                            .map((status) => (
+                              <Dialog key={status}>
+                                <DialogTrigger style={{ width: "100%" }}>
+                                  <div className="w-full cursor-pointer text-left px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                                    {status}
+                                  </div>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Êtes-vous sûr de changer le statut de cet
+                                      demmande?
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Cette action va changer le statut de la
+                                      demmande
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <DialogFooter>
+                                    <DialogClose>
+                                      <Button
+                                        onClick={handleChangeStatus}
+                                        data-status={status}
+                                        className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
+                                      >
+                                        changer
+                                      </Button>
+                                    </DialogClose>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}

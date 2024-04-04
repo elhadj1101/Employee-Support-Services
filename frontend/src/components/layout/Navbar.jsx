@@ -13,14 +13,14 @@ function Navbar({}) {
               Salut, {user && user.first_name + " " + user.last_name}
             </h1>
             <div className="flex py-0.5 rounded-sm duration-300 transition cursor-pointer hover:bg-custom-gray/20 px-2 items-center gap-x-4">
-              <img
+              {/* <img
                 width={30}
                 height={30}
                 className="rounded-full"
                 alt="profile pic"
                 src="/assets/pilot.png"
               />
-              <img src="./icons/notifications.svg" alt="" />
+              <img src="./icons/notifications.svg" alt="" /> */}
               <button onClick={logout}>
                 <FiLogOut className="text-2xl" />
               </button>

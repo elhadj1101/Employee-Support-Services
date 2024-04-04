@@ -42,6 +42,7 @@ export default function SingleDemandLoan({ employee }) {
   const {
     loans,
     allLoans,
+    setUpdated,
     LoanRequestedId,
     setLoanRequestedId,
     user,
@@ -55,7 +56,8 @@ export default function SingleDemandLoan({ employee }) {
     const newStatus = e.target.dataset.status;
     const res = await updateStatus(LoanId,"loans", newStatus );
     if (res) {
-      navigate("")
+      setUpdated("loans");
+      requestedLoan.loan_status = newStatus;
       toast.success("Le statut de la demande a été changé avec succès.");
     }
   }
@@ -187,94 +189,88 @@ export default function SingleDemandLoan({ employee }) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Statut</DropdownMenuLabel>
-                        <Dialog>
-                          {user?.role !== "tresorier" &&
-                            requestedLoan &&
-                            Object.keys(StatusColors)
-                              .filter(
-                                (status) =>
-                                  status !== requestedLoan?.loan_status
+                        {user?.role !== "tresorier" &&
+                          requestedLoan &&
+                          Object.keys(StatusColors)
+                            .filter(
+                              (status) =>
+                                status !== requestedLoan?.loan_status &&
+                                status !== "waiting"
+                            )
+                            .map((status) => (
+                              <Dialog key={status}>
+                                <DialogTrigger style={{ width: "100%" }}>
+                                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                                    {status}
+                                  </div>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Êtes-vous sûr de changer le statut de cet
+                                      demmande?
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Cette action va changer le statut de la
+                                      demmande
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <DialogFooter>
+                                    <DialogClose>
+                                      <Button
+                                        onClick={handleChangeStatus}
+                                        data-status={status}
+                                        className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
+                                      >
+                                        changer
+                                      </Button>
+                                    </DialogClose>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            ))}
+                        {user?.role === "tresorier" &&
+                          requestedLoan &&
+                          Object.keys({
+                            finished: "finished",
+                            approved: "approved",
+                          })
+                            .filter(
+                              (status) =>
+                                status !== requestedLoan.loan_status
                               )
-                              .map((status) => (
-                                <>
-                                  <DialogTrigger
-                                    key={status}
-                                    style={{ width: "100%" }}
-                                  >
-                                    <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                                      {status}
-                                    </div>
-                                  </DialogTrigger>
-                                  <DialogContent>
-                                    <DialogHeader>
-                                      <DialogTitle>
-                                        Êtes-vous sûr de changer le statut de
-                                        cet demmande?
-                                      </DialogTitle>
-                                      <DialogDescription>
-                                        Cette action va changer le statut de la
-                                        demmande
-                                      </DialogDescription>
-                                    </DialogHeader>
-                                    <DialogFooter>
-                                      <DialogClose>
-                                        <Button
-                                          onClick={handleChangeStatus}
-                                          data-status={status}
-                                          className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
-                                        >
-                                          changer
-                                        </Button>
-                                      </DialogClose>
-                                    </DialogFooter>
-                                  </DialogContent>
-                                </>
-                              ))}
-                          {user?.role === "tresorier" &&
-                            requestedLoan &&
-                            Object.keys({
-                              finished: "finished",
-                              approved: "approved",
-                            })
-                              .filter(
-                                (status) => status !== requestedLoan.loan_status
-                              )
-                              .map((status) => (
-                                <>
-                                  <DialogTrigger
-                                    key={status}
-                                    style={{ width: "100%" }}
-                                  >
-                                    <div className="w-full cursor-pointer text-left px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                                      {status}
-                                    </div>
-                                  </DialogTrigger>
-                                  <DialogContent>
-                                    <DialogHeader>
-                                      <DialogTitle>
-                                        Êtes-vous sûr de changer le statut de
-                                        cet demmande?
-                                      </DialogTitle>
-                                      <DialogDescription>
-                                        Cette action va changer le statut de la
-                                        demmande
-                                      </DialogDescription>
-                                    </DialogHeader>
-                                    <DialogFooter>
-                                      <DialogClose>
-                                        <Button
-                                          onClick={handleChangeStatus}
-                                          data-status={status}
-                                          className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
-                                        >
-                                          changer
-                                        </Button>
-                                      </DialogClose>
-                                    </DialogFooter>
-                                  </DialogContent>
-                                </>
-                              ))}
-                        </Dialog>
+                            .map((status) => (
+                              <Dialog key={status}>
+                                <DialogTrigger style={{ width: "100%" }}>
+                                  <div className="w-full cursor-pointer text-left px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                                    {status}
+                                  </div>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Êtes-vous sûr de changer le statut de cet
+                                      demmande?
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Cette action va changer le statut de la
+                                      demmande
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <DialogFooter>
+                                    <DialogClose>
+                                      <Button
+                                        onClick={handleChangeStatus}
+                                        data-status={status}
+                                        className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
+                                      >
+                                        changer
+                                      </Button>
+                                    </DialogClose>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}
