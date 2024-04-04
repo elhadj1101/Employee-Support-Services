@@ -20,11 +20,11 @@ class Loan(models.Model):
     ]
 
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE   )
-    request_created_at = models.DateField(auto_now_add = True)
+    request_created_at = models.DateField(null = True)
     loan_amount = models.FloatField(null = False)
     payment_method = models.TextField(null=False , choices = payment_method_options)
     loan_motivation = models.TextField(null = False)
-    start_loan_date = models.DateField(null = True, blank=True)
+    request_response_at = models.DateField(null = True, blank=True)
     loan_period = models.IntegerField( null = False)
     loan_status = models.CharField(choices = status_options , max_length = 30  , null = False)
 
@@ -57,7 +57,7 @@ class Financial_aid(models.Model):
 
     # documents_to_upload_field
     employee = models.ForeignKey(Employee , on_delete = models.CASCADE)
-    request_created_at = models.DateField(auto_now_add = True )
+    request_created_at = models.DateField(null = True )
     financial_aid_type = models.CharField(max_length = 50 , choices = financial_aid_type_options)
     family_member =  models.CharField(max_length = 50   , choices = family_member_options , null = True, blank = True)
     financial_aid_status = models.CharField(max_length = 50  , choices = financial_aid_status_options ) 
