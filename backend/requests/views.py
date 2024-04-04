@@ -439,12 +439,12 @@ class UpdateRequestStatusView(APIView):
         obj = get_object_or_404(model_class, pk=pk)
         updated_status = request.data["new_status"]
 
-        valid_status = ("approved", "refused" )
+        valid_new_status = ("approved", "refused" )
         old_status = (
             obj.loan_status if model_class == Loan else obj.financial_aid_status
         )
-
-        if old_status == "waiting" and updated_status in valid_status:
+        valid_old_status = ("approved", "refused" , "waiting")
+        if old_status in valid_old_status and updated_status in valid_new_status and old_status != updated_status:
             # I had an error using request.user.has_perm function 
             # so I remove it
             if  not request.user.role == 'president' and not request.user.role =='vice_president':
@@ -458,7 +458,7 @@ class UpdateRequestStatusView(APIView):
                 obj.financial_aid_status = updated_status
             obj.save()
             return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
-        elif old_status == "approved" and updated_status == 'finished':
+        elif old_status == "approved" and updated_status == 'finished'and model_class == Loan:
             if  not request.user.role == 'tresorier':
                 return Response(
                     {"error": "you don't have required permission"},
