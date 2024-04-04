@@ -329,8 +329,7 @@ class UpdateRequestView(APIView):
                 loan_documents = Document.objects.filter(loan=pk)
                 
                 documents_paths = loan_documents.values_list("document_file", flat=True) if loan_documents else []
-                print(loan_documents)
-                print(documents_paths)
+
 
                 for document_path in documents_paths:
                     if document_path not in old_files:
