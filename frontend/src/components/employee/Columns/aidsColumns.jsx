@@ -32,7 +32,7 @@ financial_aid_infos.forEach((e) => {
   typeLabelMap[e.name] = e.description;
 });
 const DeleteButton = ({ id }) => {
-  const {setAids} = useStore();
+  const { setAids } = useStore();
   const handleDeleteClick = async (e) => {
     try {
       const response = await deleteAid(id);
@@ -81,7 +81,7 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 };
-export const aidsColumns = (colsToHide = [], hideDelete =false) => {
+export const aidsColumns = (colsToHide = [], hideDelete = false) => {
   const cols = [
     {
       id: "select",
@@ -106,8 +106,17 @@ export const aidsColumns = (colsToHide = [], hideDelete =false) => {
       enableHiding: false,
     },
     {
+      accessorKey: "id",
+      header: () => <div className="text-center">ID-Demande</div>,
+      cell: ({ row }) => {
+        return (
+          <div className="text-center font-medium">{row.getValue("id")}</div>
+        );
+      },
+    },
+    {
       accessorKey: "employee",
-      header: () => <div className="text-center">ID de l'employer</div>,
+      header: () => <div className="text-center">ID-Employer</div>,
       // to filter ids
       accessorFn: (orow) => {
         return orow.employee.toString();
@@ -117,15 +126,6 @@ export const aidsColumns = (colsToHide = [], hideDelete =false) => {
           {row.getValue("employee")}
         </div>
       ),
-    },
-    {
-      accessorKey: "id",
-      header: () => <div className="text-center">ID</div>,
-      cell: ({ row }) => {
-        return (
-          <div className="text-center font-medium">{row.getValue("id")}</div>
-        );
-      },
     },
     {
       accessorKey: "request_created_at",
@@ -192,30 +192,33 @@ export const aidsColumns = (colsToHide = [], hideDelete =false) => {
                   text={"Modifier le broullion"}
                 />
               )}
-              {["draft", "waiting"].includes(row.original.financial_aid_status) && !hideDelete && (
-                <Dialog>
-                  <DialogTrigger style={{ width: "100%" }}>
-                    <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                      Supprimer
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>
-                        Êtes-vous sûr de Supprimer Cette Demmande?
-                      </DialogTitle>
-                      <DialogDescription>
-                        Cette action va Supprimer definitivement la demmande
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <DialogClose>
-                        <DeleteButton id={row.original.id} />
-                      </DialogClose>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              )}
+              {["draft", "waiting"].includes(
+                row.original.financial_aid_status
+              ) &&
+                !hideDelete && (
+                  <Dialog>
+                    <DialogTrigger style={{ width: "100%" }}>
+                      <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                        Supprimer
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>
+                          Êtes-vous sûr de Supprimer Cette Demmande?
+                        </DialogTitle>
+                        <DialogDescription>
+                          Cette action va Supprimer definitivement la demmande
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <DialogClose>
+                          <DeleteButton id={row.original.id} />
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

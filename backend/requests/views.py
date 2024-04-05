@@ -17,7 +17,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .utils import calculate_max_loan
 from django.http import HttpResponse
-from ast import literal_eval
+from datetime import date
 
 
 # Create your views here.
@@ -71,7 +71,7 @@ class LoanView(APIView):
             files = request.FILES.getlist("files[]", [])
             if not files and loan_status == "waiting":
                 return Response(
-                    "you must upload files", status=status.HTTP_400_BAD_REQUEST
+                    {"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST
                 )
 
             created_instance = serializer.save(
@@ -303,8 +303,10 @@ class UpdateRequestView(APIView):
             isDraft = request.query_params.get("draft")
             if isDraft == "true":
                 aid_status = "draft"
+                request_created_at = None
             elif isDraft == "false":
                 aid_status = "waiting"
+                request_created_at = date.today()
             else:
                 return Response(
                     "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
@@ -327,8 +329,7 @@ class UpdateRequestView(APIView):
                 loan_documents = Document.objects.filter(loan=pk)
                 
                 documents_paths = loan_documents.values_list("document_file", flat=True) if loan_documents else []
-                print(loan_documents)
-                print(documents_paths)
+
 
                 for document_path in documents_paths:
                     if document_path not in old_files:
@@ -346,10 +347,16 @@ class UpdateRequestView(APIView):
                             loan=loan,
                         )
                         d.save()
-            
+                
+                if not new_files and not  Document.objects.filter(loan=pk) and aid_status == 'waiting':
+                    return Response(
+                        {"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                
                 serializer = LoanSerializer(loan, data=request.data, partial=True)
                 serializer.is_valid(raise_exception=True)
-                serializer.save(loan_status=aid_status)
+                serializer.save(loan_status=aid_status , request_created_at = request_created_at)
                 return Response("loan updated succesfully")
 
             # update the financial-aid object
@@ -399,13 +406,17 @@ class UpdateRequestView(APIView):
                             loan=None,
                         )
                         d.save()
+                if not new_files and not  Document.objects.filter(financial_aid=pk ) and aid_status == 'waiting':
+                    return Response(
+                        {"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST
+                    )
 
 
                 serializer = FinancialaidSerializer(
                     financial_aid, data=request.data, partial=True
                 )
                 serializer.is_valid(raise_exception=True)
-                serializer.save(financial_aid_status=aid_status)
+                serializer.save(financial_aid_status=aid_status , request_created_at = request_created_at)
                 return Response("financial aid updated succesfully")
             else :
                 return Response(
@@ -439,12 +450,12 @@ class UpdateRequestStatusView(APIView):
         obj = get_object_or_404(model_class, pk=pk)
         updated_status = request.data["new_status"]
 
-        valid_status = ("approved", "refused" )
+        valid_new_status = ("approved", "refused" )
         old_status = (
             obj.loan_status if model_class == Loan else obj.financial_aid_status
         )
-
-        if old_status == "waiting" and updated_status in valid_status:
+        valid_old_status = ("approved", "refused" , "waiting")
+        if old_status in valid_old_status and updated_status in valid_new_status and old_status != updated_status:
             # I had an error using request.user.has_perm function 
             # so I remove it
             if  not request.user.role == 'president' and not request.user.role =='vice_president':
@@ -456,9 +467,10 @@ class UpdateRequestStatusView(APIView):
                 obj.loan_status = updated_status
             else:
                 obj.financial_aid_status = updated_status
+            obj.request_response_at = date.today()
             obj.save()
-            return Response({"status updated successfully"}, status=status.HTTP_200_OK)
-        elif old_status == "approved" and updated_status == 'finished':
+            return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
+        elif old_status == "approved" and updated_status == 'finished'and model_class == Loan:
             if  not request.user.role == 'tresorier':
                 return Response(
                     {"error": "you don't have required permission"},
@@ -466,7 +478,7 @@ class UpdateRequestStatusView(APIView):
                 )
             obj.loan_status = updated_status
             obj.save()
-            return Response({"status updated successfully"}, status=status.HTTP_200_OK)
+            return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
         
         else:
             return Response(

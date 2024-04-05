@@ -24,6 +24,7 @@ import {
   DialogFooter,
 } from "../components/ui/dialog";
 import { useNavigate } from "react-router-dom";
+import { updateStatus } from "api/requests";
 import { toast } from "sonner";
 import { financial_aid_infos } from "api/requests";
 let type = {};
@@ -35,7 +36,7 @@ export default function SingleDemandLoan({ employee }) {
     approved: "text-green-900 bg-green-100",
     waiting: "text-yellow-900 bg-yellow-100",
     refused: "text-red-900 bg-red-100",
-    draft: "text-gray-500 bg-gray-100 border border-gray-200",
+    // draft: "text-gray-500 bg-gray-100 border border-gray-200",
   };
   // I will not store the requestedAid because some of its information may change  and the user will not know.
   const [requestedAid, setReqeustedAid] = useState({});
@@ -43,23 +44,25 @@ export default function SingleDemandLoan({ employee }) {
     JSON.parse(sessionStorage.getItem("requestedAidUser")) || {}
   );
 
-  const {
-    aids,
-    allAids,
-    AidRequestedId,
-    setAidRequestedId,
-    user,
-    setAidDraftId,
-  } = useStore();
+  const { aids, allAids, setUpdated, AidRequestedId, setAidRequestedId, user } =
+    useStore();
   const parts = window.location.pathname
     .split("/")
     .filter((part) => part.trim() !== "");
   let aidId = parts[parts.length - 1];
   const navigate = useNavigate();
-
+  const handleChangeStatus = async (e) => {
+    const newStatus = e.target.dataset.status;
+    console.log(newStatus);
+    const res = await updateStatus(aidId, "financial-aids", newStatus);
+    if (res) {
+      setUpdated("aids");
+      requestedAid.financial_aid_status = newStatus;
+      toast.success("Le statut de la demande a été changé avec succès.");
+    }
+  };
   useEffect(() => {
     // change it only when we  want new aid
-    console.log(AidRequestedId, aidId, aids);
     if (employee) {
       // get the aid details from
       if (aids.length !== 0) {
@@ -83,8 +86,6 @@ export default function SingleDemandLoan({ employee }) {
   }, [allAids, aids]);
 
   useEffect(() => {
-    console.log("req", requestedAid);
-
     if (
       ((employee && allAids.length !== 0) ||
         (!employee && aids.length !== 0)) &&
@@ -182,64 +183,89 @@ export default function SingleDemandLoan({ employee }) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Statut</DropdownMenuLabel>
-                        <Dialog>
-                          {user?.role !== "tresorier" &&
-                            requestedAid &&
-                            Object.keys(StatusColors)
-                              .filter(
-                                (status) =>
-                                  status !== requestedAid?.financial_aid_status
-                              )
-                              .map((status) => (
-                                <DialogTrigger
-                                  key={status}
-                                  style={{ width: "100%" }}
-                                >
+
+                        {user?.role !== "tresorier" &&
+                          requestedAid &&
+                          Object.keys(StatusColors)
+                            .filter(
+                              (status) =>
+                                status !== requestedAid?.financial_aid_status &&
+                                status !== "waiting"
+                            )
+                            .map((status) => (
+                              <Dialog key={status}>
+                                <DialogTrigger style={{ width: "100%" }}>
                                   <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
                                     {status}
                                   </div>
                                 </DialogTrigger>
-                              ))}
-                          {user?.role === "tresorier" &&
-                            requestedAid &&
-                            Object.keys({
-                              finished: "finished",
-                              approved: "approved",
-                            })
-                              .filter(
-                                (status) =>
-                                  status !== requestedAid.financial_aid_status
-                              )
-                              .map((status) => (
-                                <DialogTrigger
-                                  key={status}
-                                  style={{ width: "100%" }}
-                                >
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Êtes-vous sûr de changer le statut de cet
+                                      demmande?
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Cette action va changer le statut de la
+                                      demmande
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <DialogFooter>
+                                    <DialogClose>
+                                      <Button
+                                        onClick={handleChangeStatus}
+                                        data-status={status}
+                                        className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
+                                      >
+                                        changer
+                                      </Button>
+                                    </DialogClose>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            ))}
+                        {user?.role === "tresorier" &&
+                          requestedAid &&
+                          Object.keys({
+                            finished: "finished",
+                            approved: "approved",
+                          })
+                            .filter(
+                              (status) =>
+                                status !== requestedAid.financial_aid_status
+                            )
+                            .map((status) => (
+                              <Dialog key={status}>
+                                <DialogTrigger style={{ width: "100%" }}>
                                   <div className="w-full cursor-pointer text-left px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
                                     {status}
                                   </div>
                                 </DialogTrigger>
-                              ))}
-
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>
-                                Êtes-vous sûr de changer le statut de cet
-                                demmande?
-                              </DialogTitle>
-                              <DialogDescription>
-                                Cette action va changer le statut de la demmande
-                              </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter>
-                              <DialogClose>
-                                <Button className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue">
-                                  changer
-                                </Button>
-                              </DialogClose>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Êtes-vous sûr de changer le statut de cet
+                                      demmande?
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Cette action va changer le statut de la
+                                      demmande
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <DialogFooter>
+                                    <DialogClose>
+                                      <Button
+                                        onClick={handleChangeStatus}
+                                        data-status={status}
+                                        className="hover:bg-white hover:text-light-blue border border-light-blue bg-light-blue"
+                                      >
+                                        changer
+                                      </Button>
+                                    </DialogClose>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}
@@ -316,22 +342,27 @@ export default function SingleDemandLoan({ employee }) {
             <div className="flex gap-3 flex-wrap">
               {requestedAid?.documents?.length !== 0 ? (
                 requestedAid?.documents?.map((doc) => (
-                  <Link to={"http://127.0.0.1:8000/" + doc.document_file} target="_blank">
-                  <div className=" cursor-pointer flex bg-lightgray space-x-3  w-fit min-w-60 items-center rounded-sm py-3 px-4 border border-gray-300">
-                    <img src="/icons/Pdf-icon.png" alt="" />
-                    <div className="pr-4">
-                      <span className="text-gray-600 font-semibold">
-                        {doc?.document_name}
-                      </span>
-                      <p className=" text-gray-400 font-semibold text-sm ">
-                        {doc.document_size} kB
-                      </p>
+                  <Link
+                    to={"http://127.0.0.1:8000" + doc.document_file}
+                    target="_blank"
+                  >
+                    <div className=" cursor-pointer flex bg-lightgray space-x-3  w-fit min-w-60 items-center rounded-sm py-3 px-4 border border-gray-300">
+                      <img src="/icons/Pdf-icon.png" alt="" />
+                      <div className="pr-4">
+                        <span className="text-gray-600 font-semibold">
+                          {doc?.document_name}
+                        </span>
+                        <p className=" text-gray-400 font-semibold text-sm ">
+                          {doc.document_size} kB
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
                 ))
               ) : (
-                <p className="capitalize px-2 p-5 text-center w-full">Aucune pièce jointe</p>
+                <p className="capitalize px-2 p-5 text-center w-full">
+                  Aucune pièce jointe
+                </p>
               )}
             </div>
           </div>
