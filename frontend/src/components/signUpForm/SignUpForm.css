@@ -1,8 +1,11 @@
 .Container {
   display: flex;
   flex-direction: column;
+  padding-bottom: 50px;
   margin: auto;
-  height: 100vh;
+  margin-top: 100px;
+  width: 600px;
+  
 }
 
 .header {
