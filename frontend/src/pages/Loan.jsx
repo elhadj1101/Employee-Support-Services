@@ -162,7 +162,7 @@ const Loan = () => {
       formData.append("files[]", file);
     });
     oldFiles.forEach((of) => {
-      formData.append("old_files", of.url.replace("/documents/", ""));
+      formData.append("old_files[]", of.url.replace("/documents/", ""));
     });
     if (!crrntLoan || loanDraftId == false) {
       Axios.post(endpoint + isDraft, formData, {

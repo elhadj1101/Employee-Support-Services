@@ -175,8 +175,13 @@ export default function AddUser() {
     }
     Object.keys(formData).forEach((key) => {
       if (newErrors.key) delete newErrors.key;
-      if (!formData[key] && key !== "is_active" && key !=='retired_at') {
-        newErrors[key] = `${key.replace('_' ,' ')} est requis.`;
+      if (
+        !formData[key] &&
+        key !== "is_active" &&
+        key !== "retired_at" &&
+        key !== "retired"
+      ) {
+        newErrors[key] = `${key.replace("_", " ")} est requis.`;
       }
     });
 
@@ -184,6 +189,7 @@ export default function AddUser() {
     // Check if any errors occurred
     if (Object.keys(newErrors).length !== 0) {
       setNewErrors(newErrors);
+      console.log("errors", newErrors); 
       return;
     }
 
@@ -198,6 +204,7 @@ export default function AddUser() {
         rip: "00799999" + AddUserData?.rip.replace(/ /g, ""),
         salary: AddUserData?.salary.replace(/,/g, ""),
       });
+      console.log(newUser);
       if (newUser.status === 201) {
         toast.success("Utilisateur créé avec succès");
         Object.keys(localStorage).forEach((key) => {
