@@ -269,9 +269,9 @@ class UpdateRequestView(APIView):
                             {"error":"you don't have permission to delete this loan"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
-                    if loan.loan_status not in  ["draft", "waiting"]:
+                    if loan.loan_status not in  ["draft"]:
                         return Response(
-                            {"error":"this loan is not draft or waiting"}, status=status.HTTP_403_FORBIDDEN
+                            {"error":"this loan is not draft"}, status=status.HTTP_403_FORBIDDEN
                         )
                     loan.delete()
                     return Response({"success":"loan deleted succesfully"})
@@ -282,9 +282,9 @@ class UpdateRequestView(APIView):
                             {"error":"you don't have permission to delete this financial-aid"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
-                    if financial_aid.financial_aid_status not in  ["draft", "waiting"]:
+                    if financial_aid.financial_aid_status not in  ["draft"]:
                         return Response(
-                            {"error":"this financial-aid is not draft or waiting"},
+                            {"error":"this financial-aid is not draft"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
                     financial_aid.delete()

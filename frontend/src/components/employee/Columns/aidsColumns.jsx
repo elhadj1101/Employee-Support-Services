@@ -192,7 +192,7 @@ export const aidsColumns = (colsToHide = [], hideDelete = false) => {
                   text={"Modifier le broullion"}
                 />
               )}
-              {["draft", "waiting"].includes(
+              {["draft"].includes(
                 row.original.financial_aid_status
               ) &&
                 !hideDelete && (
