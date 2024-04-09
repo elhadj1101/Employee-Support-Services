@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 const RequireAuth = ({ requiredRoles , excludedRoles=[]}) => {
   const { user, setUser } = useStore();
   if (user=== null) {
-    if (localStorage.getItem("access_token") === null) {
+    if (!localStorage.getItem("access_token")) {
       console.log("no token");
       return <Navigate to="/login" replace />;
     }

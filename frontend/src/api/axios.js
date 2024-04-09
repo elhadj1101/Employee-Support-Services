@@ -17,9 +17,15 @@ Axios.interceptors.response.use(
   async error => {
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+      originalRequest._retry = false;
       const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) {
+        return Promise.reject(error);
+      }
+      if (error.response?.data?.code === "token_not_valid") {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/login';
         return Promise.reject(error);
       }
       try {
@@ -30,7 +36,7 @@ Axios.interceptors.response.use(
         return Axios(originalRequest);
       } catch (error) {
         // Redirect to login or handle the refresh token failure scenario
-
+         window.location.href = '/login';
         
         return Promise.reject(error);
       }
