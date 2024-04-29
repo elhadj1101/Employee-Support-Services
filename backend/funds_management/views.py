@@ -30,3 +30,4 @@ class SingleCommityView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated,CanViewCommity]
     def get_queryset(self):
         return Commity.objects.filter(pk=self.kwargs['pk'])
+

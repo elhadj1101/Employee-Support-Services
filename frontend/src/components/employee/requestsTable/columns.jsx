@@ -94,10 +94,10 @@ export const columns = [
     cell: ({ row }) => <div className="lowercase">{row.getValue("type")}</div>,
   },
   {
-    accessorKey: "loan_amount",
+    accessorKey: "amount",
     header: "Montant",
     cell: ({ row }) => (
-      <div className="text-left font-medium">{row.getValue("loan_amount")}</div>
+      <div className="text-left font-medium">{row.getValue("amount")}</div>
     ),
   },
   {
