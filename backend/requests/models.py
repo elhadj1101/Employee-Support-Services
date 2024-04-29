@@ -23,7 +23,7 @@ class Loan(models.Model):
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     request_created_at = models.DateField(null=True)
-    loan_amount = models.FloatField(null=False)
+    loan_amount = models.DecimalField(max_digits=50, decimal_places=4, null=False)
     payment_method = models.TextField(null=False, choices=payment_method_options)
     loan_motivation = models.TextField(null=False)
     request_response_at = models.DateField(null=True, blank=True)
