@@ -1,11 +1,11 @@
 from django.urls import path
-from .views import CreateRecord,ModifyRecord,ListRecord, DeleteRecord
+from .views import RecordView,SingleRecordView, CommityView, SingleCommityView
 
 
 
 urlpatterns = [
-    path("add/",CreateRecord.as_view()),
-    path('modify/<pk>',ModifyRecord.as_view()),
-    path('list/', ListRecord.as_view(), name='list_records'),
-    path('delete/<pk>/', DeleteRecord.as_view(), name='delete_record'),
+    path("",RecordView.as_view()),
+    path("commity/",CommityView.as_view()),
+    path('commity/<pk>/', SingleCommityView.as_view()),
+    path('<pk>/', SingleRecordView.as_view()),
 ]
