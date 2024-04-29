@@ -132,11 +132,12 @@ export default function SingleDemandLoan({ employee }) {
           </div>
         )}
       </div>
-      <div className="w-full flex flex-grow flex-wrap lg:flex-nowrap gap-7 ">
+      <div className=" w-full flex flex-grow flex-wrap lg:flex-nowrap gap-7 ">
         {/* aid details card */}
-
+     
         <div className="w-full">
-          <div className="lg:min-w-[60%] xl:min-w-[65%] h-fit bg-white p-4 rounded-lg ">
+          
+          <div className=" shadoww lg:min-w-[60%] xl:min-w-[65%] h-fit bg-white p-4 rounded-lg ">
             <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
               Aperçu
             </h1>
@@ -335,7 +336,7 @@ export default function SingleDemandLoan({ employee }) {
           </div>
 
           {/* files */}
-          <div className="mt-5 h-fit bg-white p-4 rounded-lg ">
+          <div className=" shadoww mt-5 h-fit bg-white p-4 rounded-lg ">
             <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
               Pièces jointes
             </h1>
