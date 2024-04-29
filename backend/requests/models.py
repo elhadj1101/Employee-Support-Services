@@ -1,7 +1,8 @@
 from django.db import models
 from authentication.models import Employee
 from django.db.models.signals import post_delete
-from backend.utils import file_cleanup
+from backend.utils import file_cleanup, get_path
+
 
 # Create your models here.
 
@@ -73,18 +74,6 @@ class Financial_aid(models.Model):
 
 # Document
 class Document(models.Model):
-    def get_path(instance, filename):
-        extension = filename.split(".")[-1]
-        name = filename.split(".")[0]
-
-        import os, random, string
-
-        length = 13
-        chars = string.ascii_letters + string.digits + "!@#$%^&*()"
-        random.seed = os.urandom(1024)
-        a = "".join(random.choice(chars) for i in range(length))
-        rndm_filename = "%s%s.%s" % (name, str(a), extension)
-        return f"{instance.employee.pk}/docs/{rndm_filename}"
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     loan = models.ForeignKey(
