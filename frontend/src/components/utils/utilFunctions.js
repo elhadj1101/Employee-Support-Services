@@ -17,12 +17,14 @@ function formatPrice(price, delm=".") {
         }
         newPrice = strPrice[i]+newPrice;
     }
-    if (newPrice.split(".").length  === 2) {
-        let afterDellm = newPrice.split(".")[1].slice(0, 2);
-        newPrice = newPrice.split(".")[0] + "." + afterDellm;
-        
-    }
 
+    // if (newPrice.split(".").length  === 2) {
+    //     let afterDellm = newPrice.split(".")[1].slice(0, 2);
+    //     newPrice = newPrice.split(".")[0] + "." + afterDellm;
+    //     console.log("Pice: ", newPrice);
+        
+    // }
+    rest = rest.slice(0,3)
     return newPrice.charAt(newPrice.length-1) == delm ?  newPrice.slice(0, -1)+rest : newPrice+rest;
 }
 

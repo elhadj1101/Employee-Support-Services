@@ -19,11 +19,11 @@ const SignUpForm = () => {
     e.preventDefault();
     // Validate email
     if (!email.trim()) {
-      
+
       setEmailError("l'email est requis.");
       return;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      
+
 
       setEmailError("l'email est invalide.");
       return;
@@ -36,8 +36,8 @@ const SignUpForm = () => {
       setPassError("le mot de passe est requis.");
       correct = false;
 
-    } else 
-    
+    } else
+
     // if (pass.length < 8) {
     //   setPassError("Password must be at least 8 characters long.");
     //   correct = false;
@@ -47,33 +47,33 @@ const SignUpForm = () => {
       setPassError("");
     }
 
- 
+
     if (!correct) {
       return;
     }
     // If all validations pass, submit the form
     try {
       const response = await signUp(email, pass);
-      console.log('signup' ,response);
-      if (response ==='success') {
+      console.log('signup', response);
+      if (response === 'success') {
         navigate('/login')
       }
-    }catch (error) {
+    } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div>
-      <div className="header max-w-xs">
+    <div >
+      <div className="header ">
         <div className="logo">
           <img src="./assets/esi sba 3.png" alt="icon" />
         </div>
-        <div className="max-w-xs my-4 px-5 sm:px-10  ">
+        <div className="text text-center my-4 sm:mx-auto sm:min-w-full  ">
           Merci d'entrer vos informations de connexion
         </div>
       </div>
-      <form className="max-w-xs">
+      <form >
         <label
           htmlFor="email"
           className="text  max-w-xs mx-auto flex  sm:min-w-full"
@@ -95,12 +95,12 @@ const SignUpForm = () => {
 
         <label
           htmlFor="password"
-          className="text max-w-xs mx-auto flex  sm:min-w-full"
+          className="text flex mx-auto max-w-xs  sm:min-w-full sm:flex"
         >
-          Mot de passe (envoyé par l'administrateur )
+          Mot de passe (envoyé par l'administrateur)
         </label>
         <input
-          className=" max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full"
+          className=" max-w-xs flex mx-auto   sm:flex sm:mx-auto sm:min-w-full md:min-w-full lg:min-w-full"
           name="password"
           type="password"
           value={pass}
@@ -119,11 +119,14 @@ const SignUpForm = () => {
           acitver
         </button>
 
-        <div className="connecter justify-center">
-          Vous avez déjà activer votre compte?{" "}
+        <div className=" sm:flex sm:justify-center  ">
+
+          <div className=" flex justify-center sm:flex sm:justify-center   ">
+            Vous avez déjà activer votre compte?
+          </div>
           <Link to="/">
             {" "}
-            <span>Se connecter</span>{" "}
+            <span className=" text-blue-700 underline flex justify-center sm:flex sm:justify-center">Se connecter</span>{" "}
           </Link>
         </div>
       </form>

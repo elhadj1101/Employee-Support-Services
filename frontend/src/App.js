@@ -20,7 +20,7 @@ import ListAids from "pages/employee/ListAids";
 import EmployeesRequests from "pages/commite/EmployeesRequests";
 import SingleDemandLoan from "pages/SingleDemandLoan";
 import SingleDemandAid from "pages/SingleDemandAid";
-import Popup from "components/Popup";
+import tresaurierDashboard from "pages/commite/tresaurierDashboard";
 function App() {
   return (
     <main className="h-screen w-full">
@@ -51,6 +51,7 @@ function App() {
               <Route path="" element={<InitialDashboard />} />
               <Route path="demande-pret" element={<Loan key={2} />} />
               <Route path="demande-pret/:lDId" element={<Loan key={1} />} />
+              <Route path="tresaurier" element={<tresaurierDashboard />} />
 
               <Route path="demande-aide-financiere" element={<FinancialAid key={2} />} />
               <Route path="demande-aide-financiere/:aDId" element={< FinancialAid key={1} />} />

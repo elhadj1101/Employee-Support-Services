@@ -269,9 +269,9 @@ class UpdateRequestView(APIView):
                             {"error":"you don't have permission to delete this loan"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
-                    if loan.loan_status not in  ["draft", "waiting"]:
+                    if loan.loan_status not in  ["draft"]:
                         return Response(
-                            {"error":"this loan is not draft or waiting"}, status=status.HTTP_403_FORBIDDEN
+                            {"error":"this loan is not draft"}, status=status.HTTP_403_FORBIDDEN
                         )
                     loan.delete()
                     return Response({"success":"loan deleted succesfully"})
@@ -282,9 +282,9 @@ class UpdateRequestView(APIView):
                             {"error":"you don't have permission to delete this financial-aid"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
-                    if financial_aid.financial_aid_status not in  ["draft", "waiting"]:
+                    if financial_aid.financial_aid_status not in  ["draft"]:
                         return Response(
-                            {"error":"this financial-aid is not draft or waiting"},
+                            {"error":"this financial-aid is not draft"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
                     financial_aid.delete()
@@ -323,13 +323,9 @@ class UpdateRequestView(APIView):
                 # handling old files
                 # old files will be considered as string containing the paths for the old files
                 # this path we have in the database will be checked if it is contained in this string (old_files)
-                old_files = (
-                    request.data["old_files"] if "old_files" in request.data else []
-                )
+                old_files = request.data.getlist("old_files[]",[])
                 loan_documents = Document.objects.filter(loan=pk)
-                
                 documents_paths = loan_documents.values_list("document_file", flat=True) if loan_documents else []
-
 
                 for document_path in documents_paths:
                     if document_path not in old_files:
@@ -385,7 +381,7 @@ class UpdateRequestView(APIView):
                 
 
                 old_files = (
-                    request.data.getlist("old_files", [])
+                    request.data.getlist("old_files[]", [])
                 )
                 financial_aid_documents = Document.objects.filter(financial_aid=pk )
                 

@@ -28,7 +28,7 @@ function Navbar({}) {
           </>
         ) : (
           <>
-            <div className="text-baseText text-lg font-bold flex justify-between w-full items-center">
+            {/* <div className="text-baseText text-lg font-bold flex justify-between w-full items-center">
               <>
                 {location.pathname
                   .replace("/", "")
@@ -40,12 +40,15 @@ function Navbar({}) {
                   )
                   .join(" > ")}
               </>
-              <div className="flex items-center gap-6">
-                <img src="./icons/notifications.svg" alt="" />
-                <button onClick={logout}>
-                  <FiLogOut className="text-2xl" />
-                </button>
-              </div>
+            </div> */}
+            <h1 className="text-lg font-bold">
+              Salut, {user && user.first_name + " " + user.last_name}
+            </h1>
+            <div className="flex items-center gap-6">
+              <img src="./icons/notifications.svg" alt="" />
+              <button onClick={logout}>
+                <FiLogOut className="text-2xl" />
+              </button>
             </div>
           </>
         )}

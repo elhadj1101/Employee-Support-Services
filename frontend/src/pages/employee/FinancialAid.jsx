@@ -104,7 +104,7 @@ function FinancialAid() {
     });
     oldFiles.forEach((of) => {
       console.log(of);
-      formData.append("old_files", of.url.replace("/documents/", ""));
+      formData.append("old_files[]", of.url.replace("/documents/", ""));
     });
     if (!crrntAid || aidDraftId == false) {
       Axios.post(endpoint + isDraft, formData, {

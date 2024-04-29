@@ -115,13 +115,17 @@ const LoginForm = () => {
         >
           Se connecte
         </div>
-        <div className="register flex mx-auto ">
-          Vous n’avez pas de compte ?
-          <span>
-            {" "}
-            <Link to={"/signup"}>activer votre compte</Link>
-          </span>{" "}
-        </div>
+        <div className="  sm:flex sm:justify-center ">
+
+<div className="flex justify-center sm:flex sm:justify-center  ">
+Vous n’avez pas de compte ?
+
+</div>
+<span className="  text-blue-700 underline flex justify-center sm:flex sm:justify-center">
+{" "}
+<Link to={"/signup"}>activer votre compte</Link>
+</span>{" "}
+</div>
       </form>
     </div>
   );

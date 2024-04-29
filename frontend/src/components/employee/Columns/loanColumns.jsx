@@ -214,7 +214,7 @@ export const loanColumns = (colsToHide = [], hideDelete = false) => {
                   text={"Modifier le broullion"}
                 />
               )}
-              {["draft", "waiting"].includes(row.original.loan_status) &&
+              {["draft"].includes(row.original.loan_status) &&
                 !hideDelete && (
                   <Dialog>
                     <DialogTrigger style={{ width: "100%" }}>
