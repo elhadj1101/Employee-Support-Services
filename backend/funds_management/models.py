@@ -1,4 +1,6 @@
 from django.db import models
+from datetime import date
+
 from requests.serializers import Loan, Financial_aid
 type_choices = [
     ('expense','expense'),
@@ -21,6 +23,6 @@ class Commity(models.Model):
     current_balance = models.DecimalField(max_digits=1000, default=0,decimal_places=4)
     current_year_expenses = models.DecimalField(max_digits=1000, default=0,decimal_places=4)
     current_year_income = models.DecimalField(max_digits=1000, default=0,decimal_places=4)
-
+    current_year = models.IntegerField(default=date.today().year)
     def __str__(self) -> str:
         return self.name 

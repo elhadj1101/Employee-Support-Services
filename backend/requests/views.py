@@ -474,6 +474,8 @@ class UpdateRequestStatusView(APIView):
                 )
             obj.loan_status = updated_status
             obj.save()
+            # now to update the total yearly expenses
+        
             return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
         
         else:
