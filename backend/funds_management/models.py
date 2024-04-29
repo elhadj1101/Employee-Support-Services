@@ -20,9 +20,9 @@ class Record(models.Model):
 
 class Commity(models.Model):
     name = models.CharField(max_length=50)
-    current_balance = models.DecimalField(max_digits=1000, default=0,decimal_places=4)
-    current_year_expenses = models.DecimalField(max_digits=1000, default=0,decimal_places=4)
-    current_year_income = models.DecimalField(max_digits=1000, default=0,decimal_places=4)
+    current_balance = models.DecimalField(max_digits=1000, default=0,decimal_places=2)
+    current_year_expenses = models.DecimalField(max_digits=1000, default=0,decimal_places=2)
+    current_year_income = models.DecimalField(max_digits=1000, default=0,decimal_places=2)
     current_year = models.IntegerField(default=date.today().year)
     def __str__(self) -> str:
         return self.name 

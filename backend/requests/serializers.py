@@ -11,7 +11,7 @@ class FileSerializer (serializers.ModelSerializer):
 
 
 class LoanSerializer(serializers.ModelSerializer):
-    amount = serializers.DecimalField()
+    amount = serializers.DecimalField(max_digits=50, decimal_places=2)
     loan_period = serializers.IntegerField(
         min_value=1,
         max_value=12,
