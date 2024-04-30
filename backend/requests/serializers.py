@@ -11,7 +11,7 @@ class FileSerializer (serializers.ModelSerializer):
 
 
 class LoanSerializer(serializers.ModelSerializer):
-    loan_amount = serializers.FloatField()
+    amount = serializers.DecimalField(max_digits=50, decimal_places=2)
     loan_period = serializers.IntegerField(
         min_value=1,
         max_value=12,
@@ -22,7 +22,7 @@ class LoanSerializer(serializers.ModelSerializer):
         model = Loan
         fields = [
             'id',
-            "loan_amount",
+            "amount",
             "employee",
             "documents", 
             "request_created_at",
@@ -44,6 +44,7 @@ class FinancialaidSerializer(serializers.ModelSerializer):
             "request_created_at",
             "financial_aid_type",
             "documents",
+            "amount",
             "family_member",
             "financial_aid_status",
             "request_response_at"

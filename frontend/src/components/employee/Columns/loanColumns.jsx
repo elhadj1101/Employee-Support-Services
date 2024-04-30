@@ -158,11 +158,11 @@ export const loanColumns = (colsToHide = [], hideDelete = false) => {
       },
     },
     {
-      accessorKey: "loan_amount",
+      accessorKey: "amount",
       header: () => <div className="text-center">Montant par mois</div>,
       cell: ({ row }) => (
         <div className="text-center font-medium">
-          {row.getValue("loan_amount")}DA
+          {row.getValue("amount")}DA
         </div>
       ),
     },

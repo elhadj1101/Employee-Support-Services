@@ -1,32 +1,33 @@
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
-
-from .models import Record
-from .serializers import RecordSerializer
-from .permissions import IsTreasurer
+from .models import Record, Commity
+from .serializers import RecordSerializer, CommitySerializer
+from .permissions import IsTreasurer, CanViewCommity
 # Create your views here.
 
-class CreateRecord(generics.ListCreateAPIView):
+class RecordView(generics.ListCreateAPIView):
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
-    permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated,IsTreasurer]
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated,IsTreasurer]
 
-class ModifyRecord(generics.UpdateAPIView):
-    queryset = Record.objects.all()
+class SingleRecordView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RecordSerializer
-    permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated,IsTreasurer]
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated,IsTreasurer]
+    def get_queryset(self):
+        return Record.objects.filter(pk=self.kwargs['pk'])
 
-class ListRecord(generics.ListAPIView):
-    queryset = Record.objects.all()
-    serializer_class = RecordSerializer
-    # permission_classes = [IsAuthenticated,IsTreasurer]
+class CommityView(generics.ListCreateAPIView):
+    queryset = Commity.objects.all()
+    serializer_class = CommitySerializer
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated,CanViewCommity]
 
-class DeleteRecord(generics.RetrieveDestroyAPIView):
-    queryset = Record.objects.all()
-    serializer_class = RecordSerializer
-    permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated,IsTreasurer]   
+class SingleCommityView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = CommitySerializer
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated,CanViewCommity]
+    def get_queryset(self):
+        return Commity.objects.filter(pk=self.kwargs['pk'])
+

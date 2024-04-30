@@ -57,7 +57,7 @@ const Loan = () => {
         })
       : [];
     setOldFiles(oldF);
-    setMontant(!crrntLoan ? intmaxPayMois : crrntLoan?.loan_amount);
+    setMontant(!crrntLoan ? intmaxPayMois : crrntLoan?.amount);
     setDuration(!crrntLoan ? 12 : crrntLoan?.loan_period);
     setMotif(!crrntLoan ? "" : crrntLoan?.loan_motivation);
     setPayment_method(!crrntLoan ? "ccp" : crrntLoan?.payment_method);
@@ -154,7 +154,7 @@ const Loan = () => {
         ? "/requests/loans/?draft="
         : `/requests/loans/${loanDraftId}?draft=`;
     const formData = new FormData();
-    formData.append("loan_amount", parseFloat(Montant));
+    formData.append("amount", parseFloat(Montant));
     formData.append("loan_period", Duration);
     formData.append("loan_motivation", motif);
     formData.append("payment_method", payment_method);
