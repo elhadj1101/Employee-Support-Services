@@ -512,15 +512,10 @@ class UpdateRequestStatusView(APIView):
                 )
             obj.loan_status = updated_status
             obj.save()
-<<<<<<< HEAD
-            return Response(
-                {"success": "status updated successfully"}, status=status.HTTP_200_OK
-            )
 
-=======
             # now to update the total yearly expenses
             currnt_commity = Commity.objects.get(pk=1)
-            if (currnt_commity.current_year == date.today().year):
+            if currnt_commity.current_year == date.today().year:
                 currnt_commity.current_year_expenses += obj.amount
                 currnt_commity.current_balance -= obj.amount
                 currnt_commity.save()
@@ -529,9 +524,10 @@ class UpdateRequestStatusView(APIView):
                 currnt_commity.current_year_expenses = obj.amount
                 currnt_commity.current_balance -= obj.amount
                 currnt_commity.save()
-            return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
-        
->>>>>>> refs/remotes/origin/main
+            return Response(
+                {"success": "status updated successfully"}, status=status.HTTP_200_OK
+            )
+
         else:
             return Response(
                 {"error": "status can't be updated"}, status=status.HTTP_400_BAD_REQUEST
