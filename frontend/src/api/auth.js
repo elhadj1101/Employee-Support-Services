@@ -10,6 +10,7 @@ const roles = {
   "": "Admin",
 };
 const canViewRequests = Object.keys(roles).filter((e) => !["tresorier", "employe", ""].includes(e))
+
 const getUsers = async () => {
   try {
     const response = await Axios.get("/users/");
