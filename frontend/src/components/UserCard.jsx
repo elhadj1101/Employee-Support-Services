@@ -22,7 +22,7 @@ export default function UserCard({ user }) {
     admin: "text-gray-900 bg-gray-100",
   };
   return (
-    <div className="lg:max-w-[35%] xl:max-w-[30%] w-full  h-fit bg-white p-4 rounded-lg ">
+    <div className=" shadoww lg:max-w-[35%] xl:max-w-[30%] w-full  h-fit bg-white p-4 rounded-lg ">
       <div className="flex  justify-between items-center">
         <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
           employé details

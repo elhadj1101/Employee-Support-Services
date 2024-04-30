@@ -13,3 +13,8 @@
   background-size: cover;
 
 }
+.shadoww{
+  box-shadow: 0 2px 18px rgba(0, 0, 0, .02);
+  border: .0625rem solid rgba(46, 54, 80, .125);
+  border-color: #eaedf2;
+}

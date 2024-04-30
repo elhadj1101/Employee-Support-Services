@@ -12,6 +12,7 @@ from .permissions import (
     IsVicePresident,
     IsTresorier,
 )
+from funds_management.models import Commity
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .utils import calculate_max_loan
@@ -38,8 +39,8 @@ class LoanView(APIView):
             max = calculate_max_loan(
                 request.user.salary, int(request.data["loan_period"])
             )
-            loan_amount = float(request.data["loan_amount"])
-            if max < loan_amount:
+            amount = float(request.data["amount"])
+            if max < amount:
                 return Response(
                     {"error": "maximumn loan amount {} ".format(max)},
                     status=status.HTTP_400_BAD_REQUEST,
@@ -511,10 +512,26 @@ class UpdateRequestStatusView(APIView):
                 )
             obj.loan_status = updated_status
             obj.save()
+<<<<<<< HEAD
             return Response(
                 {"success": "status updated successfully"}, status=status.HTTP_200_OK
             )
 
+=======
+            # now to update the total yearly expenses
+            currnt_commity = Commity.objects.get(pk=1)
+            if (currnt_commity.current_year == date.today().year):
+                currnt_commity.current_year_expenses += obj.amount
+                currnt_commity.current_balance -= obj.amount
+                currnt_commity.save()
+            else:
+                currnt_commity.current_year = date.today().year
+                currnt_commity.current_year_expenses = obj.amount
+                currnt_commity.current_balance -= obj.amount
+                currnt_commity.save()
+            return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
+        
+>>>>>>> refs/remotes/origin/main
         else:
             return Response(
                 {"error": "status can't be updated"}, status=status.HTTP_400_BAD_REQUEST
