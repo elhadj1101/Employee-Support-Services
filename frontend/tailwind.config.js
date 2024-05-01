@@ -20,8 +20,9 @@ module.exports = {
         "lightgray":"#f4f7fA",
         "gray-bg":"#fafafa",
         "light-blue" :'#4763E4',
-        "darkblue":"#0E1B6B"
-        
+        "darkblue":"#0E1B6B",
+        "light-blue-50": "rgba(192, 202, 248, 0.5)",
+        "darkblue-50": "rgba(14, 27, 107, 0.5)"
       },
       keyframes: {
         "accordion-down": {

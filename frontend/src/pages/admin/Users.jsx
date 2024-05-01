@@ -6,7 +6,7 @@ import { toast } from "sonner";
 export default function Users() {
   return (
     <div className="w-full flex-grow flex flex-col h-full  bg-lightgray">
-      <div className="px-6 py-4 flex flex-col flex-grow ">
+      <div className="px-6 py-4 flex flex-col flex-grow">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl lg:text-3xl text-black font-bold">
             Listes des utilisateurs
