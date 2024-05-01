@@ -230,7 +230,8 @@ const getAllAids = async () => {
   } catch (error) {
     if (error.response){
       if (error.response.data){
-        toast.error(error.response.data.detail);
+        console.log(error.response.data);
+        // toast.error(error.response.data.detail);
 
       }
       

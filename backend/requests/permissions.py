@@ -44,10 +44,11 @@ class CanViewRequests(permissions.BasePermission):
     message = {'errors': 'you don\'t have permission to view requests'}
     def has_permission(self, request, view):
         if request.method == "GET":
+            
             perm = (
-                request.user
+                (request.user
                 and request.user.is_authenticated
-                and request.user.role in CAN_VIEW_REQUESTS
+                and request.user.role in CAN_VIEW_REQUESTS)
             )
             return perm
         return super().has_permission(request, view)

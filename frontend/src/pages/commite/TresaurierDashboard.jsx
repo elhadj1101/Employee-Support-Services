@@ -3,8 +3,8 @@ import { FaCashRegister } from "react-icons/fa";
 import { MdOutlineAttachMoney } from "react-icons/md";
 import { MdMoneyOffCsred } from "react-icons/md";
 import useStore from "store/index.js";
-import { GiPayMoney  , GiReceiveMoney  } from "react-icons/gi";
-import {GoPlus} from 'react-icons/go'
+import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
+import { GoPlus } from "react-icons/go";
 import {
   Dialog,
   DialogContent,
@@ -17,13 +17,14 @@ import {
 } from "../../components/ui/dialog";
 import RecordsTable from "components/tresorier/RecordsTable";
 import { recordsColumns } from "components/tresorier/RecordsColumns";
+import BarChart from "components/tresorier/TresorierCharts";
 function TresaurierDashboard() {
   const recordCol = recordsColumns([], true) || [];
   const { Records } = useStore();
   console.log("recoreds", Records);
   return (
-    <div className="mt-10">
-      <div className="flex  gap-6">
+    <div className="mt-6">
+      <div className="flex gap-6">
         <Card
           title="Budget"
           price={2500}
@@ -40,6 +41,7 @@ function TresaurierDashboard() {
           ReactIcon={<MdMoneyOffCsred size={40} />}
         />
       </div>
+      <BarChart />
 
       <div className=" w-full flex flex-grow flex-wrap lg:flex-nowrap gap-6   ">
         <div className="shadoww w-full lg:max-w-[66%]  h-fit bg-white p-4 rounded-lg">
@@ -60,14 +62,13 @@ function TresaurierDashboard() {
                     <div className="p-3">
                       <div className="flex items-center justify-between gap-3 ">
                         <div className=" cursor-pointer flex items-center gap-3 px-5 py-[14.1px] w-1/2 rounded-lg border border-[#5b5b5b] hover:border-light-blue hover:bg-[#ccd5fa] text-[#262b40] transition-all">
-                          <GiPayMoney size='30' className="mt-3" />
+                          <GiPayMoney size="30" className="mt-3" />
                           <p className="text-lg">Revenue</p>
                         </div>
                         <div className=" cursor-pointer flex items-center gap-3 p-5 w-1/2 rounded-lg border border-[#5b5b5b] hover:border-light-blue hover:bg-[#ccd5fa] text-[#262b40] transition-all">
-                          <GiReceiveMoney size='30' className="" />
+                          <GiReceiveMoney size="30" className="" />
                           <p className="text-lg">Income</p>
                         </div>
-     
                       </div>
                     </div>
                   </DialogDescription>
