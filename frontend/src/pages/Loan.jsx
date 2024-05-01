@@ -234,14 +234,17 @@ const Loan = () => {
           : "Modification d'un brouillon (N°:" + loanDraftId + ")"}
       </h1>
       <div>
-        <div className=" max-w-xs mx-auto sm:flex sm:justify-between sm:mx-6 sm:space-x-3 sm:max-w-full    ">
+        <div className="  max-w-sm mx-auto sm:flex sm:justify-between sm:mx-6 sm:space-x-3 sm:max-w-full    ">
           <Card
-            title="Montant max prét (12 mois)"
+            title="Montant max prét"
+            sub='(12 mois)'
             price={maxLoan}
             icon="/icons/loan.png"
           />
           <Card
-            title="Max paiment/mois (12 mois)"
+            title="Max paiment/mois"
+            sub='(12 mois)'
+
             price={maxPayMois}
             icon="/icons/timeloan.png"
           />

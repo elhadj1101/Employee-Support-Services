@@ -1,9 +1,8 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import  Loan , Financial_aid , Document
-from .serializers import LoanSerializer , FileSerializer  , FinancialaidSerializer
-from rest_framework.parsers import MultiPartParser , FormParser
+from .models import Loan, Financial_aid, Document
+from .serializers import LoanSerializer, FinancialaidSerializer
 from rest_framework import status
 from .permissions import (
     IsLoanApplier,
@@ -24,17 +23,18 @@ from datetime import date
 # Create your views here.
 
 
-
 # LoanView endpoint to create a loan with post request ,
 # or verify if you can apply to the loan with get request
 
 # IsLoanApplier is a permission class to verify if the user has the right to apply for a loan
 # for further information check permissions.py
 
+
 class LoanView(APIView):
-    permission_classes = [IsAuthenticated , IsLoanApplier]
-    def post(self , request ):
-        serializer = LoanSerializer(data = request.data)
+    permission_classes = [IsAuthenticated, IsLoanApplier]
+
+    def post(self, request):
+        serializer = LoanSerializer(data=request.data)
         if serializer.is_valid():
             max = calculate_max_loan(
                 request.user.salary, int(request.data["loan_period"])
@@ -72,7 +72,8 @@ class LoanView(APIView):
             files = request.FILES.getlist("files[]", [])
             if not files and loan_status == "waiting":
                 return Response(
-                    {"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST
+                    {"error": "you must upload files"},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             created_instance = serializer.save(
@@ -115,14 +116,13 @@ class LoanCheckView(APIView):
 # This endpoint displays the loan history to see all the previous loans the employee has applied for.
 class LoanHistoryView(APIView):
     permission_classes = [IsAuthenticated]
-    def get(self,request):
-        loans = Loan.objects.filter(employee = request.user)
-        serializer = LoanSerializer(loans , many = True)
+
+    def get(self, request):
+        loans = Loan.objects.filter(employee=request.user)
+        serializer = LoanSerializer(loans, many=True)
         if loans:
             return Response(serializer.data)
-        return Response('you don\'t have any loans')
-
-    
+        return Response("you don't have any loans")
 
 
 # This view will be used for uploading files in the financial aid functionnality
@@ -259,7 +259,7 @@ class FinancialaidCheckView(APIView):
 
 class UpdateRequestView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def delete(self, request, request_type, pk):
         if request_type in ["loans", "financial-aids"]:
             match request_type:
@@ -267,35 +267,37 @@ class UpdateRequestView(APIView):
                     loan = get_object_or_404(Loan, pk=pk)
                     if loan.employee != request.user:
                         return Response(
-                            {"error":"you don't have permission to delete this loan"},
+                            {"error": "you don't have permission to delete this loan"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
-                    if loan.loan_status not in  ["draft"]:
+                    if loan.loan_status not in ["draft"]:
                         return Response(
-                            {"error":"this loan is not draft"}, status=status.HTTP_403_FORBIDDEN
+                            {"error": "this loan is not draft"},
+                            status=status.HTTP_403_FORBIDDEN,
                         )
                     loan.delete()
-                    return Response({"success":"loan deleted succesfully"})
+                    return Response({"success": "loan deleted succesfully"})
                 case "financial-aids":
                     financial_aid = get_object_or_404(Financial_aid, pk=pk)
                     if financial_aid.employee != request.user:
                         return Response(
-                            {"error":"you don't have permission to delete this financial-aid"},
+                            {
+                                "error": "you don't have permission to delete this financial-aid"
+                            },
                             status=status.HTTP_403_FORBIDDEN,
                         )
-                    if financial_aid.financial_aid_status not in  ["draft"]:
+                    if financial_aid.financial_aid_status not in ["draft"]:
                         return Response(
-                            {"error":"this financial-aid is not draft"},
+                            {"error": "this financial-aid is not draft"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
                     financial_aid.delete()
-                    return Response({"success":"financial aid deleted succesfully"})
+                    return Response({"success": "financial aid deleted succesfully"})
 
         else:
             return Response(
-                {"error":"page not found"}, status=status.HTTP_404_NOTpage_FOUND
+                {"error": "page not found"}, status=status.HTTP_404_NOTpage_FOUND
             )
-
 
     def patch(self, request, request_type, pk):
         # check if the url contains loan or financial-aid
@@ -314,7 +316,7 @@ class UpdateRequestView(APIView):
                 )
             # update the loan object
             if request_type == "loans":
-                loan = get_object_or_404(Loan, pk=pk , employee = request.user)
+                loan = get_object_or_404(Loan, pk=pk, employee=request.user)
                 # only draft records can be updated
                 if loan.loan_status != "draft":
                     return Response(
@@ -324,9 +326,13 @@ class UpdateRequestView(APIView):
                 # handling old files
                 # old files will be considered as string containing the paths for the old files
                 # this path we have in the database will be checked if it is contained in this string (old_files)
-                old_files = request.data.getlist("old_files[]",[])
+                old_files = request.data.getlist("old_files[]", [])
                 loan_documents = Document.objects.filter(loan=pk)
-                documents_paths = loan_documents.values_list("document_file", flat=True) if loan_documents else []
+                documents_paths = (
+                    loan_documents.values_list("document_file", flat=True)
+                    if loan_documents
+                    else []
+                )
 
                 for document_path in documents_paths:
                     if document_path not in old_files:
@@ -344,21 +350,29 @@ class UpdateRequestView(APIView):
                             loan=loan,
                         )
                         d.save()
-                
-                if not new_files and not  Document.objects.filter(loan=pk) and aid_status == 'waiting':
+
+                if (
+                    not new_files
+                    and not Document.objects.filter(loan=pk)
+                    and aid_status == "waiting"
+                ):
                     return Response(
-                        {"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST
+                        {"error": "you must upload files"},
+                        status=status.HTTP_400_BAD_REQUEST,
                     )
 
-                
                 serializer = LoanSerializer(loan, data=request.data, partial=True)
                 serializer.is_valid(raise_exception=True)
-                serializer.save(loan_status=aid_status , request_created_at = request_created_at)
+                serializer.save(
+                    loan_status=aid_status, request_created_at=request_created_at
+                )
                 return Response("loan updated succesfully")
 
             # update the financial-aid object
             elif request_type == "financial-aids":
-                financial_aid = get_object_or_404(Financial_aid, pk=pk , employee = request.user)
+                financial_aid = get_object_or_404(
+                    Financial_aid, pk=pk, employee=request.user
+                )
                 # only draft records can be updated
                 if financial_aid.financial_aid_status != "draft":
                     return Response(
@@ -379,14 +393,15 @@ class UpdateRequestView(APIView):
                         "you can't change family member",
                         status=status.HTTP_403_FORBIDDEN,
                     )
-                
 
-                old_files = (
-                    request.data.getlist("old_files[]", [])
+                old_files = request.data.getlist("old_files[]", [])
+                financial_aid_documents = Document.objects.filter(financial_aid=pk)
+
+                documents_paths = (
+                    financial_aid_documents.values_list("document_file", flat=True)
+                    if financial_aid_documents
+                    else []
                 )
-                financial_aid_documents = Document.objects.filter(financial_aid=pk )
-                
-                documents_paths = financial_aid_documents.values_list("document_file", flat=True) if financial_aid_documents else []
                 for document_path in documents_paths:
                     if document_path not in old_files:
                         Document.objects.filter(document_file=document_path).delete()
@@ -403,19 +418,26 @@ class UpdateRequestView(APIView):
                             loan=None,
                         )
                         d.save()
-                if not new_files and not  Document.objects.filter(financial_aid=pk ) and aid_status == 'waiting':
+                if (
+                    not new_files
+                    and not Document.objects.filter(financial_aid=pk)
+                    and aid_status == "waiting"
+                ):
                     return Response(
-                        {"error":"you must upload files"}, status=status.HTTP_400_BAD_REQUEST
+                        {"error": "you must upload files"},
+                        status=status.HTTP_400_BAD_REQUEST,
                     )
-
 
                 serializer = FinancialaidSerializer(
                     financial_aid, data=request.data, partial=True
                 )
                 serializer.is_valid(raise_exception=True)
-                serializer.save(financial_aid_status=aid_status , request_created_at = request_created_at)
+                serializer.save(
+                    financial_aid_status=aid_status,
+                    request_created_at=request_created_at,
+                )
                 return Response("financial aid updated succesfully")
-            else :
+            else:
                 return Response(
                     {"error": "page not found"}, status=status.HTTP_404_NOT_FOUND
                 )
@@ -425,9 +447,11 @@ class UpdateRequestView(APIView):
             )
 
 
-
 class UpdateRequestStatusView(APIView):
-    permission_classes = [IsAuthenticated , (IsTresorier | IsPresident | IsVicePresident)]
+    permission_classes = [
+        IsAuthenticated,
+        (IsTresorier | IsPresident | IsVicePresident),
+    ]
 
     def patch(self, request, request_type, pk):
 
@@ -447,15 +471,22 @@ class UpdateRequestStatusView(APIView):
         obj = get_object_or_404(model_class, pk=pk)
         updated_status = request.data["new_status"]
 
-        valid_new_status = ("approved", "refused" )
+        valid_new_status = ("approved", "refused")
         old_status = (
             obj.loan_status if model_class == Loan else obj.financial_aid_status
         )
-        valid_old_status = ("approved", "refused" , "waiting")
-        if old_status in valid_old_status and updated_status in valid_new_status and old_status != updated_status:
-            # I had an error using request.user.has_perm function 
+        valid_old_status = ("approved", "refused", "waiting")
+        if (
+            old_status in valid_old_status
+            and updated_status in valid_new_status
+            and old_status != updated_status
+        ):
+            # I had an error using request.user.has_perm function
             # so I remove it
-            if  not request.user.role == 'president' and not request.user.role =='vice_president':
+            if (
+                not request.user.role == "president"
+                and not request.user.role == "vice_president"
+            ):
                 return Response(
                     {"error": "you don't have required permission"},
                     status=status.HTTP_403_FORBIDDEN,
@@ -466,18 +497,25 @@ class UpdateRequestStatusView(APIView):
                 obj.financial_aid_status = updated_status
             obj.request_response_at = date.today()
             obj.save()
-            return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
-        elif old_status == "approved" and updated_status == 'finished'and model_class == Loan:
-            if  not request.user.role == 'tresorier':
+            return Response(
+                {"success": "status updated successfully"}, status=status.HTTP_200_OK
+            )
+        elif (
+            old_status == "approved"
+            and updated_status == "finished"
+            and model_class == Loan
+        ):
+            if not request.user.role == "tresorier":
                 return Response(
                     {"error": "you don't have required permission"},
                     status=status.HTTP_403_FORBIDDEN,
                 )
             obj.loan_status = updated_status
             obj.save()
+
             # now to update the total yearly expenses
             currnt_commity = Commity.objects.get(pk=1)
-            if (currnt_commity.current_year == date.today().year):
+            if currnt_commity.current_year == date.today().year:
                 currnt_commity.current_year_expenses += obj.amount
                 currnt_commity.current_balance -= obj.amount
                 currnt_commity.save()
@@ -486,8 +524,10 @@ class UpdateRequestStatusView(APIView):
                 currnt_commity.current_year_expenses = obj.amount
                 currnt_commity.current_balance -= obj.amount
                 currnt_commity.save()
-            return Response({"success":"status updated successfully"}, status=status.HTTP_200_OK)
-        
+            return Response(
+                {"success": "status updated successfully"}, status=status.HTTP_200_OK
+            )
+
         else:
             return Response(
                 {"error": "status can't be updated"}, status=status.HTTP_400_BAD_REQUEST

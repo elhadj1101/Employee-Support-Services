@@ -137,7 +137,7 @@ export default function SingleDemandLoan({ employee }) {
      
         <div className="w-full">
           
-          <div className=" shadoww lg:min-w-[60%] xl:min-w-[65%] h-fit bg-white p-4 rounded-lg ">
+          <div className=" shadoww lg:min-w-[60%] xl:min-w-[65%] h-fit bg-white p-4 rounded-lg">
             <h1 className="pb-2  text-xl text-light-blue font-bold capitalize">
               Aperçu
             </h1>
