@@ -7,7 +7,7 @@ class RecordSerializer(serializers.ModelSerializer):
     financial_aid = FinancialaidSerializer(read_only=True)
     class Meta :
         model = Record
-        fields = ['type','amount','financial_aid','loan','motif','created_at']
+        fields = ['id','type','amount','financial_aid','loan','motif','created_at']
         extra_kwargs = {"created_at": {"read_only": True}}
 
 

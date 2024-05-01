@@ -5,7 +5,7 @@ function Navbar({}) {
   const { user, logout } = useStore();
   const location = useLocation();
   return (
-    <div className="z-50 h-[60px] sticky top-0 w-full bg-[white]   py-4 px-6">
+    <div className=" h-[60px]  w-full bg-[white]   py-4 px-6">
       <div className=" justify-between h-full items-center w-full flex gap-x-5 pr-3">
         {user && user.is_superuser ? (
           <>

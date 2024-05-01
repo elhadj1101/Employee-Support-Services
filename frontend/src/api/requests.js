@@ -323,7 +323,6 @@ const deleteAid = async (id) => {
 
 }
 
-
 const updateStatus = async (id, type, newStatus) => {
   try {
     const response = await Axios.patch(`/requests/commite/${type}/${id}`, {new_status: newStatus});

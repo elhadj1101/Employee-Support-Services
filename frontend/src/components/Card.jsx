@@ -8,13 +8,13 @@ const Card = ({ title, price, isEligable,icon , sub , ReactIcon  }) => {
         src={icon}
         alt="case"
       /> :
-      <div className="mr-5">{ReactIcon}</div>
+      <div className="mr-10">{ReactIcon}</div>
      
       }
       <div className=" h-full py-6 flex-col justify-start items-start ">
-        <h3 className="text-lg md:text-xl font-semibold  text-[#262b40] capitalize ">{title} <span className="text-sm text-gray-600">{sub}</span></h3>
+        <h3 className="text-lg md:text-2xl font-semibold  text-[#262b40] capitalize ">{title} <span className="text-sm text-gray-600">{sub}</span></h3>
         {price && (
-          <h3 className=" text-xl md:text-3xl font-bold text-[#262b40] mt-3">{price} DA</h3>
+          <h3 className=" text-xl md:text-2xl font-bold text-[#262b40] mt-3">{price} DA</h3>
         )}
         {isEligable && !price ? (
           <h2 className="  text-2xl font-bold  mt-3 text-green-600 ">OUI</h2>

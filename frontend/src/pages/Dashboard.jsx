@@ -12,6 +12,7 @@ import {
   getAllLoans,
   canApplyForLoan,
 } from "../api/requests.js";
+import { getRecords } from "api/records";
 
 function Dashboard() {
     const [open, setOpen] = useState(false);
@@ -44,6 +45,9 @@ function Dashboard() {
     setLoans,
     setFetchedLoans,
     fetchedLoans,
+    setFetchedRecords,
+    setRecords,
+    fetchedRecords
   } = useStore();
   React.useEffect(() => {
     async function fetchUsers() {
@@ -87,7 +91,16 @@ function Dashboard() {
       setAllLoans(dat);
       setFetchedAllLoans(true);
     }
+
+    async function fetchRecords() {
+      const dat = await getRecords();
+      console.log("fetched records");
+      setRecords(dat);
+      setFetchedRecords(true);
+    }
+
     if (user && user.is_superuser && !fetchedAdminUsers) fetchUsers();
+    if (user && user.role === 'tresorier' && !fetchedRecords) fetchRecords();
     if (!fetchedOffres ) fetchOffres();
     if (!fetchedLoans ) fetchLoans();
     if (!fetchedAids ) fetchAids();
@@ -99,7 +112,7 @@ function Dashboard() {
 
   }, []);
   return (
-    <div className="h-screen  ">
+    <div className="">
       <div
         className={`   ${
           open ? "z-[99] fixed top-0 -translate-x-full" : " hidden  lg:block "
@@ -108,7 +121,7 @@ function Dashboard() {
         <Sidebar />
       </div>
       <div className=" lg:ml-[235px] flex flex-col h-screen   ">
-        <div className=" flex items-center cursor-pointer pl-3    ">
+        <div className=" flex items-center sticky top-0 w-full z-30   ">
           <img
             className=" h-7 w-7 lg:hidden  "
             src="/icons/menu.png"
@@ -117,7 +130,7 @@ function Dashboard() {
           />
           <Navbar />
         </div>
-        <div onClick={hideSidebar} className="h-full  overflow-auto">
+        <div onClick={hideSidebar} className="">
           <Outlet />
         </div>
       </div>
