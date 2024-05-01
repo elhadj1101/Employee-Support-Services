@@ -51,6 +51,7 @@ I hope this email finds you well. I am writing to inform you that the meeting ti
 
 Previous Date and Time: {instance.cached_day} {instance.cached_start_time}-{instance.cached_end_time}
 New Date and Time: {instance.day} {instance.start_time}-{instance.end_time}
+
                         """
             send_mail(
                 subject,
