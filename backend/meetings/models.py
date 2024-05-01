@@ -49,9 +49,8 @@ Dear Committee Members,
 
 I hope this email finds you well. I am writing to inform you that the meeting time for {instance.day} has been changed. Please find the updated details below:
 
-Previous Date and Time: {instance.cached_day} {instance.cached_start_time}-{instance.cached_end_time}
-New Date and Time: {instance.day} {instance.start_time}-{instance.end_time}
-
+Previous Date and Time: {instance.cached_day} {instance.cached_start_time} to {instance.cached_end_time}
+New Date and Time: {instance.day} {instance.start_time} to {instance.end_time}
                         """
             send_mail(
                 subject,
