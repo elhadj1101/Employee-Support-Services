@@ -139,5 +139,3 @@ Best regards,
             fail_silently=False,
         )
         instance.cached_plain_pass = ""
-        print(f"this is cached {instance.cached_plain_pass}")
-        print(f"this is hashed {instance.password}")
