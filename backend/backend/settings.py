@@ -189,3 +189,13 @@ MEDIA_ROOT = BASE_DIR / "documents"
 
 CAN_PUBLISH_OFFRE = ["president", "vice_president"]
 CAN_VIEW_REQUESTS = ["president", "vice_president", "membre"]
+
+
+# email configurations
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "django.tester.1cp@gmail.com"
+EMAIL_HOST_PASSWORD = "ttnjivaioczytcpw "
