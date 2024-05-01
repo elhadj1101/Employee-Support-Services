@@ -20,7 +20,7 @@ import ListAids from "pages/employee/ListAids";
 import EmployeesRequests from "pages/commite/EmployeesRequests";
 import SingleDemandLoan from "pages/SingleDemandLoan";
 import SingleDemandAid from "pages/SingleDemandAid";
-import tresaurierDashboard from "pages/commite/tresaurierDashboard";
+import tresaurierDashboard from "pages/commite/TresaurierDashboard";
 function App() {
   return (
     <main className="h-screen w-full">

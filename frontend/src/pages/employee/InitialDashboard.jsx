@@ -11,9 +11,10 @@ import { Button } from "components/ui/button";
 import ServiceCard from "components/employee/ServiceCard";
 import useStore from "../../store/index.js";
 import RequestsTable from "components/employee/requestsTable/RequetsTable";
+import TresaurierDashboard from "pages/commite/TresaurierDashboard";
 import { loanColumns } from "components/employee/Columns/loanColumns";
 function InitialDashboard() {
-  const { offres, loans } = useStore();
+  const { offres, loans , user } = useStore();
   const cols = loanColumns(["employee"]) || [];
   return (
     <div className=" bg-gray-bg py-2 h-full">
@@ -70,7 +71,7 @@ function InitialDashboard() {
       )}
 
       {/* Loan and financial aid cards */}
-      <div className=" mx-6 my-4 flex gap-5 flex-wrap lg:flex-nowrap">
+     {user && user.role !=='tresorier' ? <div className=" mx-6 my-4 flex gap-5 flex-wrap lg:flex-nowrap">
         <ServiceCard
           classes="basis-full lg:basis-[50%]"
           icon={
@@ -97,14 +98,8 @@ function InitialDashboard() {
           linkTo="/demande-aide-financiere"
         />
       </div>
-
-      {/* Loan table */}
-      <div className="mx-6 mt-6 font-semibold text-lg ">
-        Liste des demandes de prets
-      </div>
-      <div className=" mx-6 flex gap-5 flex-wrap lg:flex-nowrap">
-        <RequestsTable data={loans} columns={cols} showFilter={false} />
-      </div>
+      :<TresaurierDashboard />
+}
     </div>
   );
 }
