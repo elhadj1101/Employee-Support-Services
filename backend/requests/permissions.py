@@ -50,6 +50,7 @@ class CanViewRequests(permissions.BasePermission):
                 and request.user.is_authenticated
                 and request.user.role in CAN_VIEW_REQUESTS)
             )
+            print(request.user.role)
             return perm
         return super().has_permission(request, view)
 

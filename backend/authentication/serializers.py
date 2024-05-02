@@ -121,6 +121,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"retired_at": "Retired_at must be provided"}
             )
+        else:
+            data["retired_at"] = None
         return data
 
     def create(self, validated_data):
