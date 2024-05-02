@@ -6,6 +6,7 @@ from django.core.validators import FileExtensionValidator
 from django.dispatch import receiver
 from django.core.mail import send_mail
 from backend.settings import EMAIL_HOST_USER
+from authentication.models import Employee
 
 # Create your models here.
 extention_validator = FileExtensionValidator(["pdf", "jpg", "png"])
@@ -52,10 +53,17 @@ I hope this email finds you well. I am writing to inform you that the meeting ti
 Previous Date and Time: {instance.cached_day} {instance.cached_start_time} to {instance.cached_end_time}
 New Date and Time: {instance.day} {instance.start_time} to {instance.end_time}
                         """
+            committe_roles = ["president", "vice_president", "tresorier", "membre"]
+            committe_emails = Employee.objects.filter(
+                role__in=committe_roles
+            ).values_list("email", flat=True)
+            committe_emails = list(committe_emails)
+            print(committe_emails)
             send_mail(
                 subject,
                 message,
                 EMAIL_HOST_USER,
+                # committe_emails,
                 [
                     "pj0pj0pj000@gmail.com"
                     # Because we don't have real committe emails , I used this email to check ,
