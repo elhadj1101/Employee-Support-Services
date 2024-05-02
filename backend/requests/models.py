@@ -113,27 +113,41 @@ post_delete.connect(file_cleanup, sender=Document, dispatch_uid="document.file_c
 
 
 @receiver(post_save, sender=Loan)
-def post_save(sender, instance, created, **kwargs):
+def post_save_loan(sender, instance, created, **kwargs):
     # only update instance
     if not created:
         if (
             instance.cached_status != instance.loan_status
             and instance.cached_status == "draft"
         ):
-            instance.cached_status = instance.status
+            instance.cached_status = instance.loan_status
         else:
+            emp = Employee.objects.get(pk=instance.employee)
             subject = "Loan status update"
-            message = """
+            message = f"""
+Dear {emp.first_name},
 
+We hope this email finds you well.
+
+We wanted to inform you that there has been a change in the status of your loan. Below are the details of the change:
+
+Previous Status: {instance.cached_status}
+New Status: {instance.loan_status}
+
+If you have any questions or need further clarification regarding this change, please don't hesitate to reach out to us.
+
+Thank you for your attention to this matter.
+
+Best regards,
 """
-            employee_email = Employee.objects.get(pk=instance.employee)
+            employee_email = emp.email
             print(employee_email)
             send_mail(
                 subject,
                 message,
                 EMAIL_HOST_USER,
-                # employee_email ,
                 [
+                    # employee_email ,
                     "pj0pj0pj000@gmail.com"
                     # Because we don't have real committe emails , I used this email to check ,
                     # you can add your email here to check
@@ -143,7 +157,7 @@ def post_save(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Financial_aid)
-def post_save(sender, instance, created, **kwargs):
+def post_save_financial_aid(sender, instance, created, **kwargs):
     # only update instance
     if not created:
         if (
@@ -152,18 +166,31 @@ def post_save(sender, instance, created, **kwargs):
         ):
             instance.cached_status = instance.status
         else:
+            emp = Employee.objects.get(pk=instance.employee)
             subject = "Financial aid status update"
-            message = """
+            message = f"""
+Dear {emp.first_name},
 
+We hope this email finds you well.
+
+We wanted to inform you that there has been a change in the status of your loan. Below are the details of the change:
+
+Previous Status: {instance.cached_status}
+New Status: {instance.financial_aid_status}
+
+If you have any questions or need further clarification regarding this change, please don't hesitate to reach out to us.
+
+Thank you for your attention to this matter.
+
+Best regards,
 """
-            employee_email = Employee.objects.get(pk=instance.employee)
+            employee_email = emp.email
             print(employee_email)
             send_mail(
                 subject,
                 message,
                 EMAIL_HOST_USER,
-                # employee_email ,
-                [
+                [  # employee_email ,
                     "pj0pj0pj000@gmail.com"
                     # Because we don't have real committe emails , I used this email to check ,
                     # you can add your email here to check
