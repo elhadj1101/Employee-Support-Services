@@ -11,6 +11,7 @@ class MeetingSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate(self, attrs):
+
         start_time = attrs["start_time"]
         end_time = attrs["end_time"]
         if start_time > end_time:
@@ -32,11 +33,15 @@ class MeetingSerializer(serializers.ModelSerializer):
         same_day_meetings = Meeting.objects.filter(day=meeting_day)
         overlaped_meetings = same_day_meetings.filter(
             # using Q object to check for all extreme possibilities inside one single filter
-            Q(start_time__gte=start_time, start_time__lte=end_time)
-            | Q(end_time__gte=start_time, end_time__lte=end_time)
+            Q(start_time__gte=start_time, start_time__lt=end_time)
+            | Q(end_time__gt=start_time, end_time__lte=end_time)
             | Q(start_time__lte=start_time, end_time__gte=end_time)
         )
 
+        instance = getattr(self, "instance", None)
+        if instance:
+            overlaped_meetings = overlaped_meetings.exclude(pk=instance.pk)
+            print(overlaped_meetings)
         if overlaped_meetings:
             raise serializers.ValidationError(
                 "Meeting time overlaps with and an existing meeting"
