@@ -71,7 +71,7 @@ function InitialDashboard() {
 
       {/* Loan and financial aid cards */}
       {user && user.role !== "tresorier" ? (
-        <div className="  flex gap-5 flex-wrap lg:flex-nowrap">
+        <div className=" mt-6 flex gap-5 flex-wrap lg:flex-nowrap">
           <ServiceCard
             classes="basis-full lg:basis-[50%]"
             icon={

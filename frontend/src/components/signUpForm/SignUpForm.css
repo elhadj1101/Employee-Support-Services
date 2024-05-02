@@ -35,16 +35,17 @@
   padding-bottom: 7px;
 }
 
+.input {
+  padding: 0px 10px;
+  height: 45px;
+}
 input {
-  background: transparent;
+    background: transparent;
   border: 1px solid gainsboro;
   outline: none;
-  height: 45px;
   border-radius: 9px;
-  padding: 0px 10px;
   font-size: 15px;
 }
-
 .inscri {
 
   justify-content: center;

@@ -18,6 +18,8 @@ import {
 import RecordsTable from "components/tresorier/RecordsTable";
 import { recordsColumns } from "components/tresorier/RecordsColumns";
 import BarChart from "components/tresorier/TresorierCharts";
+
+
 function TresaurierDashboard() {
   const recordCol = recordsColumns([], true) || [];
   const { Records } = useStore();

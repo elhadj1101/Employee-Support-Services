@@ -122,10 +122,9 @@ def post_save_loan(sender, instance, created, **kwargs):
         ):
             instance.cached_status = instance.loan_status
         else:
-            emp = Employee.objects.get(pk=instance.employee)
             subject = "Loan status update"
             message = f"""
-Dear {emp.first_name},
+Dear {instance.employee.first_name},
 
 We hope this email finds you well.
 
@@ -140,8 +139,7 @@ Thank you for your attention to this matter.
 
 Best regards,
 """
-            employee_email = emp.email
-            print(employee_email)
+            print(instance.employee.email)
             send_mail(
                 subject,
                 message,
@@ -166,10 +164,10 @@ def post_save_financial_aid(sender, instance, created, **kwargs):
         ):
             instance.cached_status = instance.status
         else:
-            emp = Employee.objects.get(pk=instance.employee)
+            
             subject = "Financial aid status update"
             message = f"""
-Dear {emp.first_name},
+Dear {instance.employee.first_name},
 
 We hope this email finds you well.
 
@@ -184,8 +182,8 @@ Thank you for your attention to this matter.
 
 Best regards,
 """
-            employee_email = emp.email
-            print(employee_email)
+            
+            print(instance.employee.email)
             send_mail(
                 subject,
                 message,

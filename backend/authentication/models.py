@@ -99,7 +99,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["is_admin", "is_created", "birth_day"]
 
     def __str__(self) -> str:
-        self.cached_plain_pass
+        # self.cached_plain_pass
         return self.first_name + " " + self.last_name
 
 
