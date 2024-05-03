@@ -303,7 +303,7 @@ const Loan = () => {
           </label>
           <input
             name="montant"
-            className="   w-full   "
+            className=" p-3  w-full   "
             value={Montant}
             type="number"
             onChange={handleChange}
@@ -317,7 +317,7 @@ const Loan = () => {
                 Durée de remboursement souhaitée (en mois [1-12])
               </label>
               <input
-                className="  w-full  mt-2 "
+                className=" p-3 w-full  mt-2 "
                 name="duration"
                 value={Duration}
                 type="number"
@@ -355,7 +355,7 @@ const Loan = () => {
             Vérifier
           </button>
           {showModal && (
-            <div className="absolute min-h-full h-max inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-75 shadow-2xl">
+            <div className="absolute min-h-full h-[110vh] inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-75 shadow-2xl">
               <Popup
               requiredFiles={requiredFiles}
                 handleClose={handleClose}

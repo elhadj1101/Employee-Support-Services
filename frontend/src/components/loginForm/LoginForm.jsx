@@ -82,7 +82,7 @@ const LoginForm = () => {
           Address e-mail
         </label>
         <input
-          className="  w-full   sm:flex sm:mx-auto sm:w-96  "
+          className="  w-full  input sm:flex sm:mx-auto sm:w-96  "
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -96,7 +96,7 @@ const LoginForm = () => {
           Mot de passe
         </label>
         <input
-          className=" w-full  sm:flex sm:mx-auto sm:min-w-full"
+          className=" w-full input sm:flex sm:mx-auto sm:min-w-full"
           type="password"
           value={pass}
           onChange={(e) => setPass(e.target.value)}

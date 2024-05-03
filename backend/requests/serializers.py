@@ -25,13 +25,24 @@ class LoanSerializer(serializers.ModelSerializer):
             "amount",
             "employee",
             "documents", 
+            "paid_amount",
             "request_created_at",
             "loan_motivation",
             "payment_method",
             "loan_period",
             "loan_status",
         ]
-        extra_kwargs = {"loan_status": {"read_only": True} ,"employee": {"read_only": True}, "documents": {"read_only": True}}
+        extra_kwargs = {"loan_status": {"read_only": True} ,"employee": {"read_only": True},"paid_amount": {"read_only": True}, "documents": {"read_only": True}}
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        if (
+            data.get("paid_amount", 0) != 0 
+            and data.get("loan_status", None) != "approved"
+        ):
+            raise serializers.ValidationError(
+                "you can't pay an unapproved loan broo ?!"
+            )
+        return data
 
 
 class FinancialaidSerializer(serializers.ModelSerializer):

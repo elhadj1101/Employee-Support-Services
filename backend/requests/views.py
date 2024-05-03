@@ -53,7 +53,7 @@ class LoanView(APIView):
             else:
 
                 return Response(
-                    {"error": "Invalid query param value"},
+                    {"error": "Invalid query param draft value"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 

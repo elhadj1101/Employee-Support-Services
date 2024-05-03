@@ -1,19 +1,48 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.views import APIView
 from .models import Record, Commity
 from datetime import date
-from .serializers import RecordSerializer, CommitySerializer, RecordAnaliticsSerializer
+from rest_framework import status
+from .serializers import RecordSerializer, CommitySerializer, RecordAnaliticsSerializer, RecordViewSerializer
 from .permissions import IsTreasurer, CanViewCommity
 from django.core.exceptions import ValidationError
 from django.db.models import Sum, Count, Q
+
+
 # Create your views here.
 class RecordView(generics.ListCreateAPIView):
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
     # permission_classes = [AllowAny]
     permission_classes = [IsAuthenticated,IsTreasurer]
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = RecordViewSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = RecordViewSerializer(queryset, many=True)
+        return Response(serializer.data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # alter loan paid_amount if the record is income and have loan
+        if serializer.validated_data.get('type') == "income" and serializer.validated_data.get('loan', None) is not None:
+            loan = serializer.validated_data.get('loan')
+            if loan.loan_status != "approved":
+                raise ValidationError("you can't pay an unapproved loan broo ?!")
+            if loan.paid_amount + serializer.validated_data.get('amount') > loan.amount:
+                raise ValidationError("you can't pay more than the loan amount")
+            loan.paid_amount += serializer.validated_data.get('amount')
+            loan.save()
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class SingleRecordView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RecordSerializer
