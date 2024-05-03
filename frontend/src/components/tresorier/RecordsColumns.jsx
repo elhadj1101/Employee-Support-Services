@@ -90,7 +90,6 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
       accessorKey: "id",
       header: () => <div className="text-center">ID-Demande</div>,
       cell: ({ row }) => {
-        console.log('row' , row);
         return (
           <div className="text-center font-medium">{row.getValue("id")}</div>
         );
@@ -112,7 +111,7 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
       header: () => <div className="text-center">Montant</div>,
       cell: ({ row }) => (
         <div className="text-center font-medium flex items-center justify-center gap-1">
-          {row.getValue("type") === "expense" ? (
+          {row?.getValue("type") === "expense" ? (
             <IoArrowUpSharp size="20" color="red" className="rotate-180" />
           ) : (
             <IoArrowUpSharp size="20" color="green" />

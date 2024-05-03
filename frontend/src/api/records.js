@@ -10,4 +10,12 @@ const getRecords = async () => {
   }
 };
 
- export  {getRecords}
+const addRecord = async (record) => {
+  try {
+    const response = await Axios.post("funds/" , {...record});
+    return response.data ;
+  } catch (error) {
+    console.log(error);
+  }
+};
+ export  {getRecords , addRecord}
