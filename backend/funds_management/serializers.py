@@ -31,7 +31,9 @@ class CommitySerializer(serializers.ModelSerializer):
     
 class RecordAnaliticsSerializer(serializers.Serializer):
 
-    created_at = serializers.DateField()
+    created_at = serializers.DateField(required=False)
+    created_at__year = serializers.IntegerField(required=False )
+    created_at__month =serializers.IntegerField(required=False )
     total_expense=serializers.DecimalField(max_digits=40,decimal_places=2)
     total_income=serializers.DecimalField(max_digits=40,decimal_places=2)
     total_records=serializers.IntegerField()

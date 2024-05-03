@@ -10,15 +10,16 @@ import Autoplay from "embla-carousel-autoplay";
 import { Button } from "components/ui/button";
 import ServiceCard from "components/employee/ServiceCard";
 import useStore from "../../store/index.js";
-import RequestsTable from "components/employee/requestsTable/RequetsTable";
 import TresaurierDashboard from "pages/commite/TresaurierDashboard";
 import { loanColumns } from "components/employee/Columns/loanColumns";
+
+
 function InitialDashboard() {
-  const { offres, loans , user } = useStore();
+  const { offres, loans, user } = useStore();
   const cols = loanColumns(["employee"]) || [];
   return (
     <div className="px-6 py-4  w-full flex-grow  bg-lightgray  ">
-        {offres.length === 0 ? (
+      {offres.length === 0 ? (
         <div className="p-2 text-center">
           Il y a pas des offres pour le moments
         </div>
@@ -69,39 +70,39 @@ function InitialDashboard() {
       )}
 
       {/* Loan and financial aid cards */}
-     {user && user.role !=='tresorier' ? <div className="  flex gap-5 flex-wrap lg:flex-nowrap">
-        <ServiceCard
-          classes="basis-full lg:basis-[50%]"
-          icon={
-            <img
-              className="w-[90px] md:w-[130px]"
-              alt=""
-              src="/assets/loan-icon.png"
-            />
-          }
-          linkTo="/demande-pret"
-        />
-        <ServiceCard
-          classes="basis-full lg:basis-[50%]"
-          title="Demander une aide financière"
-          description="Demander une aide financière, pour les raisons suivantes : décès d'un proche, mariage, naissance, décès du l’employé."
-          icon={
-            <img
-              className="w-[90px] md:w-[130px]"
-              src="/assets/financial-aid.png"
-              alt=""
-            />
-          }
-          btnText="Prend votre Aide"
-          linkTo="/demande-aide-financiere"
-        />
-      </div>
-      :<TresaurierDashboard />
-}
-    
-      {/* <div className=" mx-6 mb-4  text-2xl font-bold">Dernieres Offres</div> */}
+      {user && user.role !== "tresorier" ? (
+        <div className=" mt-6 flex gap-5 flex-wrap lg:flex-nowrap">
+          <ServiceCard
+            classes="basis-full lg:basis-[50%]"
+            icon={
+              <img
+                className="w-[90px] md:w-[130px]"
+                alt=""
+                src="/assets/loan-icon.png"
+              />
+            }
+            linkTo="/demande-pret"
+          />
+          <ServiceCard
+            classes="basis-full lg:basis-[50%]"
+            title="Demander une aide financière"
+            description="Demander une aide financière, pour les raisons suivantes : décès d'un proche, mariage, naissance, décès du l’employé."
+            icon={
+              <img
+                className="w-[90px] md:w-[130px]"
+                src="/assets/financial-aid.png"
+                alt=""
+              />
+            }
+            btnText="Prend votre Aide"
+            linkTo="/demande-aide-financiere"
+          />
+        </div>
+      ) : (
+        <TresaurierDashboard />
+      )}
 
-   
+      {/* <div className=" mx-6 mb-4  text-2xl font-bold">Dernieres Offres</div> */}
     </div>
   );
 }

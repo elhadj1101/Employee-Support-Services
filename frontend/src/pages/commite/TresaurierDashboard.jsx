@@ -17,6 +17,9 @@ import {
 } from "../../components/ui/dialog";
 import RecordsTable from "components/tresorier/RecordsTable";
 import { recordsColumns } from "components/tresorier/RecordsColumns";
+import BarChart from "components/tresorier/TresorierCharts";
+
+
 import { ComboBox } from "components/tresorier/comboBox";
 import { Input } from "components/ui/input";
 import { useState } from "react";
@@ -101,8 +104,8 @@ function TresaurierDashboard() {
     }
   };
   return (
-    <div className="mt-10">
-      <div className="flex  gap-6">
+    <div className="mt-6">
+      <div className="flex gap-6">
         <Card
           title="Budget"
           price={2500}
@@ -119,6 +122,7 @@ function TresaurierDashboard() {
           ReactIcon={<MdMoneyOffCsred size={40} />}
         />
       </div>
+      <BarChart />
 
       <div className=" w-full flex flex-grow flex-wrap lg:flex-nowrap gap-6   ">
         <div className="shadoww w-full lg:max-w-[66%]  h-fit bg-white p-4 rounded-lg">

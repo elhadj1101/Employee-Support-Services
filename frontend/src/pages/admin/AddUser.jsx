@@ -18,8 +18,8 @@ export default function AddUser() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("formCleared") !== "true") {
-      localStorage.setItem("formCleared", "true");
+    if (sessionStorage.getItem("formCleared") !== "true") {
+      sessionStorage.setItem("formCleared", "true");
       window.location.reload();
     }
   }, []);
@@ -99,7 +99,7 @@ export default function AddUser() {
         break;
     }
 
-    localStorage.setItem(`form/${name}`, formattedValue);
+    sessionStorage.setItem(`form/${name}`, formattedValue);
     const prev = { ...AddUserData, [name]: formattedValue };
     setAddUserData(prev);
   };
@@ -166,12 +166,15 @@ export default function AddUser() {
       newErrors.id_number =
         "Le numéro d'identification doit comporter exactement 18 caractères.";
     }
-    console.log('form' ,formData.retired ,formData.retired_at);
+    
 
     // retired and retired_at
     if(formData.retired && formData.retired_at ===''){
       newErrors.retired_at  =
       "date de Retirement est requis.";
+    }
+    if (formData.retired_at === "" && !formData.retired) {
+      formData.retired_at = null
     }
     Object.keys(formData).forEach((key) => {
       if (newErrors.key) delete newErrors.key;
@@ -183,13 +186,14 @@ export default function AddUser() {
       ) {
         newErrors[key] = `${key.replace("_", " ")} est requis.`;
       }
+
+     
     });
 
-    console.log('form data' , formData);
+
     // Check if any errors occurred
     if (Object.keys(newErrors).length !== 0) {
       setNewErrors(newErrors);
-      console.log("errors", newErrors); 
       return;
     }
 
@@ -204,29 +208,29 @@ export default function AddUser() {
         rip: "00799999" + AddUserData?.rip.replace(/ /g, ""),
         salary: AddUserData?.salary.replace(/,/g, ""),
       });
-      console.log(newUser);
+      
       if (newUser.status === 201) {
         toast.success("Utilisateur créé avec succès");
-        Object.keys(localStorage).forEach((key) => {
+        Object.keys(sessionStorage).forEach((key) => {
           if (key.startsWith("form/")) {
-            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
           }
         });
-        localStorage.setItem("formCleared", "true");
+        sessionStorage.setItem("formCleared", "true");
 
         try {
           const updatedUsers = await getUsers();
-          console.log("u", updatedUsers);
+          
           if (updatedUsers) {
             setAdminUsers(updatedUsers);
             navigate("/utilisateurs");
           }
         } catch (err) {
-          console.log(err);
+          
         }
       }
     } catch (error) {
-      console.log("errror", error);
+      
       if (error.response) {
         if (error.status === 400) {
           for (const key in error.data) {
@@ -256,9 +260,9 @@ export default function AddUser() {
             </div>
             <div
               onClick={() => {
-                Object.keys(localStorage).forEach((key) => {
+                Object.keys(sessionStorage).forEach((key) => {
                   if (key.startsWith("form/")) {
-                    localStorage.removeItem(key);
+                    sessionStorage.removeItem(key);
                   }
                 });
               }}
@@ -444,7 +448,7 @@ export default function AddUser() {
                 <Select
                   name="role"
                   onValueChange={(value) => {
-                    localStorage.setItem(`form/role`, value);
+                    sessionStorage.setItem(`form/role`, value);
 
                     const prev = { ...AddUserData, ["role"]: value };
                     setAddUserData(prev);
@@ -601,7 +605,7 @@ export default function AddUser() {
                   value={AddUserData?.sexe}
                   name="sexe"
                   onValueChange={(value) => {
-                    localStorage.setItem(`form/sexe`, value);
+                    sessionStorage.setItem(`form/sexe`, value);
 
                     const prev = { ...AddUserData, ["sexe"]: value };
                     setAddUserData(prev);
@@ -626,7 +630,7 @@ export default function AddUser() {
                 <Select
                   value={AddUserData?.martial_situation}
                   onValueChange={(value) => {
-                    localStorage.setItem(`form/martial_situation`, value);
+                    sessionStorage.setItem(`form/martial_situation`, value);
                     const prev = {
                       ...AddUserData,
                       ["martial_situation"]: value,
@@ -703,9 +707,9 @@ export default function AddUser() {
               </div>
               <div
                 onClick={() => {
-                  Object.keys(localStorage).forEach((key) => {
+                  Object.keys(sessionStorage).forEach((key) => {
                     if (key.startsWith("form/")) {
-                      localStorage.removeItem(key);
+                      sessionStorage.removeItem(key);
                     }
                   });
                 }}

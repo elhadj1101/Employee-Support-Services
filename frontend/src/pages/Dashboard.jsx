@@ -16,7 +16,7 @@ import { getRecords } from "api/records";
 
 function Dashboard() {
     const [open, setOpen] = useState(false);
-
+  const  usersDontSee = ["employe", "tresorier"];
     const toggleSidebar = () => {
       setOpen(!open);
     };
@@ -104,8 +104,8 @@ function Dashboard() {
     if (!fetchedOffres ) fetchOffres();
     if (!fetchedLoans ) fetchLoans();
     if (!fetchedAids ) fetchAids();
-    if (!fetchedAllAids && user && user.role !== "employe") fetchAllAids();
-    if (!fetchedAllLoans && user && user.role !== "employe") fetchAllLoans();
+    if (!fetchedAllAids && user && !usersDontSee.includes(user.role)) fetchAllAids();
+    if (!fetchedAllLoans && user && !usersDontSee.includes(user.role)) fetchAllLoans();
 
     //&& user && !user.is_superuser
 

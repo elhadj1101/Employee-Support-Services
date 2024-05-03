@@ -1,8 +1,13 @@
+from typing import Any
 from django.db import models
 from authentication.models import Employee
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from backend.utils import file_cleanup, get_path
 
+from django.dispatch import receiver
+from django.core.mail import send_mail
+from backend.settings import EMAIL_HOST_USER
+from authentication.models import Employee
 
 # Create your models here.
 
@@ -29,6 +34,10 @@ class Loan(models.Model):
     request_response_at = models.DateField(null=True, blank=True)
     loan_period = models.IntegerField(null=False)
     loan_status = models.CharField(choices=status_options, max_length=30, null=False)
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.cached_status = self.loan_status
 
 
 # Financial_aid
@@ -70,7 +79,13 @@ class Financial_aid(models.Model):
         max_length=50, choices=financial_aid_status_options
     )
     request_response_at = models.DateField(null=True, blank=True)
-    amount = models.DecimalField(max_digits=50, decimal_places=2, null=True, blank=True, default=0)
+    amount = models.DecimalField(
+        max_digits=50, decimal_places=2, null=True, blank=True, default=0
+    )
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.cached_status = self.financial_aid_status
 
 
 # Document
@@ -95,3 +110,88 @@ class Document(models.Model):
 
 
 post_delete.connect(file_cleanup, sender=Document, dispatch_uid="document.file_cleanup")
+
+
+@receiver(post_save, sender=Loan)
+def post_save_loan(sender, instance, created, **kwargs):
+    # only update instance
+    if not created:
+        if (
+            instance.cached_status != instance.loan_status
+            and instance.cached_status == "draft"
+        ):
+            instance.cached_status = instance.loan_status
+        else:
+            subject = "Loan status update"
+            message = f"""
+Dear {instance.employee.first_name},
+
+We hope this email finds you well.
+
+We wanted to inform you that there has been a change in the status of your loan. Below are the details of the change:
+
+Previous Status: {instance.cached_status}
+New Status: {instance.loan_status}
+
+If you have any questions or need further clarification regarding this change, please don't hesitate to reach out to us.
+
+Thank you for your attention to this matter.
+
+Best regards,
+"""
+            print(instance.employee.email)
+            send_mail(
+                subject,
+                message,
+                EMAIL_HOST_USER,
+                [
+                    # employee_email ,
+                    "pj0pj0pj000@gmail.com"
+                    # Because we don't have real committe emails , I used this email to check ,
+                    # you can add your email here to check
+                ],
+                fail_silently=False,
+            )
+
+
+@receiver(post_save, sender=Financial_aid)
+def post_save_financial_aid(sender, instance, created, **kwargs):
+    # only update instance
+    if not created:
+        if (
+            instance.cached_status != instance.financial_aid_status
+            and instance.cached_status == "draft"
+        ):
+            instance.cached_status = instance.status
+        else:
+            
+            subject = "Financial aid status update"
+            message = f"""
+Dear {instance.employee.first_name},
+
+We hope this email finds you well.
+
+We wanted to inform you that there has been a change in the status of your loan. Below are the details of the change:
+
+Previous Status: {instance.cached_status}
+New Status: {instance.financial_aid_status}
+
+If you have any questions or need further clarification regarding this change, please don't hesitate to reach out to us.
+
+Thank you for your attention to this matter.
+
+Best regards,
+"""
+            
+            print(instance.employee.email)
+            send_mail(
+                subject,
+                message,
+                EMAIL_HOST_USER,
+                [  # employee_email ,
+                    "pj0pj0pj000@gmail.com"
+                    # Because we don't have real committe emails , I used this email to check ,
+                    # you can add your email here to check
+                ],
+                fail_silently=False,
+            )
