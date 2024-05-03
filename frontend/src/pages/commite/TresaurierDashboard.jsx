@@ -18,7 +18,9 @@ import {
 import RecordsTable from "components/tresorier/RecordsTable";
 import { recordsColumns } from "components/tresorier/RecordsColumns";
 import BarChart from "components/tresorier/TresorierCharts";
+import { IoEye } from "react-icons/io5";
 
+import { FaMoneyBillTransfer } from "react-icons/fa6";
 
 import { ComboBox } from "components/tresorier/comboBox";
 import { Input } from "components/ui/input";
@@ -39,8 +41,7 @@ function TresaurierDashboard() {
         conection: null,
         id: "",
       });
-      setDemmandeSelecter({})
-
+      setDemmandeSelecter({});
     } else {
       setOpen(true);
     }
@@ -55,8 +56,9 @@ function TresaurierDashboard() {
   const [demmandeSelecter, setDemmandeSelecter] = useState({});
   const [error, setError] = useState(false);
   const { Records, allLoans, allAids } = useStore();
+  console.log(allLoans , allAids);
   const handleSubmit = async (e) => {
-    e.preventDefault();  
+    e.preventDefault();
     if (newRecord.type === "expense") {
       if (!newRecord.conection) {
         setError(true);
@@ -65,7 +67,7 @@ function TresaurierDashboard() {
           type: newRecord.type,
           amount: newRecord.amount,
           motif: newRecord.motif,
-          [newRecord.conection]: newRecord.id
+          [newRecord.conection]: newRecord.id,
         });
         HandleOpen();
         setDemmandeSelecter({});
@@ -73,18 +75,18 @@ function TresaurierDashboard() {
     } else {
       // type=income
       if (newRecord.amount !== 0) {
-        const res =  addRecord({
+        const res = addRecord({
           type: newRecord.type,
           amount: newRecord.amount,
           motif: newRecord.motif,
-          ...(newRecord.conection && { [newRecord.conection]: newRecord.id })
+          ...(newRecord.conection && { [newRecord.conection]: newRecord.id }),
         });
         HandleOpen();
         setDemmandeSelecter({});
       }
     }
   };
-  
+
   const handleComboBox = (currentValue, demmande, conection) => {
     if (Number(currentValue.split(" ")[0].slice(1)) === demmandeSelecter.id) {
       setDemmandeSelecter({});
@@ -109,7 +111,7 @@ function TresaurierDashboard() {
         <Card
           title="Budget"
           price={2500}
-          ReactIcon={<FaCashRegister size={40} />}
+          ReactIcon={<FaCashRegister size={40} color="" />}
         />
         <Card
           title="Revenue"
@@ -124,11 +126,11 @@ function TresaurierDashboard() {
       </div>
       <BarChart />
 
-      <div className=" w-full flex flex-grow flex-wrap lg:flex-nowrap gap-6   ">
-        <div className="shadoww w-full lg:max-w-[66%]  h-fit bg-white p-4 rounded-lg">
+      <div className=" w-full  flex flex-grow flex-wrap h-full lg:flex-nowrap gap-6   ">
+        <div className="shadoww  w-full lg:max-w-[66%] flex-grow bg-white p-4 rounded-lg">
           <div className="flex justify-between items-center">
             <h1 className=" pt-2 text-[#262b40] text-xl font-bold capitalize">
-              Tout les records
+              Tout les enregistrements
             </h1>
             <Dialog open={open} onOpenChange={HandleOpen}>
               <DialogTrigger>
@@ -138,7 +140,7 @@ function TresaurierDashboard() {
               </DialogTrigger>
               <DialogContent className=" ">
                 <DialogHeader>
-                  <DialogTitle>Ajouter nouveau record </DialogTitle>
+                  <DialogTitle>Ajouter un nouveau enregistrement </DialogTitle>
                   <DialogDescription>
                     <div className="p-3">
                       <h2 className="pb-2">Type</h2>
@@ -182,7 +184,7 @@ function TresaurierDashboard() {
                       {newRecord.type === "expense" ? (
                         <div className="flex flex-col">
                           <h2 className="mt-5">
-                            selecter corespondant au record
+                          Sélectionner la demande correspondant à l'enregistrement.
                             <span className="text-red-600 ml-1">*</span>{" "}
                           </h2>
                           <ComboBox
@@ -198,7 +200,7 @@ function TresaurierDashboard() {
                             </p>
                           )}
 
-                          <h2 className="mt-5 mb-2 opacity-50">Amount</h2>
+                          <h2 className="mt-5 mb-2 opacity-50">Montant</h2>
                           <Input
                             type="number"
                             placeholder="100000"
@@ -223,11 +225,10 @@ function TresaurierDashboard() {
                         ""
                       )}
 
-
                       {newRecord.type === "income" ? (
                         <div className="flex flex-col">
                           <h2 className="mt-5">
-                            selecter corespondant au record
+                          Sélectionner la demande correspondant à l'enregistrement.
                           </h2>
                           <ComboBox
                             loans={allLoans}
@@ -237,23 +238,35 @@ function TresaurierDashboard() {
                             error={error}
                           />
                           <h2 className="mt-5 mb-2 ">
-                            Amount
+                          Montant
                             <span className="text-red-600 ml-1">*</span>
-                            <span className="text-xs ml-1">( le mantant must be inferieur than the total mantant de la demmande  {demmandeSelecter.amount})</span>
+                            <span className="text-xs ml-1">
+                              ( Le montant doit être inférieur au total de la demande. {demmandeSelecter.amount})
+                            </span>
                           </h2>
                           <Input
                             type="number"
                             placeholder="100000"
                             value={newRecord?.amount}
-                            onChange={(e) =>{
-                              if(Number( e.target.value)  && Number(demmandeSelecter.amount) >= Number( e.target.value) ){
-                                setNewRecord((prev) => {
-                                  console.log(e.target.value, newRecord.amount);
-                                  return { ...prev, amount: e.target.value };
-                                })
+                            onChange={(e) => {
+                              const price = Number(e.target.value);
+                              if (!isNaN(price)) {
+                                if (
+                                  demmandeSelecter.id &&
+                                  Number(demmandeSelecter.amount) >= price
+                                ) {
+                                  setNewRecord((prev) => ({
+                                    ...prev,
+                                    amount: price,
+                                  }));
+                                } else if (!demmandeSelecter.id) {
+                                  setNewRecord((prev) => ({
+                                    ...prev,
+                                    amount: price,
+                                  }));
+                                }
                               }
-                            } 
-                            }
+                            }}
                             className="placeholder:text-slate-500  "
                           />
 
@@ -290,13 +303,112 @@ function TresaurierDashboard() {
               </DialogContent>
             </Dialog>
           </div>
-
           {Records.length !== 0 && (
-            <RecordsTable data={Records} columns={recordCol} />
+            <div className=" ">
+              <RecordsTable data={Records} columns={recordCol} />
+            </div>
           )}
         </div>
         <div className="shadoww w-full lg:max-w-[32%]  h-fit bg-white p-4 rounded-lg">
-          test
+          <div className="flex justify-between items-center">
+            <h1 className=" pt-2 text-[#262b40] text-xl font-bold capitalize">
+              5 recents demmandes
+            </h1>
+            <div className=" flex items-center gap-2 text-white rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color bg-light-blue border border-light-blue hover:bg-slate-100 hover:text-black hover:border-black">
+              Voir Tout
+            </div>
+          </div>
+          <div className="flex items-center justify-between p-2 my-2">
+            <div className="text-base">
+              <p>ilyes omri mohammed </p>
+              <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                il@gmail.com / type de demmande
+              </p>
+            </div>
+            <div className="flex gap-3 items-center ">
+              <FaMoneyBillTransfer
+                size={20}
+                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+              />
+              <IoEye
+                size={20}
+                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between p-2 my-2">
+            <div className="text-base">
+              <p>ilyes omri mohammed </p>
+              <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                il@gmail.com / type de demmande
+              </p>
+            </div>
+            <div className="flex gap-3 items-center ">
+              <FaMoneyBillTransfer
+                size={20}
+                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+              />
+              <IoEye
+                size={20}
+                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-between p-2 my-2">
+            <div className="text-base">
+              <p>ilyes omri mohammed </p>
+              <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                il@gmail.com / type de demmande
+              </p>
+            </div>
+            <div className="flex gap-3 items-center ">
+              <FaMoneyBillTransfer
+                size={20}
+                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+              />
+              <IoEye
+                size={20}
+                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-between p-2 my-2">
+            <div className="text-base">
+              <p>ilyes omri mohammed </p>
+              <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                il@gmail.com / type de demmande
+              </p>
+            </div>
+            <div className="flex gap-3 items-center ">
+              <FaMoneyBillTransfer
+                size={20}
+                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+              />
+              <IoEye
+                size={20}
+                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-between p-2 my-2">
+            <div className="text-base">
+              <p>ilyes omri mohammed </p>
+              <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                il@gmail.com / type de demmande
+              </p>
+            </div>
+            <div className="flex gap-3 items-center ">
+              <FaMoneyBillTransfer
+                size={20}
+                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+              />
+              <IoEye
+                size={20}
+                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

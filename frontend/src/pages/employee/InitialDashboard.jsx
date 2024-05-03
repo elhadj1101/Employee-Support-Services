@@ -35,8 +35,8 @@ function InitialDashboard() {
             {offres.map((offre) => {
               return (
                 <CarouselItem key={offre.id} className={" h-[230px]"}>
-                  <div className="bg-[#C0CAF8] w-ful h-full  rounded-xl flex flex-wrap md:flex-nowrap justify-between items-center">
-                    <div className="text-darkblue basis-full h-full px-7 py-5 md:basis-3/5 lg:basis-2/3 gap-4 flex flex-col justify-center  ">
+                  <div className="bg-light-blue w-ful h-full  rounded-md flex flex-wrap md:flex-nowrap justify-between items-center">
+                    <div className="text-white basis-full h-full px-7 py-5 md:basis-3/5 lg:basis-2/3 gap-4 flex flex-col justify-center  ">
                       <div className="text-3xl font-bold">
                         {offre.title.toUpperCase()}
                       </div>
@@ -52,9 +52,9 @@ function InitialDashboard() {
                         </Button>
                       </div>
                     </div>
-                    <div className="bg-white basis-full md:basis-2/5 xl:basis-1/3 h-full rounded-r-xl overflow-hidden rounded-br-xl">
+                    <div className="flex items-center justify-center bg-light-blue basis-full md:basis-2/5 xl:basis-1/3 h-full rounded-r-xl overflow-hidden rounded-br-xl">
                       <img
-                        className="w-full h-full object-cover "
+                        className="h-[83%] w-[90%] rounded-md object-cover "
                         src={offre.cover}
                         alt=""
                       />

@@ -68,7 +68,7 @@ export default function RecordsTable({ data = [] ,  columns = recordsColumns}) {
   });
  
   return (
-    <div className="w-full flex flex-col flex-grow bg-white  rounded-lg mt-4">
+    <div className="w-full  flex flex-col  rounded-lg mt-5">
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -120,7 +120,7 @@ export default function RecordsTable({ data = [] ,  columns = recordsColumns}) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex mt-auto items-center justify-end space-x-2 py-4">
+      <div className="flex  mt-auto   items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.

@@ -2,7 +2,7 @@ import React from "react";
 
 const Card = ({ title, price, isEligable,icon , sub , ReactIcon  }) => {
   return (
-    <div className={`shadoww ${ReactIcon ?'min-h-40 px-16 ':'min-h-44 px-5'}  min-w-96  sm:basis-1/3 mb-4 flex items-center justify-start  p-3 bg-white rounded-lg`}>
+    <div className={`shadoww  ${ReactIcon ?'min-h-40 px-16 ':'min-h-44 px-5'}  min-w-96  sm:basis-1/3 mb-4 flex items-center justify-start  p-3 bg-white rounded-lg`}>
       { !ReactIcon ? <img
         className="  mr-5 h-[70px] w-[70px] p-2  "
         src={icon}

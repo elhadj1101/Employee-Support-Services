@@ -10,6 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { IoArrowUpSharp } from "react-icons/io5";
+import { FaExternalLinkAlt } from "react-icons/fa";
+
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
@@ -21,7 +23,7 @@ import {
   DialogClose,
   DialogFooter,
 } from "../ui/dialog";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useStore from "../../store/index";
 import { toast } from "sonner";
 import { deleteLoan, getLoans, canApplyForLoan } from "api/requests";
@@ -85,7 +87,6 @@ import { deleteLoan, getLoans, canApplyForLoan } from "api/requests";
 
 export const recordsColumns = (colsToHide = [], hideDelete = false) => {
   const cols = [
-
     {
       accessorKey: "id",
       header: () => <div className="text-center">ID-Demande</div>,
@@ -124,7 +125,9 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
       accessorKey: "motif",
       header: () => <div className="text-center">Motif</div>,
       cell: ({ row }) => (
-        <div className="text-center font-medium ">{row.getValue("motif").split(' ').slice(0 ,5).join(' ')+' ....'}</div>
+        <div className="text-center font-medium ">
+          {row.getValue("motif").split(" ").slice(0, 5).join(" ") + " ...."}
+        </div>
       ),
     },
     {
@@ -142,24 +145,84 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <Dialog>
                 <DialogTrigger style={{ width: "100%" }}>
                   <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                    Details/Modifier
+                    Details
                   </div>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Details</DialogTitle>
                     <DialogDescription>
-                      {/* {JSON.parse(row.original)} */}
+                      <div className="flex flex-col">
+                        <h2 className="mt-5 text-base">Type</h2>
+                        <span className="text-sm capitalize text-gray-800 font-semibold">
+                          {" "}
+                          {row.original.type}
+                        </span>
+                        <h2 className="mt-5 text-base">
+                          Date de Enregistrement
+                        </h2>
+                        <p className="text-sm capitalize text-gray-800 font-semibold">
+                          {" "}
+                          {row.original.created_at}
+                        </p>
+                        <h2 className="mt-5 text-base flex gap-2 items-center">
+                          la demande correspondant à l'enregistrement.
+                          <Link to="">
+                            {" "}
+                            <FaExternalLinkAlt
+                              size={15}
+                              className=" transition-all  cursor-pointer   hover:text-gray-600 bg-white"
+                            />
+                          </Link>
+                        </h2>
+                        <p className="text-sm capitalize text-gray-800 font-semibold">
+                          #
+                          {row.original.loan?.id ||
+                            row.original.finaincial_aid?.id}{" "}
+                          {row.original.loan?.employee ||
+                            row.original.finaincial_aid?.employee}{" "}
+                          {row.original.loan?.amount ||
+                            row.original.finaincial_aid?.amount}{" "}
+                          da
+                        </p>
+                        <h2 className="mt-5  text-base">Montant</h2>
+                        <p className="text-sm capitalize text-gray-800 font-semibold">
+                          {" "}
+                          {row.original.amount} da
+                        </p>
+                        <h2 className="mt-5  text-base">Motif</h2>
+                        <p className="text-sm capitalize text-gray-800 font-semibold">
+                          {row.original.motif}
+                        </p>
+                      </div>
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
                     {/* <DialogClose>
                           <DeleteButton id={row.original.id} />
                         </DialogClose> */}
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              <Dialog>
+                <DialogTrigger style={{ width: "100%" }}>
+                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                    Annuler
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Annuler</DialogTitle>
+                    <DialogDescription>
+                      Êtes-vous sûr de vouloir annuler cet enregistrement ?
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button id={row.original.id}>Oui</Button>
+                    <Button id={row.original.id}>Non</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

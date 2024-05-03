@@ -150,15 +150,7 @@ export default function SingleDemandLoan({ employee }) {
                   {requestedAid?.amount * requestedAid?.loan_period} DA
                 </p>
               </div>
-              {/* <div className="">
-                <h3 className="font-bold capitalize text-gray-600 ">
-                  montant par Mois
-                </h3>
-                <p className="pl-2 font-semibold text-gray-500">
-                  {" "}
-                  {requestedAid?.amount} DA
-                </p>
-              </div> */}
+
 
               <div>
                 {/* {JSON.stringify(requestedAid)} */}

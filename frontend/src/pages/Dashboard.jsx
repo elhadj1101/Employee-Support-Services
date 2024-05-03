@@ -16,7 +16,7 @@ import { getRecords } from "api/records";
 
 function Dashboard() {
     const [open, setOpen] = useState(false);
-  const  usersDontSee = ["employe", "tresorier"];
+  const  usersDontSee = ["employe"];
     const toggleSidebar = () => {
       setOpen(!open);
     };
