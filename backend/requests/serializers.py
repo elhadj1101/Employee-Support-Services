@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Loan, Document, Financial_aid
-
+from authentication.serializers import PartialEmployeeSerializer
 
 
 class FileSerializer (serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class LoanSerializer(serializers.ModelSerializer):
         max_value=12,
     )
     documents = FileSerializer(many=True, read_only=True)
-    
+    employee = PartialEmployeeSerializer(read_only=True)
     class Meta:
         model = Loan
         fields = [
@@ -36,6 +36,8 @@ class LoanSerializer(serializers.ModelSerializer):
 
 class FinancialaidSerializer(serializers.ModelSerializer):
     documents = FileSerializer(many=True, read_only=True)
+    employee = PartialEmployeeSerializer(read_only=True)
+    
     class Meta:
         model = Financial_aid   
         fields = [

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import RequestsTable from "components/employee/requestsTable/RequetsTable";
+import RequestsTable from "components/employee/requestsTable/RequestsTable";
 import { aidsColumns } from "components/employee/Columns/aidsColumns";
 import useStore from "store/index.js";
 import { getAids } from "api/requests";
@@ -25,11 +25,7 @@ function ListAids() {
       <div className=" mx-6 mb-4  text-2xl font-bold">
         Votre demandes d'aide financiere
       </div>
-      <RequestsTable
-        data={aids}
-        columns={cols}
-        filteredColumn="id"
-      />
+      <RequestsTable data={aids} columns={cols} filteredColumn="id" />
     </div>
   );
 }
