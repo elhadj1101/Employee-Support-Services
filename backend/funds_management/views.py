@@ -40,6 +40,27 @@ class RecordView(generics.ListCreateAPIView):
                 raise ValidationError("you can't pay more than the loan amount")
             loan.paid_amount += serializer.validated_data.get('amount')
             loan.save()
+        # update commity balance
+        commity = Commity.objects.all().first()
+        if serializer.validated_data.get('type') == "expense":
+            commity.current_balance -= serializer.validated_data.get('amount')
+        else:
+            commity.current_balance += serializer.validated_data.get('amount')
+        if date.today().year != commity.current_year:
+            commity.current_year = date.today().year
+            if serializer.validated_data.get('type') == "expense":
+                commity.current_year_expenses = serializer.validated_data.get('amount')
+                commity.current_year_income = 0
+            else:
+                commity.current_year_expenses = 0
+                commity.current_year_income = serializer.validated_data.get('amount')
+        
+        else:
+            if serializer.validated_data.get('type') == "expense":
+                commity.current_year_expenses += serializer.validated_data.get('amount')
+            else:
+                commity.current_year_income += serializer.validated_data.get('amount')
+        commity.save()
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -67,7 +88,8 @@ class SingleCommityView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-class RecordsAnalitics(APIView):
+class GeneralAnalitics(APIView):
+    permission_classes = [IsAuthenticated,IsTreasurer]
     def get(self, request):
         anotations  = dict(total_expense=Sum('amount', filter=Q(type="expense")) ,total_income=Sum('amount', filter=Q(type="income")) ,
                     total_records=Count('id'), count_loans_expense=Count('loan', filter=Q(type='expense')),
@@ -78,16 +100,27 @@ class RecordsAnalitics(APIView):
                     total_expense_financial_aids=Sum('amount', filter=Q(type="expense",financial_aid__isnull=False)))
 
 
-        period_type = request.GET.get('period_type', "monthly")
+        period_type = request.GET.get('period', "monthly")
         year = request.GET.get('year', date.today().year)
+        week = request.GET.get('week',None)
         start_date = request.GET.get('start_date', "2022-01-01")
         end_date = request.GET.get('end_date', "2024-12-31")
         limit =  request.GET.get('limit', 100)
         if start_date and end_date:
             try:
                 if (period_type == "weekly"):
+                    try:
+                        week = int(week)
+                    except ValueError:
+                        return Response({"error": "week must be an integer"}, status=400)
+                    if (week == None or week < 1 or week > 53):
+                        return Response({"error": "week is required for weekly period"}, status=400)
+                    start_date = date.fromisocalendar(year, int(week), 1).strftime("%Y-%m-%d")
+                    print(start_date)
+                    end_date = date.fromisocalendar(year, int(week), 7).strftime("%Y-%m-%d")
                     records = Record.objects.filter(created_at__range=[start_date, end_date])
-                    new_records = records.values('created_at').annotate(**anotations).order_by('created_at')
+                    print(records)
+                    new_records = records.values('created_at__day').annotate(**anotations).order_by('created_at')
                 elif (period_type == "yearly"):
                     records = Record.objects.filter(created_at__range=[start_date, end_date])
                     new_records = records.values('created_at__year').annotate(**anotations).order_by('created_at__year')
@@ -98,3 +131,5 @@ class RecordsAnalitics(APIView):
                 return Response({"error": "invalid date format"}, status=400)
         serializer = RecordAnaliticsSerializer(new_records, many=True)
         return Response(serializer.data, status=200)
+
+

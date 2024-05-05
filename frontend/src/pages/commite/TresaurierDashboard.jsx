@@ -17,18 +17,27 @@ import {
 } from "../../components/ui/dialog";
 import RecordsTable from "components/tresorier/RecordsTable";
 import { recordsColumns } from "components/tresorier/RecordsColumns";
-import BarChart from "components/tresorier/TresorierCharts";
+import TresorierCharts from "components/tresorier/TresorierCharts";
 import { IoEye } from "react-icons/io5";
-
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 
 import { ComboBox } from "components/tresorier/comboBox";
 import { Input } from "components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "components/ui/button";
-import { addRecord } from "api/records";
+import { addRecord, fetchAnalitics } from "api/records";
+import {weekNumber} from "components/utils/utilFunctions"
+
+
 function TresaurierDashboard() {
   const recordCol = recordsColumns([], true) || [];
+  const [analiticsByMonth, setAnaliticsByMonth] = useState({})
+  const [currentPeriodData, setCurrentPeriodData] = useState({
+    currntYear: new Date().getFullYear(),
+    startYear: new Date().getFullYear() - 7,
+    endYear: new Date().getFullYear(),
+    currntWeek: weekNumber(),
+  });
   const [open, setOpen] = useState(false);
   const HandleOpen = () => {
     if (open) {
@@ -56,7 +65,7 @@ function TresaurierDashboard() {
   const [demmandeSelecter, setDemmandeSelecter] = useState({});
   const [error, setError] = useState(false);
   const { Records, allLoans, allAids } = useStore();
-  console.log(allLoans , allAids);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newRecord.type === "expense") {
@@ -105,6 +114,12 @@ function TresaurierDashboard() {
       });
     }
   };
+
+
+  useEffect(()=>{
+    
+    fetchAnalitics(setAnaliticsByMonth,currentPeriodData.currntYear);
+  }, [])
   return (
     <div className="mt-6">
       <div className="flex gap-6">
@@ -124,7 +139,12 @@ function TresaurierDashboard() {
           ReactIcon={<MdMoneyOffCsred size={40} />}
         />
       </div>
-      <BarChart />
+      <TresorierCharts
+        monthlyData={analiticsByMonth}
+        currentPeriodData={currentPeriodData}
+        setCurrentPeriodData={setCurrentPeriodData}
+        setAnaliticsByMonth={setAnaliticsByMonth}
+      />
 
       <div className=" w-full  flex flex-grow flex-wrap h-full lg:flex-nowrap gap-6   ">
         <div className="shadoww  w-full lg:max-w-[66%] flex-grow bg-white p-4 rounded-lg">
@@ -184,7 +204,8 @@ function TresaurierDashboard() {
                       {newRecord.type === "expense" ? (
                         <div className="flex flex-col">
                           <h2 className="mt-5">
-                          Sélectionner la demande correspondant à l'enregistrement.
+                            Sélectionner la demande correspondant à
+                            l'enregistrement.
                             <span className="text-red-600 ml-1">*</span>{" "}
                           </h2>
                           <ComboBox
@@ -228,7 +249,8 @@ function TresaurierDashboard() {
                       {newRecord.type === "income" ? (
                         <div className="flex flex-col">
                           <h2 className="mt-5">
-                          Sélectionner la demande correspondant à l'enregistrement.
+                            Sélectionner la demande correspondant à
+                            l'enregistrement.
                           </h2>
                           <ComboBox
                             loans={allLoans}
@@ -238,10 +260,11 @@ function TresaurierDashboard() {
                             error={error}
                           />
                           <h2 className="mt-5 mb-2 ">
-                          Montant
+                            Montant
                             <span className="text-red-600 ml-1">*</span>
                             <span className="text-xs ml-1">
-                              ( Le montant doit être inférieur au total de la demande. {demmandeSelecter.amount})
+                              ( Le montant doit être inférieur au total de la
+                              demande. {demmandeSelecter.amount})
                             </span>
                           </h2>
                           <Input

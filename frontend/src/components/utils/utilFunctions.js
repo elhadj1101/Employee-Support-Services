@@ -28,4 +28,23 @@ function formatPrice(price, delm=".") {
     return newPrice.charAt(newPrice.length-1) == delm ?  newPrice.slice(0, -1)+rest : newPrice+rest;
 }
 
-export {formatPrice}
+
+const groupBy = (arr, prop) =>
+  arr.reduce((acc, val) => {
+    ;(acc[val[prop]] = acc[val[prop]] || []).push(val)
+    return acc
+  }, {})
+
+function weekNumber(date = new Date())
+{
+  var firstJanuary = new Date(date.getFullYear(), 0, 1);
+  var dayNr = Math.ceil((date - firstJanuary) / (24 * 60 * 60 * 1000));
+  var weekNr = Math.ceil((dayNr + firstJanuary.getDay()) / 7);
+  return weekNr;
+}
+
+
+
+
+export {formatPrice, groupBy, weekNumber}
+
