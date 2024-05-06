@@ -8,7 +8,7 @@ from rest_framework import status
 from .serializers import RecordSerializer, CommitySerializer, RecordAnaliticsSerializer, RecordViewSerializer
 from .permissions import IsTreasurer, CanViewCommity
 from django.core.exceptions import ValidationError
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, F
 
 
 # Create your views here.
@@ -116,11 +116,10 @@ class GeneralAnalitics(APIView):
                     if (week == None or week < 1 or week > 53):
                         return Response({"error": "week is required for weekly period"}, status=400)
                     start_date = date.fromisocalendar(year, int(week), 1).strftime("%Y-%m-%d")
-                    print(start_date)
                     end_date = date.fromisocalendar(year, int(week), 7).strftime("%Y-%m-%d")
                     records = Record.objects.filter(created_at__range=[start_date, end_date])
-                    print(records)
-                    new_records = records.values('created_at__day').annotate(**anotations).order_by('created_at')
+                    new_records = records.values('created_at__day').annotate(**anotations, created_at=F('created_at')).order_by('created_at')
+                    print(new_records)
                 elif (period_type == "yearly"):
                     records = Record.objects.filter(created_at__range=[start_date, end_date])
                     new_records = records.values('created_at__year').annotate(**anotations).order_by('created_at__year')

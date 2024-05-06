@@ -31,7 +31,8 @@ const getAnalitics = async(year,week, period="monthly") =>{
 };
 async function fetchAnalitics(setAnaliticsByMonth,year=null, week=null, period="monthly") {
       let dat = await getAnalitics(year, week, period);
-      dat = groupBy(dat, "created_at__month");
+      if (period === "monthly") {
+        dat = groupBy(dat, "created_at__month");
       let months = [1,2,3,4,5,6,7,8,9,10,11,12]
       months.forEach((e) => {
         if (!dat[e]){
@@ -43,6 +44,26 @@ async function fetchAnalitics(setAnaliticsByMonth,year=null, week=null, period="
           dat[e] = {...dat[e][0]}
         }
       })
+      }else if (period === "weekly") {
+        dat = dat.map((e) => {
+          var dateObj = new Date(e.created_at)
+          var weekday = dateObj.toLocaleString("default", { weekday: "long" })
+          return {...e, weekday: weekday}
+        })
+        dat = groupBy(dat, "weekday");
+        let days =  ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        days.forEach((e) => {
+          
+          if (!dat[e]){
+            dat[e] = {
+              total_expense: 0,
+              total_income: 0,
+            };
+          }else{
+            dat[e] = {...dat[e][0]}
+          }
+        })
+      }
       setAnaliticsByMonth(dat)
     }
 export  {getRecords , addRecord, getAnalitics, fetchAnalitics}

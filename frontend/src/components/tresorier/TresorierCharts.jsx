@@ -9,6 +9,8 @@ import {
 } from "react-icons/io";
 import { toast } from 'sonner'
 import { fetchAnalitics } from "api/records";
+import { weekNumber } from "components/utils/utilFunctions";
+
 
 defaults.responsive = true;
 
@@ -43,7 +45,7 @@ function TresorierCharts({
   });
   const [currntPeriod, setCurrentPeriod] = useState("monthly");
 
-  const handleChangePeriod = (e) => {
+  const handleChangePeriod = async(e) => {
     let btns = document.querySelectorAll(".analitics-btn");
     btns.forEach((btn) => {
       btn.classList.remove("active-analitics-btn");
@@ -52,6 +54,12 @@ function TresorierCharts({
 
     const id = e.target.id.replace("Btn", "");
     setCurrentPeriod(id);
+    await fetchAnalitics(
+        setAnaliticsByMonth,
+        (id ==="monthly" ? currentPeriodData.currntYear: null),
+        (id ==="weekly" ? currentPeriodData.currntWeek: null),
+        id
+      );
   };
   const handleMonthlyChange = async (e) => {
     const { id } = e.currentTarget;
@@ -91,8 +99,8 @@ function TresorierCharts({
         currntPeriod
       );
     } else {
-      if (currentPeriodData.currntWeek + 1 > new Date().getFullYear()) {
-        toast.error("Vous ne pas depasser l'annee actuelle");
+      if (currentPeriodData.currntWeek + 1 > weekNumber()) {
+        toast.error("Vous ne pas depasser la semaine actuelle");
         return;
       }
       setCurrentPeriodData({
@@ -157,7 +165,10 @@ function TresorierCharts({
                 <IoIosArrowBack fontSize={"30px"} color="#0E1B6B" />
               </div>
               <div className="font-semibold text-darkblue">
-                {currentPeriodData.currntWeek}
+                {currentPeriodData.currntWeek === weekNumber() &&
+                (  "La semaine actuelle")}
+                {currentPeriodData.currntWeek !== weekNumber() &&
+                  ("la semaine: " + currentPeriodData.currntWeek)}
               </div>
               <div
                 id="nextBtn"
