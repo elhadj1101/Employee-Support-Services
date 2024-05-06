@@ -1,9 +1,9 @@
 import React from "react";
-import RequestsTable from "components/employee/requestsTable/RequetsTable";
+import RequestsTable from "components/employee/requestsTable/RequestsTable";
 import useStore from "store/index.js";
 import { aidsColumns } from "components/employee/Columns/aidsColumns";
 import { loanColumns } from "components/employee/Columns/loanColumns";
-import { getAllAids, getAllLoans } from "api/requests.js"; 
+import { getAllAids, getAllLoans } from "api/requests.js";
 function EmployeesRequests() {
   const {
     allAids,
@@ -35,7 +35,7 @@ function EmployeesRequests() {
     }
     if (updated === "aids") {
       fetchAllAids();
-    }else if (updated === "loans") {
+    } else if (updated === "loans") {
       fetchAllLoans();
     }
   }, []);
@@ -44,7 +44,11 @@ function EmployeesRequests() {
       <div className=" mx-6 mb-4  text-2xl font-bold">
         Les demandes d'aide financiere
       </div>
-      <RequestsTable data={allAids} columns={aidscols} filteredColumn="employee" />
+      <RequestsTable
+        data={allAids}
+        columns={aidscols}
+        filteredColumn="employee"
+      />
 
       <div className=" mx-6 mb-4  text-2xl font-bold">
         Les demandes de prets

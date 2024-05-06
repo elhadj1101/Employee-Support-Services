@@ -53,7 +53,7 @@ class LoanView(APIView):
             else:
 
                 return Response(
-                    {"error": "Invalid query param value"},
+                    {"error": "Invalid query param draft value"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -95,7 +95,7 @@ class LoanView(APIView):
 
     def get(self, request):
         execlution_criteria = {"loan_status": "draft"}
-        loans = Loan.objects.exclude(**execlution_criteria)
+        loans = Loan.objects.exclude(**execlution_criteria).order_by('-request_response_at','-request_created_at')
         if loans.exists():
             serializer = LoanSerializer(loans, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -118,7 +118,7 @@ class LoanHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        loans = Loan.objects.filter(employee=request.user)
+        loans = Loan.objects.filter(employee=request.user).order_by('-request_created_at')
         serializer = LoanSerializer(loans, many=True)
         if loans:
             return Response(serializer.data)
@@ -201,7 +201,7 @@ class FinancialaidView(generics.ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         execlution_criteria = {"financial_aid_status": "draft"}
-        financail_aids = Financial_aid.objects.exclude(**execlution_criteria)
+        financail_aids = Financial_aid.objects.exclude(**execlution_criteria).order_by('-request_response_at','-request_created_at')
         if financail_aids.exists():
             serializer = FinancialaidSerializer(financail_aids, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -215,7 +215,7 @@ class FinancialaidHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        financial_aids = Financial_aid.objects.filter(employee=request.user)
+        financial_aids = Financial_aid.objects.filter(employee=request.user).order_by('-request_created_at')
         if financial_aids.exists():
             serializer = FinancialaidSerializer(financial_aids, many=True)
             return Response(serializer.data)

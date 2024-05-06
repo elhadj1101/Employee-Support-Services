@@ -34,7 +34,7 @@ class Loan(models.Model):
     request_response_at = models.DateField(null=True, blank=True)
     loan_period = models.IntegerField(null=False)
     loan_status = models.CharField(choices=status_options, max_length=30, null=False)
-
+    paid_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0)
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.cached_status = self.loan_status

@@ -7,82 +7,118 @@ import {
   IoIosArrowBack,
   IoIosArrowForward
 } from "react-icons/io";
-import { IoArrowDown, IoArrowUp } from "react-icons/io5";
-import { toast } from 'sonner';
+import { toast } from 'sonner'
+import { fetchAnalitics } from "api/records";
+import { weekNumber } from "components/utils/utilFunctions";
+
+
 defaults.responsive = true;
 
-function BarChart() {
-    const labels = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    const [currntPeriod, setCurrentPeriod] = useState("monthly");
-    const [ currentPeriodData , setCurrentPeriodData] = useState({
-      currntYear: new Date().getFullYear(),
-      startYear: new Date().getFullYear() - 1,
-      endYear: new Date().getFullYear(),
-    })
-    const handleChangePeriod = (e) => {
-        let btns = document.querySelectorAll(".analitics-btn");
-        btns.forEach((btn) => {
-            btn.classList.remove("active-analitics-btn");
-        });
-        e.target.classList.toggle("active-analitics-btn");
+function TresorierCharts({
+  monthlyData = {},
+  currentPeriodData,
+  setCurrentPeriodData,
+  setAnaliticsByMonth,
 
-        const id = e.target.id.replace("Btn", "");
-        setCurrentPeriod(id);
-    }
-    const handleMonthlyChange = (e) => {
-      const {id} = e.target;
-      if (id === "prevBtn") {
-        setCurrentPeriodData({
-          ...currentPeriodData,
-          currntYear: currentPeriodData.currntYear - 1,
-        });
-      } else {
-        if(currentPeriodData.currntYear+1 > new Date().getFullYear()) {
-          toast.error("Vous ne pas depasser l'annee actuelle");
-          return;
-        }
-        setCurrentPeriodData({
-          ...currentPeriodData,
-          currntYear: currentPeriodData.currntYear + 1,
-        });
+}) {
+  const Monthlylabels = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const WeeklyLabels = ["Dim", "Lun", "Mard", "Merc", "Jeu", "Ven", "Sam"];
+
+  const incomes = Object.keys(monthlyData).map((e) => {
+    return monthlyData[e].total_income;
+  });
+  const expenses = Object.keys(monthlyData).map((e) => {
+    return monthlyData[e].total_expense;
+  });
+  const [currntPeriod, setCurrentPeriod] = useState("monthly");
+
+  const handleChangePeriod = async(e) => {
+    let btns = document.querySelectorAll(".analitics-btn");
+    btns.forEach((btn) => {
+      btn.classList.remove("active-analitics-btn");
+    });
+    e.target.classList.toggle("active-analitics-btn");
+
+    const id = e.target.id.replace("Btn", "");
+    setCurrentPeriod(id);
+    await fetchAnalitics(
+        setAnaliticsByMonth,
+        (id ==="monthly" ? currentPeriodData.currntYear: null),
+        (id ==="weekly" ? currentPeriodData.currntWeek: null),
+        id
+      );
+  };
+  const handleMonthlyChange = async (e) => {
+    const { id } = e.currentTarget;
+    if (id === "prevBtn") {
+      setCurrentPeriodData({
+        ...currentPeriodData,
+        currntYear: currentPeriodData.currntYear - 1,
+      });
+      await fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear - 1);
+    } else {
+      if (currentPeriodData.currntYear + 1 > new Date().getFullYear()) {
+        toast.error("Vous ne pas depasser l'annee actuelle");
+        return;
       }
+      setCurrentPeriodData({
+        ...currentPeriodData,
+        currntYear: currentPeriodData.currntYear + 1,
+      });
+      await fetchAnalitics(
+        setAnaliticsByMonth,
+        currentPeriodData.currntYear + 1
+      );
+
     }
-    const handleYearlyChange = (e) => {
-        const { id, value } = e.target;
-        if (id === "startYear" && value > currentPeriodData.endYear) {
-          toast.error("Annee debut doit etre inferieur a l'annee fin");
-          setCurrentPeriodData({
-            ...currentPeriodData,
-            [id]: currentPeriodData.endYear-1,
-          });
-            return;
-        }
-        if (id === "endYear" && value > new Date().getFullYear()) {
-          toast.error("Annee debut doit etre inferieur a l'annee fin");
-          setCurrentPeriodData({
-            ...currentPeriodData,
-            [id]: new Date().getFullYear(),
-          });
-          return;
-        }
-        setCurrentPeriodData({
-            ...currentPeriodData,
-            [id]: value,
-        });
+  };
+  const handleWeeklyChange = async(e) => {
+    const { id } = e.currentTarget;
+    if (id === "prevBtn") {
+      setCurrentPeriodData({
+        ...currentPeriodData,
+        currntWeek: currentPeriodData.currntWeek - 1,
+      });
+      await fetchAnalitics(
+        setAnaliticsByMonth,
+        null,
+        currentPeriodData.currntWeek - 1,
+        currntPeriod
+      );
+    } else {
+      if (currentPeriodData.currntWeek + 1 > weekNumber()) {
+        toast.error("Vous ne pas depasser la semaine actuelle");
+        return;
+      }
+      setCurrentPeriodData({
+        ...currentPeriodData,
+        currntWeek: currentPeriodData.currntWeek + 1,
+      });
+      await fetchAnalitics(
+        setAnaliticsByMonth,
+        null,
+        currentPeriodData.currntWeek + 1,
+        currntPeriod
+      );
+
     }
+  };
+  const handleYearlyChange = () =>{
+    
+  }
   return (
     <div className="w-full mb-4  flex justify-between gap-6  items-stretch">
       <div className="w-[67%] bg-white rounded-md shadoww p-6">
@@ -119,13 +155,54 @@ function BarChart() {
               Yearly
             </button>
           </div>
-          {currntPeriod === "monthly" && (
+          {currntPeriod === "weekly" && (
             <div className="flex justify-between items-center basis-[60%] ">
-              <div id="prevBtn" className="hover:cursor-pointer"  onClick={handleMonthlyChange}>
+              <div
+                id="prevBtn"
+                className="hover:cursor-pointer"
+                onClick={handleWeeklyChange}
+              >
                 <IoIosArrowBack fontSize={"30px"} color="#0E1B6B" />
               </div>
-              <div className="font-semibold text-darkblue">{currentPeriodData.currntYear}</div>
-              <div className="hover:cursor-pointer">
+              <div className="font-semibold text-darkblue">
+                {currentPeriodData.currntWeek === weekNumber() &&
+                (  "La semaine actuelle")}
+                {currentPeriodData.currntWeek !== weekNumber() &&
+                  ("la semaine: " + currentPeriodData.currntWeek)}
+              </div>
+              <div
+                id="nextBtn"
+                className="hover:cursor-pointer"
+                onClick={handleWeeklyChange}
+              >
+                {/* <div className="flex justify-center items-center">
+                <div className="font-semibold text-darkblue">{currntYear}</div>
+
+                <IoArrowUp />
+                <IoArrowDown />
+              </div> */}
+
+                <IoIosArrowForward fontSize={"30px"} color="#0E1B6B" />
+              </div>
+            </div>
+          )}
+          {currntPeriod === "monthly" && (
+            <div className="flex justify-between items-center basis-[60%] ">
+              <div
+                id="prevBtn"
+                className="hover:cursor-pointer"
+                onClick={handleMonthlyChange}
+              >
+                <IoIosArrowBack fontSize={"30px"} color="#0E1B6B" />
+              </div>
+              <div className="font-semibold text-darkblue">
+                {currentPeriodData.currntYear}
+              </div>
+              <div
+                id="nextBtn"
+                className="hover:cursor-pointer"
+                onClick={handleMonthlyChange}
+              >
                 {/* <div className="flex justify-center items-center">
                 <div className="font-semibold text-darkblue">{currntYear}</div>
 
@@ -195,16 +272,16 @@ function BarChart() {
             },
           }}
           data={{
-            labels: labels,
+            labels: currntPeriod === "monthly" ? Monthlylabels : WeeklyLabels,
             datasets: [
               {
                 label: "Income",
-                data: [65, 59, 80, 81, 56, 55, 40, 80, 81, 56, 55, 59],
+                data: incomes,
                 backgroundColor: ["#1F2868"],
               },
               {
                 label: "Expense",
-                data: [55, 65, 59, 40, 80, 81, 56, 55, 65, 59, 40, 40],
+                data: expenses,
                 backgroundColor: ["#4256D0"],
               },
             ],
@@ -215,7 +292,7 @@ function BarChart() {
         <Doughnut
           className="w-full"
           data={{
-            labels: labels,
+            labels: Monthlylabels,
             datasets: [
               {
                 label: "My Second Dataset",
@@ -230,4 +307,4 @@ function BarChart() {
   );
 }
 
-export default BarChart
+export default TresorierCharts

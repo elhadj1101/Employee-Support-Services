@@ -321,4 +321,15 @@ class SignupSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
 
 
+
+class PartialEmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = [
+            "email",
+            "first_name",
+            "last_name",
+        ]
+
+
 #     password2 = serializers.CharField(required = True)

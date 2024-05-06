@@ -112,7 +112,7 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
       header: () => <div className="text-center">Montant</div>,
       cell: ({ row }) => (
         <div className="text-center font-medium flex items-center justify-center gap-1">
-          {row?.getValue("type") === "expense" ? (
+          {row?.original?.type === "expense" ? (
             <IoArrowUpSharp size="20" color="red" className="rotate-180" />
           ) : (
             <IoArrowUpSharp size="20" color="green" />

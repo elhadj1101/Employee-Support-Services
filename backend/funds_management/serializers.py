@@ -1,15 +1,36 @@
 from rest_framework import serializers
 from .models import Record, Commity
+from requests.models import Loan, Financial_aid
 from requests.serializers import LoanSerializer, FinancialaidSerializer
+from django.core.exceptions import ObjectDoesNotExist
 
-class RecordSerializer(serializers.ModelSerializer):
-    loan = LoanSerializer(read_only=True)
-    financial_aid = FinancialaidSerializer(read_only=True)
+class RecordViewSerializer(serializers.ModelSerializer):
+    loan = LoanSerializer(required=False)
+    financial_aid = FinancialaidSerializer(required=False)
     class Meta :
         model = Record
         fields = ['id','type','amount','financial_aid','loan','motif','created_at']
-        extra_kwargs = {"created_at": {"read_only": True}}
+        extra_kwargs = {"created_at": {"read_only": True}, "id": {"read_only": True} , "financial_aid": {"required": False}, "loan": {"required": False}}
     
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        if (
+            data.get("financial_aid", None)
+            and data.get("loan", None) 
+        ):
+            raise serializers.ValidationError(
+                "only one of financial_aid or loan can be included in the request"
+        )
+        
+        
+        return data
+class RecordSerializer(serializers.ModelSerializer):
+    loan = serializers.PrimaryKeyRelatedField(queryset=Loan.objects.all(), required=False)
+    financial_aid = serializers.PrimaryKeyRelatedField(queryset=Financial_aid.objects.all(), required=False)
+    
+    class Meta :
+        model = Record
+        fields = ['type','amount','financial_aid','loan','motif']    
     def validate(self, attrs):
         data = super().validate(attrs)
         if (
