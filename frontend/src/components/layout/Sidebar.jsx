@@ -86,7 +86,16 @@ export default function Sidebar() {
             </Link>
           </>
         )}
-
+        {user && user.role !== "employe" && (
+          <Link   to="/reunions">
+            <SideButton
+              title="Les Réunions"
+              icon={HiOutlineUserGroup}
+              nestedBtns={[]}
+              to="/reunions"
+            />
+        </Link>
+        )}
       </div>
     </div>
   );

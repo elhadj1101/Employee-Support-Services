@@ -21,6 +21,7 @@ import EmployeesRequests from "pages/commite/EmployeesRequests";
 import SingleDemandLoan from "pages/SingleDemandLoan";
 import SingleDemandAid from "pages/SingleDemandAid";
 import tresaurierDashboard from "pages/commite/TresaurierDashboard";
+import Meetings from "pages/Meetings";
 function App() {
   return (
     <main className="h-screen w-full">
@@ -65,6 +66,7 @@ function App() {
               <Route path="demandes-employe" element={<EmployeesRequests/>} />
               <Route path="demandes-employe/pret/:dmId" element={<SingleDemandLoan  employee={false} />} />
               <Route path="demandes-employe/aid/:dmId" element={<SingleDemandAid employee={false} />} />
+              <Route path="reunions" element={<Meetings/>} />
 
             </Route>
             </Route>
