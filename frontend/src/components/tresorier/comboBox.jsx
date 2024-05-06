@@ -14,8 +14,16 @@ import {
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-export function ComboBox({ loans, aids , demmandeSelecter, handleComboBox , error}) {
+export function ComboBox({
+  newRecord,
+  loans,
+  aids,
+  demmandeSelecter,
+  handleComboBox,
+  error,
+}) {
   const [open, setOpen] = React.useState(false);
+  console.log(loans);
   return (
     <Popover open={open} onOpenChange={setOpen} className="w-full   ">
       <PopoverTrigger asChild>
@@ -25,13 +33,19 @@ export function ComboBox({ loans, aids , demmandeSelecter, handleComboBox , erro
           aria-expanded={open}
           className="mt-2 p-4 h-10 justify-between w-full  "
           style={{ borderColor: error ? "red" : "" }}
-
         >
           {(demmandeSelecter?.id && (
             <div className="w-full flex gap-2 items-center">
               <p># {demmandeSelecter?.id} </p>
-              <p>ilyesomri@gmail.com </p>
+              <p>
+                {" "}
+                {demmandeSelecter?.employee?.email ||
+                  demmandeSelecter?.employee?.email}{" "}
+              </p>
               <p className="ml-auto">{demmandeSelecter?.amount} da</p>
+              {demmandeSelecter?.paid_amount && (
+                <>({demmandeSelecter?.paid_amount})</>
+              )}
             </div>
           )) ||
             "Select demmande..."}
@@ -50,15 +64,22 @@ export function ComboBox({ loans, aids , demmandeSelecter, handleComboBox , erro
                     key={demmande.id}
                     value={demmande.id}
                     onSelect={(currentValue) => {
-                      handleComboBox(currentValue , demmande , 'loan');
+                      handleComboBox(currentValue, demmande, "loan");
                       setOpen(false);
                     }}
                   >
                     <div className="w-full flex gap-2 items-center">
                       {/* !!!!!!!! the space after the id is very important !!!!!!!! */}
-                      <p>#{demmande?.id} </p> 
-                      <p>ilyesomri@gmail.com </p>
-                      <p className="ml-auto">{demmande?.amount} da</p>
+                      <p>#{demmande?.id} </p>
+                      <p>
+                        {" "}
+                        {demmande?.employee?.email ||
+                          demmande?.employee?.email}{" "}
+                      </p>
+                      <p className="ml-auto">
+                        {demmande?.amount} da (
+                        {demmande?.paid_amount} )
+                      </p>
                     </div>
                     <CheckIcon
                       className={cn(
@@ -74,18 +95,27 @@ export function ComboBox({ loans, aids , demmandeSelecter, handleComboBox , erro
             ) : (
               ""
             )}
-            {aids.length !== 0 ? (
-              <CommandGroup heading="Prets">
+            {newRecord.type!=='income' && aids.length !== 0 ? (
+              <CommandGroup heading="Aids">
                 {aids.map((demmande) => (
                   <CommandItem
                     key={demmande.id}
                     value={demmande.id}
                     onSelect={(currentValue) => {
-                      handleComboBox(currentValue , demmande ,  'aid');
+                      handleComboBox(currentValue, demmande, "finacial_aid");
                       setOpen(false);
                     }}
                   >
-                    {`${demmande.id} / ${demmande.amount} `}
+                    <div className="w-full flex gap-2 items-center">
+                      {/* !!!!!!!! the space after the id is very important !!!!!!!! */}
+                      <p>#{demmande?.id} </p>
+                      <p>
+                        {" "}
+                        {demmande?.employee?.email ||
+                          demmande?.employee?.email}{" "}
+                      </p>
+                      <p className="ml-auto">{demmande?.amount} da</p>
+                    </div>
                     <CheckIcon
                       className={cn(
                         "ml-auto h-4 w-4",

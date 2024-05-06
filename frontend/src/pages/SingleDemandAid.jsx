@@ -86,6 +86,7 @@ export default function SingleDemandLoan({ employee }) {
   }, [allAids, aids]);
 
   useEffect(() => {
+    console.log('testtttttttttt' , requestedAid?.employee);
     if (
       ((employee && allAids.length !== 0) ||
         (!employee && aids.length !== 0)) &&
@@ -97,7 +98,7 @@ export default function SingleDemandLoan({ employee }) {
         sessionStorage.setItem("requestedAidId", aidId);
         const u = async () => {
           try {
-            const usr = await getUser(requestedAid?.employee);
+            const usr = await getUser(requestedAid?.employee.id);
             if (usr) {
               sessionStorage.setItem("requestedAidUser", JSON.stringify(usr));
               setUsr(usr);
