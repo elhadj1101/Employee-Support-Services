@@ -17,7 +17,7 @@ class RecordView(generics.ListCreateAPIView):
     serializer_class = RecordSerializer
     # permission_classes = [AllowAny]
     permission_classes = [IsAuthenticated,IsTreasurer]
-    
+    Record.objects.aggregate()
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
@@ -35,13 +35,15 @@ class RecordView(generics.ListCreateAPIView):
         if serializer.validated_data.get('type') == "income" and serializer.validated_data.get('loan', None) is not None:
             loan = serializer.validated_data.get('loan')
             if loan.loan_status != "approved":
-                raise ValidationError("you can't pay an unapproved loan broo ?!")
+                raise ValidationError("you can't pay an unapproved loan")
             if loan.paid_amount + serializer.validated_data.get('amount') > loan.amount:
                 raise ValidationError("you can't pay more than the loan amount")
             loan.paid_amount += serializer.validated_data.get('amount')
             loan.save()
         # update commity balance
         commity = Commity.objects.all().first()
+        if commity is None:
+            return Response({"error": "no commity found"}, status=400)
         if serializer.validated_data.get('type') == "expense":
             commity.current_balance -= serializer.validated_data.get('amount')
         else:
@@ -105,7 +107,6 @@ class GeneralAnalitics(APIView):
         week = request.GET.get('week',None)
         start_date = request.GET.get('start_date', "2022-01-01")
         end_date = request.GET.get('end_date', "2024-12-31")
-        limit =  request.GET.get('limit', 100)
         if start_date and end_date:
             try:
                 if (period_type == "weekly"):
@@ -117,7 +118,7 @@ class GeneralAnalitics(APIView):
                         return Response({"error": "week is required for weekly period"}, status=400)
                     start_date = date.fromisocalendar(year, int(week), 1).strftime("%Y-%m-%d")
                     end_date = date.fromisocalendar(year, int(week), 7).strftime("%Y-%m-%d")
-                    records = Record.objects.filter(created_at__range=[start_date, end_date])
+                    records = Record.objects.filter(created_at__range=[start_date, end_date]).order_by('-created_at')   
                     new_records = records.values('created_at__day').annotate(**anotations, created_at=F('created_at')).order_by('created_at')
                     print(new_records)
                 elif (period_type == "yearly"):

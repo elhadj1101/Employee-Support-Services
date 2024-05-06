@@ -179,6 +179,8 @@ class FinancialaidView(generics.ListCreateAPIView):
             employee=request.user,
             family_member=family_member,
             financial_aid_status=aid_status,
+            request_created_at=(
+                date.today() if aid_status == "waiting" else None)
         )
         # now create the files
         files = request.FILES.getlist("files[]", [])

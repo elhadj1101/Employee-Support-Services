@@ -326,6 +326,7 @@ class PartialEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = [
+            'id',
             "email",
             "first_name",
             "last_name",
