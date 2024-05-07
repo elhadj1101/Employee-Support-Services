@@ -130,7 +130,7 @@ function Dashboard() {
           />
           <Navbar />
         </div>
-        <div onClick={hideSidebar} className="">
+        <div onClick={hideSidebar} className="h-full">
           <Outlet />
         </div>
       </div>

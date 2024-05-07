@@ -9,7 +9,7 @@ const roles = {
   tresorier: "Tresorier",
   "": "Admin",
 };
-const canViewRequests = Object.keys(roles).filter((e) => !["tresorier", "employe", ""].includes(e))
+const canViewRequests = Object.keys(roles).filter((e) => ![ "employe", ""].includes(e))
 
 const getUsers = async () => {
   try {

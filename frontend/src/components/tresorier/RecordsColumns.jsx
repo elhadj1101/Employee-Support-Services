@@ -147,7 +147,10 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
             <DropdownMenuContent align="end">
               <Dialog>
                 <DialogTrigger style={{ width: "100%" }}>
-                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                  <div
+                    onClick={() => console.log(row.original)}
+                    className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100"
+                  >
                     Details
                   </div>
                 </DialogTrigger>
@@ -159,14 +162,14 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                         <h2 className="mt-5 text-base">Type</h2>
                         <span className="text-sm capitalize text-gray-800 font-semibold">
                           {" "}
-                          {row.original.type}
+                          {row?.original?.type}
                         </span>
                         <h2 className="mt-5 text-base">
                           Date de Enregistrement
                         </h2>
                         <p className="text-sm capitalize text-gray-800 font-semibold">
                           {" "}
-                          {row.original.created_at}
+                          {row?.original?.created_at}
                         </p>
                         <h2 className="mt-5 text-base flex gap-2 items-center">
                           la demande correspondant à l'enregistrement.
@@ -179,14 +182,59 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                           </Link>
                         </h2>
                         <p className="text-sm capitalize text-gray-800 font-semibold">
-                          #
-                          {row.original.loan?.id ||
-                            row.original.finaincial_aid?.id}{" "}
-                          {row.original.loan?.employee ||
-                            row.original.finaincial_aid?.employee}{" "}
-                          {row.original.loan?.amount ||
-                            row.original.finaincial_aid?.amount}{" "}
-                          da
+                          <table class="border w-full text-sm text-left  text-gray-500 ">
+                            <thead class=" text-xs text-gray-700 uppercase ">
+                              <tr>
+                                <th
+                                  scope="col"
+                                  class="px-6 py-3 bg-gray-50 "
+                                >
+                                  id
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                  employeur
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-6 py-3 bg-gray-50 "
+                                >
+                                  email
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                  montant
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="border-b border-gray-200 dark:border-gray-700">
+                                <th
+                                  scope="row"
+                                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white "
+                                >
+                                  #
+                                  {row.original.loan?.id ||
+                                    row.original.finaincial_aid?.id}
+                                </th>
+                                <td class="px-6 py-4">
+                                  {row.original.loan?.employee.last_name ||
+                                    row.original.finaincial_aid?.employee
+                                      .last_name}
+                                  {row.original.loan?.employee.first_name ||
+                                    row.original.finaincial_aid?.employee
+                                      .first_name}
+                                </td>
+                                <td class="px-6 py-4 bg-gray-50 ">
+                                  {row.original.loan?.employee.email ||
+                                    row.original.finaincial_aid?.employee.email}
+                                </td>
+                                <td class="px-6 py-4">
+                                  {row.original.loan?.amount ||
+                                    row.original.finaincial_aid?.amount}
+                                  da
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>{" "}
                         </p>
                         <h2 className="mt-5  text-base">Montant</h2>
                         <p className="text-sm capitalize text-gray-800 font-semibold">
@@ -201,9 +249,7 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
-                    {/* <DialogClose>
-                          <DeleteButton id={row.original.id} />
-                        </DialogClose> */}
+                  
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
