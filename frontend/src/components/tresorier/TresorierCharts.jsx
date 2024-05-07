@@ -1,16 +1,15 @@
 import React, {useState} from 'react'
 import { Chart as ChartJS, defaults } from 'chart.js/auto'
-import { Bar, Doughnut } from 'react-chartjs-2'
+import { Bar, Pie } from 'react-chartjs-2'
 import {
-  IoIosArrowDropleftCircle,
-  IoIosArrowDroprightCircle,
+
   IoIosArrowBack,
   IoIosArrowForward
 } from "react-icons/io";
 import { toast } from 'sonner'
-import { fetchAnalitics } from "api/records";
+import { fetchAnalitics, fetchDoghnouts } from "api/records";
 import { weekNumber } from "components/utils/utilFunctions";
-
+import {financial_aid_infos} from "api/requests";
 
 defaults.responsive = true;
 
@@ -42,9 +41,8 @@ function TresorierCharts({
   ];
   const WeeklyLabels = ["Dim", "Lun", "Mard", "Merc", "Jeu", "Ven", "Sam"];
   let days =  ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", ];
-  const [currentType, setCurrentType] = useState("all")
+  const [currentType, setCurrentType] = useState("expenses")
   const [currntPeriod, setCurrentPeriod] = useState("monthly");
-  
   let incomes = [];
   let expenses = [];
   if (currntPeriod === "weekly") {
@@ -93,6 +91,7 @@ function TresorierCharts({
 
     const id = e.target.id.replace("Btn", "");
     setCurrentType(id);
+    await fetchDoghnouts(setDoughnoutData, currentPeriodData.currntYear,id === "expenses" ? true : false, id === "aids" ? true : false)
   };
   const handleMonthlyChange = async (e) => {
     const { id } = e.currentTarget;
@@ -355,10 +354,10 @@ function TresorierCharts({
         <div className="flex justify-center w-[100%] items-center gap-4 mb-4">
           <button
             onClick={handleChangeType}
-            id="allBtn"
+            id="expensesBtn"
             className="doghnout-btn  active-doghnout-btn"
           >
-            Tous
+            Depenses
           </button>
           <button
             id="aidsBtn"
@@ -367,28 +366,61 @@ function TresorierCharts({
           >
             Aides Financieres
           </button>
-          <button
-            id="pretsBtn"
-            onClick={handleChangeType}
-            className="doghnout-btn "
-          >
-            Prets
-          </button>
         </div>
-        <Doughnut
+        <Pie
           className="w-full"
+          options={{
+            tooltips: {
+              enabled: false,
+            },
+            plugins: {
+              datalabels: {
+                formatter: (value, ctx) => {
+                  let sum = 0;
+                  let dataArr = ctx.chart.data.datasets[0].data;
+                  dataArr.forEach((data) => {
+                    sum += data;
+                  });
+                  let percentage = ((value * 100) / sum).toFixed(2) + "%";
+                  return percentage;
+                },
+                color: "#fff",
+              },
+            },
+          }}
           data={{
-            labels: doughnoutLabels,
+            labels:
+              currentType === "expenses"
+                ? doughnoutLabels
+                : doughnoutData &&
+                  Array.from(doughnoutData).map((e) => {
+                    return financial_aid_infos.filter(
+                      (aid) => aid.name === e.aid_type
+                    )[0]?.description;
+                  }),
             datasets: [
               {
                 label: "Data Financieres",
-                data: [
-                  (doughnoutData && doughnoutData.total_expense_loans) || 0,
-                  (doughnoutData &&
-                    doughnoutData.total_expense_financial_aids) ||
-                    0,
+                data:
+                  currentType === "expenses"
+                    ? [
+                        (doughnoutData && doughnoutData.total_expense_loans) ||
+                          0,
+                        (doughnoutData &&
+                          doughnoutData.total_expense_financial_aids) ||
+                          0,
+                      ]
+                    : (doughnoutData &&
+                        Array.from(doughnoutData).map((e) => e.total_amount)) ||
+                      [],
+                backgroundColor: [
+                  "#003f5c",
+                  "#ffa600",
+                  "#a05195",
+                  "#ff6361",
+                  "#d45087",
+                  "#bc5090",
                 ],
-                backgroundColor: [ "#FA7070", "#AC4425"],
               },
             ],
           }}
