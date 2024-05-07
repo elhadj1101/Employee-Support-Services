@@ -25,13 +25,14 @@ import { ComboBox } from "components/tresorier/comboBox";
 import { Input } from "components/ui/input";
 import { useEffect, useState } from "react";
 import { Button } from "components/ui/button";
-import { addRecord, fetchAnalitics } from "api/records";
+import { addRecord, fetchAnalitics, fetchDoghnouts } from "api/records";
 import { weekNumber } from "components/utils/utilFunctions";
 import { Link } from "react-router-dom";
 
 function TresaurierDashboard() {
   const recordCol = recordsColumns([], true) || [];
   const [analiticsByMonth, setAnaliticsByMonth] = useState({});
+  const [doughnoutData, setDoughnoutData] = useState({});
   const [currentPeriodData, setCurrentPeriodData] = useState({
     currntYear: new Date().getFullYear(),
     startYear: new Date().getFullYear() - 7,
@@ -122,6 +123,7 @@ console.log("test " ,allLoans , allAids);
 
   useEffect(() => {
     fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear);
+    fetchDoghnouts(setDoughnoutData, new Date().getFullYear());
   }, []);
   return (
     <div className="mt-6">
@@ -143,6 +145,7 @@ console.log("test " ,allLoans , allAids);
         />
       </div>
       <TresorierCharts
+        doughnoutData={doughnoutData}
         monthlyData={analiticsByMonth}
         currentPeriodData={currentPeriodData}
         setCurrentPeriodData={setCurrentPeriodData}
@@ -336,17 +339,42 @@ console.log("test " ,allLoans , allAids);
             </Dialog>
           </div>
           <div className="flex gap-1 mt-3  items-center">
-              <p className="px-2 py-1.5  flex items-center"> <FiFilter  size={15}/> filtre:</p>
-              <div onClick={()=>{setRecordType((prev)=>(prev==='income'?'':'income'))}} className={` ${RecordType==='income' ?'bg-slate-100 text-black border-black' :'text-gray-400'} flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}>
-                revenue
-              </div>
-              <div onClick={()=>{setRecordType((prev)=>(prev==='expense'?'':'expense'))}} className={` ${RecordType ==='expense' ?'bg-slate-100 text-black border-black' :'text-gray-400'} flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}>
-              depense
-              </div>
+            <p className="px-2 py-1.5  flex items-center">
+              {" "}
+              <FiFilter size={15} /> filtre:
+            </p>
+            <div
+              onClick={() => {
+                setRecordType((prev) => (prev === "income" ? "" : "income"));
+              }}
+              className={` ${
+                RecordType === "income"
+                  ? "bg-slate-100 text-black border-black"
+                  : "text-gray-400"
+              } flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}
+            >
+              revenue
             </div>
+            <div
+              onClick={() => {
+                setRecordType((prev) => (prev === "expense" ? "" : "expense"));
+              }}
+              className={` ${
+                RecordType === "expense"
+                  ? "bg-slate-100 text-black border-black"
+                  : "text-gray-400"
+              } flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}
+            >
+              depense
+            </div>
+          </div>
           {Records.length !== 0 && (
             <div className=" ">
-              <RecordsTable data={Records} columns={recordCol} RecordType={RecordType} />
+              <RecordsTable
+                data={Records}
+                columns={recordCol}
+                RecordType={RecordType}
+              />
             </div>
           )}
         </div>
@@ -356,57 +384,104 @@ console.log("test " ,allLoans , allAids);
               5 recents demmandes
             </h1>
             <Link to="/demandes-employe">
-            <div className=" flex items-center gap-2 text-white rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color bg-light-blue border border-light-blue hover:bg-slate-100 hover:text-black hover:border-black">
-              Voir Tout
-            </div>
+              <div className=" flex items-center gap-2 text-white rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color bg-light-blue border border-light-blue hover:bg-slate-100 hover:text-black hover:border-black">
+                Voir Tout
+              </div>
             </Link>
           </div>
           <div className="flex gap-1 mt-3  items-center">
-              <p className="px-2 py-1.5  flex items-center"> <FiFilter  size={15}/> filtre:</p>
-              <div onClick={()=>{setType((prev)=>(prev==='aids'?'':'aids'))}} className={` ${type==='aids' ?'bg-slate-100 text-black border-black' :'text-gray-400'} flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}>
-                Aids
-              </div>
-              <div onClick={()=>{setType((prev)=>(prev==='prets'?'':'prets'))}} className={` ${type ==='prets' ?'bg-slate-100 text-black border-black' :'text-gray-400'} flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}>
+            <p className="px-2 py-1.5  flex items-center">
+              {" "}
+              <FiFilter size={15} /> filtre:
+            </p>
+            <div
+              onClick={() => {
+                setType((prev) => (prev === "aids" ? "" : "aids"));
+              }}
+              className={` ${
+                type === "aids"
+                  ? "bg-slate-100 text-black border-black"
+                  : "text-gray-400"
+              } flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}
+            >
+              Aids
+            </div>
+            <div
+              onClick={() => {
+                setType((prev) => (prev === "prets" ? "" : "prets"));
+              }}
+              className={` ${
+                type === "prets"
+                  ? "bg-slate-100 text-black border-black"
+                  : "text-gray-400"
+              } flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}
+            >
               Prets
-              </div>
             </div>
-            {all.filter(loan => loan.status === 'approved').length ===0 ? <p className="text-center my-5 text-sm text-gray-500">Il n'existe aucune demande acceptée.</p> :''}
-            { all.filter(loan => loan.status === 'approved').length !==0  && type ==='prets' && allLoans && allLoans.filter(loan => loan.status === 'accepted').slice(1,5).map((loan)=>( <div className="flex items-center justify-between p-2 my-2">
-            <div className="text-base">
-              <p>{loan?.employee?.first_name} {' '} {loan?.employee?.last_name}</p>
-              <p className="text-[11px] text-gray-500 leading-3 ml-1">
-              {loan?.employee?.email}/ pret
-              </p>
-            </div>
-            <div className="flex gap-3 items-center ">
-              <FaMoneyBillTransfer
-                size={20}
-                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
-              />
-              <IoEye
-                size={20}
-                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
-              />
-            </div>
-          </div>))}
-          { all.filter(loan => loan.status === 'approved').length !==0  &&  type ==='aids' && allAids && allAids.filter(aid => aid.status === 'accepted').slice(1,5).map((aid)=>( <div className="flex items-center justify-between p-2 my-2">
-            <div className="text-base">
-              <p>{aid?.employee?.first_name} {' '} {aid?.employee?.last_name}</p>
-              <p className="text-[11px] text-gray-500 leading-3 ml-1">
-              {aid?.employee?.email} / aid
-              </p>
-            </div>
-            <div className="flex gap-3 items-center ">
-              <FaMoneyBillTransfer
-                size={20}
-                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
-              />
-              <IoEye
-                size={20}
-                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
-              />
-            </div>
-          </div>))}
+          </div>
+          {all.filter((loan) => loan.status === "approved").length === 0 ? (
+            <p className="text-center my-5 text-sm text-gray-500">
+              Il n'existe aucune demande acceptée.
+            </p>
+          ) : (
+            ""
+          )}
+          {all.filter((loan) => loan.status === "approved").length !== 0 &&
+            type === "prets" &&
+            allLoans &&
+            allLoans
+              .filter((loan) => loan.status === "accepted")
+              .slice(1, 5)
+              .map((loan) => (
+                <div className="flex items-center justify-between p-2 my-2">
+                  <div className="text-base">
+                    <p>
+                      {loan?.employee?.first_name} {loan?.employee?.last_name}
+                    </p>
+                    <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                      {loan?.employee?.email}/ pret
+                    </p>
+                  </div>
+                  <div className="flex gap-3 items-center ">
+                    <FaMoneyBillTransfer
+                      size={20}
+                      className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+                    />
+                    <IoEye
+                      size={20}
+                      className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+                    />
+                  </div>
+                </div>
+              ))}
+          {all.filter((loan) => loan.status === "approved").length !== 0 &&
+            type === "aids" &&
+            allAids &&
+            allAids
+              .filter((aid) => aid.status === "accepted")
+              .slice(1, 5)
+              .map((aid) => (
+                <div className="flex items-center justify-between p-2 my-2">
+                  <div className="text-base">
+                    <p>
+                      {aid?.employee?.first_name} {aid?.employee?.last_name}
+                    </p>
+                    <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                      {aid?.employee?.email} / aid
+                    </p>
+                  </div>
+                  <div className="flex gap-3 items-center ">
+                    <FaMoneyBillTransfer
+                      size={20}
+                      className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+                    />
+                    <IoEye
+                      size={20}
+                      className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+                    />
+                  </div>
+                </div>
+              ))}
         </div>
       </div>
     </div>

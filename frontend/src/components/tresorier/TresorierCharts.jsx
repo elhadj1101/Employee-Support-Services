@@ -19,7 +19,8 @@ function TresorierCharts({
   currentPeriodData,
   setCurrentPeriodData,
   setAnaliticsByMonth,
-
+  doughnoutData,
+  setDoughnoutData,
 }) {
   const Monthlylabels = [
     "January",
@@ -35,11 +36,15 @@ function TresorierCharts({
     "November",
     "December",
   ];
-  const doughnoutLabels = ["Prets Revenue", "Prets Depenses", "Aides Revenue", "Aides Depenses"];
+  const doughnoutLabels = [
+    "Depenses des Prets",
+    "Depenses des Aides",
+  ];
   const WeeklyLabels = ["Dim", "Lun", "Mard", "Merc", "Jeu", "Ven", "Sam"];
   let days =  ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", ];
   const [currentType, setCurrentType] = useState("all")
   const [currntPeriod, setCurrentPeriod] = useState("monthly");
+  
   let incomes = [];
   let expenses = [];
   if (currntPeriod === "weekly") {
@@ -347,12 +352,11 @@ function TresorierCharts({
         />
       </div>
       <div className="w-[32%] bg-white rounded-md shadoww p-6">
-
         <div className="flex justify-center w-[100%] items-center gap-4 mb-4">
           <button
             onClick={handleChangeType}
             id="allBtn"
-            className="doghnout-btn"
+            className="doghnout-btn  active-doghnout-btn"
           >
             Tous
           </button>
@@ -366,7 +370,7 @@ function TresorierCharts({
           <button
             id="pretsBtn"
             onClick={handleChangeType}
-            className="doghnout-btn  active-doghnout-btn"
+            className="doghnout-btn "
           >
             Prets
           </button>
@@ -377,9 +381,14 @@ function TresorierCharts({
             labels: doughnoutLabels,
             datasets: [
               {
-                label: "My Second Dataset",
-                data: [55, 65, 59, 40],
-                backgroundColor: ["#7ABA78", "#0A6847", "#F3CA52", "#FCDC2A"],
+                label: "Data Financieres",
+                data: [
+                  (doughnoutData && doughnoutData.total_expense_loans) || 0,
+                  (doughnoutData &&
+                    doughnoutData.total_expense_financial_aids) ||
+                    0,
+                ],
+                backgroundColor: [ "#FA7070", "#AC4425"],
               },
             ],
           }}
