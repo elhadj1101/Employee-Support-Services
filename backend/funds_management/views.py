@@ -107,7 +107,16 @@ class GeneralAnalitics(APIView):
         week = request.GET.get('week',None)
         start_date = request.GET.get('start_date', "2022-01-01")
         end_date = request.GET.get('end_date', "2024-12-31")
-        if start_date and end_date:
+        
+        total = request.GET.get('total', False)
+        total = True if total == "true" else False
+        if total:
+            records = Record.objects.filter(created_at__year=year)
+            new_records = records.aggregate(**anotations)
+            serializer = RecordAnaliticsSerializer(new_records)
+            return Response(serializer.data, status=200)
+            
+        elif start_date and end_date:
             try:
                 if (period_type == "weekly"):
                     try:

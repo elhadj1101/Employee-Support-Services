@@ -25,7 +25,7 @@ import { ComboBox } from "components/tresorier/comboBox";
 import { Input } from "components/ui/input";
 import { useEffect, useState } from "react";
 import { Button } from "components/ui/button";
-import { addRecord, fetchAnalitics } from "api/records";
+import { addRecord, fetchAnalitics, fetchDoghnouts } from "api/records";
 import { weekNumber } from "components/utils/utilFunctions";
 import { Link } from "react-router-dom";
 import { getCommity } from "api/requests";
@@ -33,6 +33,7 @@ import { getCommity } from "api/requests";
 function TresaurierDashboard() {
   const recordCol = recordsColumns([], true) || [];
   const [analiticsByMonth, setAnaliticsByMonth] = useState({});
+  const [doughnoutData, setDoughnoutData] = useState({});
   const [currentPeriodData, setCurrentPeriodData] = useState({
     currntYear: new Date().getFullYear(),
     startYear: new Date().getFullYear() - 7,
@@ -123,6 +124,7 @@ function TresaurierDashboard() {
 
   useEffect(() => {
     fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear);
+    fetchDoghnouts(setDoughnoutData, new Date().getFullYear());
   }, []);
   console.log(Commity?.current_year_income ,Number(Commity?.current_year_income),'eeeeeeeeeeeeeeeeeee');
   return (
@@ -145,6 +147,7 @@ function TresaurierDashboard() {
         />
       </div>
       <TresorierCharts
+        doughnoutData={doughnoutData}
         monthlyData={analiticsByMonth}
         currentPeriodData={currentPeriodData}
         setCurrentPeriodData={setCurrentPeriodData}
@@ -338,17 +341,42 @@ function TresaurierDashboard() {
             </Dialog>
           </div>
           <div className="flex gap-1 mt-3  items-center">
-              <p className="px-2 py-1.5  flex items-center"> <FiFilter  size={15}/> filtre:</p>
-              <div onClick={()=>{setRecordType((prev)=>(prev==='income'?'':'income'))}} className={` ${RecordType==='income' ?'bg-slate-100 text-black border-black' :'text-gray-400'} flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}>
-                revenue
-              </div>
-              <div onClick={()=>{setRecordType((prev)=>(prev==='expense'?'':'expense'))}} className={` ${RecordType ==='expense' ?'bg-slate-100 text-black border-black' :'text-gray-400'} flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}>
-              depense
-              </div>
+            <p className="px-2 py-1.5  flex items-center">
+              {" "}
+              <FiFilter size={15} /> filtre:
+            </p>
+            <div
+              onClick={() => {
+                setRecordType((prev) => (prev === "income" ? "" : "income"));
+              }}
+              className={` ${
+                RecordType === "income"
+                  ? "bg-slate-100 text-black border-black"
+                  : "text-gray-400"
+              } flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}
+            >
+              revenue
             </div>
+            <div
+              onClick={() => {
+                setRecordType((prev) => (prev === "expense" ? "" : "expense"));
+              }}
+              className={` ${
+                RecordType === "expense"
+                  ? "bg-slate-100 text-black border-black"
+                  : "text-gray-400"
+              } flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}
+            >
+              depense
+            </div>
+          </div>
           {Records.length !== 0 && (
             <div className=" ">
-              <RecordsTable data={Records} columns={recordCol} RecordType={RecordType} />
+              <RecordsTable
+                data={Records}
+                columns={recordCol}
+                RecordType={RecordType}
+              />
             </div>
           )}
         </div>
@@ -358,17 +386,38 @@ function TresaurierDashboard() {
               5 recents demmandes
             </h1>
             <Link to="/demandes-employe">
-            <div className=" flex items-center gap-2 text-white rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color bg-light-blue border border-light-blue hover:bg-slate-100 hover:text-black hover:border-black">
-              Voir Tout
-            </div>
+              <div className=" flex items-center gap-2 text-white rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color bg-light-blue border border-light-blue hover:bg-slate-100 hover:text-black hover:border-black">
+                Voir Tout
+              </div>
             </Link>
           </div>
           <div className="flex gap-1 mt-3  items-center">
-              <p className="px-2 py-1.5  flex items-center"> <FiFilter  size={15}/> filtre:</p>
-              <div onClick={()=>{setType((prev)=>(prev==='aids'?'':'aids'))}} className={` ${type==='aids' ?'bg-slate-100 text-black border-black' :'text-gray-400'} flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}>
-                Aids
-              </div>
-              <div onClick={()=>{setType((prev)=>(prev==='prets'?'':'prets'))}} className={` ${type ==='prets' ?'bg-slate-100 text-black border-black' :'text-gray-400'} flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}>
+            <p className="px-2 py-1.5  flex items-center">
+              {" "}
+              <FiFilter size={15} /> filtre:
+            </p>
+            <div
+              onClick={() => {
+                setType((prev) => (prev === "aids" ? "" : "aids"));
+              }}
+              className={` ${
+                type === "aids"
+                  ? "bg-slate-100 text-black border-black"
+                  : "text-gray-400"
+              } flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}
+            >
+              Aids
+            </div>
+            <div
+              onClick={() => {
+                setType((prev) => (prev === "prets" ? "" : "prets"));
+              }}
+              className={` ${
+                type === "prets"
+                  ? "bg-slate-100 text-black border-black"
+                  : "text-gray-400"
+              } flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}
+            >
               Prets
               </div>
             </div>
