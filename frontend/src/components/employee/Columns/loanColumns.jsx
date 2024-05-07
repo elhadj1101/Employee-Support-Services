@@ -120,7 +120,7 @@ export const loanColumns = (colsToHide = [], hideDelete = false) => {
         header: () => <div className="text-center">ID-Employer</div>,
         // to filter ids
         accessorFn: (orow) => {
-          return orow.employee.toString();
+          return orow.employee.id.toString();
         },
         cell: ({ row }) => (
           <div className="text-center font-medium">
