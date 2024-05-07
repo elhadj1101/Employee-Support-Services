@@ -22,9 +22,9 @@
   border: .0625rem solid rgba(46, 54, 80, .125);
   border-color: #eaedf2;
 }
-.analitics-btn {
+.analitics-btn, .doghnout-btn {
   @apply  text-xs p-2 font-semibold transition-all  hover:bg-light-blue-50 hover:text-darkblue border-light-blue-50 hover:border-darkblue-50 rounded-md border-solid border-[2px];
 }
-.active-analitics-btn {
+.active-doghnout-btn, .active-analitics-btn {
   @apply bg-darkblue text-white border-darkblue hover:bg-darkblue hover:text-white hover:border-darkblue;
 }

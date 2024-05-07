@@ -102,7 +102,8 @@ export default function SingleDemandLoan({ employee }) {
         sessionStorage.setItem("requestedLoanId", LoanId);
         const u = async () => {
           try {
-            const usr = await getUser(requestedLoan?.employee);
+            const usr = await getUser(requestedLoan?.employee.id);
+            console.log(usr);
             if (usr) {
               sessionStorage.setItem("requestedLoanUser", JSON.stringify(usr));
               setUsr(usr);

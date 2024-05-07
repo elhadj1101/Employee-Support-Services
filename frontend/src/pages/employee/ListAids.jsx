@@ -7,7 +7,6 @@ import { getAids } from "api/requests";
 function ListAids() {
   const { aids, updated, setUpdated, setAids, setFetchedAids } = useStore();
   const cols = aidsColumns(["employee"]) || [];
-
   useEffect(() => {
     async function fetchAids() {
       const dat = await getAids();

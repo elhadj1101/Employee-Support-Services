@@ -46,6 +46,7 @@ export default function SingleDemandLoan({ employee }) {
 
   const { aids, allAids, setUpdated, AidRequestedId, setAidRequestedId, user } =
     useStore();
+    console.log(allAids);
   const parts = window.location.pathname
     .split("/")
     .filter((part) => part.trim() !== "");
@@ -86,18 +87,16 @@ export default function SingleDemandLoan({ employee }) {
   }, [allAids, aids]);
 
   useEffect(() => {
-    if (
-      ((employee && allAids.length !== 0) ||
-        (!employee && aids.length !== 0)) &&
+    if ( !employee &&
       requestedAid &&
       Object.keys(requestedAid).length !== 0
     ) {
-      if (!employee && AidRequestedId !== aidId) {
+      if (AidRequestedId !== aidId) {
         setAidRequestedId(aidId);
         sessionStorage.setItem("requestedAidId", aidId);
         const u = async () => {
           try {
-            const usr = await getUser(requestedAid?.employee);
+            const usr = await getUser(requestedAid?.employee.id);
             if (usr) {
               sessionStorage.setItem("requestedAidUser", JSON.stringify(usr));
               setUsr(usr);

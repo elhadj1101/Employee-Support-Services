@@ -122,7 +122,7 @@ function TresaurierDashboard() {
   }, [])
   return (
     <div className="mt-6">
-      <div className="flex gap-6">
+      <div className="flex gap-6 ">
         <Card
           title="Budget"
           price={2500}

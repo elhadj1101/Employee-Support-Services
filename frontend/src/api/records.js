@@ -51,9 +51,9 @@ async function fetchAnalitics(setAnaliticsByMonth,year=null, week=null, period="
           return {...e, weekday: weekday}
         })
         dat = groupBy(dat, "weekday");
-        let days =  ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        let days =  ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", ]
         days.forEach((e) => {
-          
+           
           if (!dat[e]){
             dat[e] = {
               total_expense: 0,
@@ -63,6 +63,7 @@ async function fetchAnalitics(setAnaliticsByMonth,year=null, week=null, period="
             dat[e] = {...dat[e][0]}
           }
         })
+        console.log(dat);
       }
       setAnaliticsByMonth(dat)
     }

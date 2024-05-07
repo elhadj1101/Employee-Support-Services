@@ -35,15 +35,33 @@ function TresorierCharts({
     "November",
     "December",
   ];
+  const doughnoutLabels = ["Prets Revenue", "Prets Depenses", "Aides Revenue", "Aides Depenses"];
   const WeeklyLabels = ["Dim", "Lun", "Mard", "Merc", "Jeu", "Ven", "Sam"];
-
-  const incomes = Object.keys(monthlyData).map((e) => {
-    return monthlyData[e].total_income;
-  });
-  const expenses = Object.keys(monthlyData).map((e) => {
-    return monthlyData[e].total_expense;
-  });
+  let days =  ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", ];
+  const [currentType, setCurrentType] = useState("all")
   const [currntPeriod, setCurrentPeriod] = useState("monthly");
+  let incomes = [];
+  let expenses = [];
+  if (currntPeriod === "weekly") {
+     incomes = Object.keys(monthlyData)
+      .sort((a, b) => days.indexOf(a) > days.indexOf(b))
+      .map((e) => {
+        return monthlyData[e].total_income;
+      });
+     expenses = Object.keys(monthlyData)
+      .sort((a, b) => days.indexOf(a) > days.indexOf(b))
+      .map((e) => {
+        return monthlyData[e].total_expense;
+      });
+  }else {
+     incomes = Object.keys(monthlyData).map((e) => {
+      return monthlyData[e].total_income;
+    });
+     expenses = Object.keys(monthlyData).map((e) => {
+      return monthlyData[e].total_expense;
+    });
+
+  }
 
   const handleChangePeriod = async(e) => {
     let btns = document.querySelectorAll(".analitics-btn");
@@ -60,6 +78,16 @@ function TresorierCharts({
         (id ==="weekly" ? currentPeriodData.currntWeek: null),
         id
       );
+  };
+  const handleChangeType = async (e) => {
+    let btns = document.querySelectorAll(".doghnout-btn");
+    btns.forEach((btn) => {
+      btn.classList.remove("active-doghnout-btn");
+    });
+    e.target.classList.toggle("active-doghnout-btn");
+
+    const id = e.target.id.replace("Btn", "");
+    setCurrentType(id);
   };
   const handleMonthlyChange = async (e) => {
     const { id } = e.currentTarget;
@@ -119,6 +147,26 @@ function TresorierCharts({
   const handleYearlyChange = () =>{
     
   }
+  function getWeekDates(year, weekNumber) {
+    // Calculate the first day of the year
+    var firstDayOfYear = new Date(year, 0, 1);
+
+    // Calculate the first day of the week
+    var firstDayOfWeek = new Date(
+      firstDayOfYear.getTime() + (weekNumber - 1) * 7 * 24 * 60 * 60 * 1000
+    );
+
+    // Calculate the end date of the week
+    var endDateOfWeek = new Date(
+      firstDayOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000
+    );
+
+    return {
+      startDate: firstDayOfWeek,
+      endDate: endDateOfWeek,
+    };
+  }
+
   return (
     <div className="w-full mb-4  flex justify-between gap-6  items-stretch">
       <div className="w-[67%] bg-white rounded-md shadoww p-6">
@@ -166,9 +214,19 @@ function TresorierCharts({
               </div>
               <div className="font-semibold text-darkblue">
                 {currentPeriodData.currntWeek === weekNumber() &&
-                (  "La semaine actuelle")}
+                  "La semaine actuelle"}
                 {currentPeriodData.currntWeek !== weekNumber() &&
-                  ("la semaine: " + currentPeriodData.currntWeek)}
+                  " [" +
+                    getWeekDates(
+                      new Date().getFullYear(),
+                      currentPeriodData.currntWeek
+                    ).startDate.toDateString() +
+                    " - " +
+                    getWeekDates(
+                      new Date().getFullYear(),
+                      currentPeriodData.currntWeek
+                    ).endDate.toDateString() +
+                    "]"}
               </div>
               <div
                 id="nextBtn"
@@ -289,15 +347,39 @@ function TresorierCharts({
         />
       </div>
       <div className="w-[32%] bg-white rounded-md shadoww p-6">
+
+        <div className="flex justify-center w-[100%] items-center gap-4 mb-4">
+          <button
+            onClick={handleChangeType}
+            id="allBtn"
+            className="doghnout-btn"
+          >
+            Tous
+          </button>
+          <button
+            id="aidsBtn"
+            onClick={handleChangeType}
+            className="doghnout-btn"
+          >
+            Aides Financieres
+          </button>
+          <button
+            id="pretsBtn"
+            onClick={handleChangeType}
+            className="doghnout-btn  active-doghnout-btn"
+          >
+            Prets
+          </button>
+        </div>
         <Doughnut
           className="w-full"
           data={{
-            labels: Monthlylabels,
+            labels: doughnoutLabels,
             datasets: [
               {
                 label: "My Second Dataset",
-                data: [55, 65, 59, 40, 80, 81, 56],
-                backgroundColor: ["#4256D0"],
+                data: [55, 65, 59, 40],
+                backgroundColor: ["#7ABA78", "#0A6847", "#F3CA52", "#FCDC2A"],
               },
             ],
           }}
