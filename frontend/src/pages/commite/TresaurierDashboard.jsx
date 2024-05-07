@@ -28,6 +28,7 @@ import { Button } from "components/ui/button";
 import { addRecord, fetchAnalitics } from "api/records";
 import { weekNumber } from "components/utils/utilFunctions";
 import { Link } from "react-router-dom";
+import { getCommity } from "api/requests";
 
 function TresaurierDashboard() {
   const recordCol = recordsColumns([], true) || [];
@@ -66,9 +67,9 @@ function TresaurierDashboard() {
   const [error, setError] = useState(false);
   const [type, setType] = useState("");
   const [RecordType, setRecordType] = useState("");
-  const { Records, allLoans, allAids } = useStore();
+  const { Records, allLoans, allAids , Commity } = useStore();
   const all =[...allLoans , ...allAids]
-console.log("test " ,allLoans , allAids);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newRecord.type === "expense") {
@@ -123,22 +124,23 @@ console.log("test " ,allLoans , allAids);
   useEffect(() => {
     fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear);
   }, []);
+  console.log(Commity?.current_year_income ,Number(Commity?.current_year_income),'eeeeeeeeeeeeeeeeeee');
   return (
     <div className="mt-6">
       <div className="flex gap-6 ">
         <Card
           title="Budget"
-          price={2500}
+          price={Commity?.current_balance}
           ReactIcon={<FaCashRegister size={40} color="" />}
         />
         <Card
           title="Revenue"
-          price={2500}
+          price={Number(Commity?.current_year_income)}
           ReactIcon={<MdOutlineAttachMoney size={40} />}
         />
         <Card
-          title="Income"
-          price={200}
+          title="Dépense"
+          price={Number(Commity?.current_year_expenses)}
           ReactIcon={<MdMoneyOffCsred size={40} />}
         />
       </div>
@@ -370,8 +372,28 @@ console.log("test " ,allLoans , allAids);
               Prets
               </div>
             </div>
-            {all.filter(loan => loan.status === 'approved').length ===0 ? <p className="text-center my-5 text-sm text-gray-500">Il n'existe aucune demande acceptée.</p> :''}
-            { all.filter(loan => loan.status === 'approved').length !==0  && type ==='prets' && allLoans && allLoans.filter(loan => loan.status === 'accepted').slice(1,5).map((loan)=>( <div className="flex items-center justify-between p-2 my-2">
+            {all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).length === 0 ? <p className="text-center my-5 text-sm text-gray-500">Il n'existe aucune demande acceptée.</p> :''}
+          
+            { all.filter(demmande => (demmande?.loan_status === 'approved' || demmande?.financial_aid_status === 'approved' )).length !==0   && type ==='' && all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).slice(0,5).map((demmande)=>( <div className="flex items-center justify-between p-2 my-2">
+            <div className="text-base">
+              <p>{demmande?.employee?.first_name} {' '} {demmande?.employee?.last_name}</p>
+              <p className="text-[11px] text-gray-500 leading-3 ml-1">
+              {demmande?.employee?.email}/ pret
+              </p>
+            </div>
+            <div className="flex gap-3 items-center ">
+              <FaMoneyBillTransfer
+                size={20}
+                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+              />
+               <Link to={`demandes-employe/${demmande?.loan_status === 'approved' ?"pret":'aid'}/${demmande.id}`} target="_blank">
+              <IoEye
+                size={20}
+                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+              /></Link>
+            </div>
+          </div>))}
+            { all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).length !==0   && type ==='prets' && allLoans && allLoans.filter(loan => loan.loan_status === 'approved').slice(0,5).map((loan)=>( <div className="flex items-center justify-between p-2 my-2">
             <div className="text-base">
               <p>{loan?.employee?.first_name} {' '} {loan?.employee?.last_name}</p>
               <p className="text-[11px] text-gray-500 leading-3 ml-1">
@@ -383,13 +405,14 @@ console.log("test " ,allLoans , allAids);
                 size={20}
                 className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
               />
+              <Link to={`demandes-employe/pret/${loan.id}`}  target="_blank">
               <IoEye
                 size={20}
                 className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
-              />
+              /></Link>
             </div>
           </div>))}
-          { all.filter(loan => loan.status === 'approved').length !==0  &&  type ==='aids' && allAids && allAids.filter(aid => aid.status === 'accepted').slice(1,5).map((aid)=>( <div className="flex items-center justify-between p-2 my-2">
+          { all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).length !==0   &&  type ==='aids' && allAids && allAids.filter(aid => aid.financial_aid_status === 'approved').slice(0,5).map((aid)=>( <div className="flex items-center justify-between p-2 my-2">
             <div className="text-base">
               <p>{aid?.employee?.first_name} {' '} {aid?.employee?.last_name}</p>
               <p className="text-[11px] text-gray-500 leading-3 ml-1">
@@ -401,10 +424,13 @@ console.log("test " ,allLoans , allAids);
                 size={20}
                 className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
               />
+              <Link to={`demandes-employe/aid/${aid.id}`}  target="_blank">
               <IoEye
                 size={20}
                 className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
               />
+              </Link>
+            
             </div>
           </div>))}
         </div>

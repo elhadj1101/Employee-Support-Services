@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "components/layout/Sidebar";
 import { Outlet } from "react-router-dom";
@@ -11,18 +11,19 @@ import {
   getAllAids,
   getAllLoans,
   canApplyForLoan,
+  getCommity,
 } from "../api/requests.js";
 import { getRecords } from "api/records";
 
 function Dashboard() {
-    const [open, setOpen] = useState(false);
-  const  usersDontSee = ["employe"];
-    const toggleSidebar = () => {
-      setOpen(!open);
-    };
-    const hideSidebar = () => {
-      setOpen(false);
-    };
+  const [open, setOpen] = useState(false);
+  const usersDontSee = ["employe"];
+  const toggleSidebar = () => {
+    setOpen(!open);
+  };
+  const hideSidebar = () => {
+    setOpen(false);
+  };
 
   const {
     setCanApplyLoan,
@@ -47,7 +48,10 @@ function Dashboard() {
     fetchedLoans,
     setFetchedRecords,
     setRecords,
-    fetchedRecords
+    fetchedRecords,
+    setCommity,
+    setFetchedCommity,
+    fetchedCommity,
   } = useStore();
   React.useEffect(() => {
     async function fetchUsers() {
@@ -94,22 +98,28 @@ function Dashboard() {
 
     async function fetchRecords() {
       const dat = await getRecords();
-      console.log("fetched records");
       setRecords(dat);
       setFetchedRecords(true);
     }
+    async function fetchCommity() {
+      const dat = await getCommity();
+      console.log("datttttttttttttttttttttttttttttttttttttttttttt", dat);
+      setCommity(dat);
+      setFetchedCommity(true);
+    }
 
     if (user && user.is_superuser && !fetchedAdminUsers) fetchUsers();
-    if (user && user.role === 'tresorier' && !fetchedRecords) fetchRecords();
-    if (!fetchedOffres ) fetchOffres();
-    if (!fetchedLoans ) fetchLoans();
-    if (!fetchedAids ) fetchAids();
-    if (!fetchedAllAids && user && !usersDontSee.includes(user.role)) fetchAllAids();
-    if (!fetchedAllLoans && user && !usersDontSee.includes(user.role)) fetchAllLoans();
+    if (user && user.role === "tresorier" && !fetchedRecords) fetchRecords();
+    if (user && user.role === "tresorier" && !fetchedCommity) fetchCommity();
+    if (!fetchedOffres) fetchOffres();
+    if (!fetchedLoans) fetchLoans();
+    if (!fetchedAids) fetchAids();
+    if (!fetchedAllAids && user && !usersDontSee.includes(user.role))
+      fetchAllAids();
+    if (!fetchedAllLoans && user && !usersDontSee.includes(user.role))
+      fetchAllLoans();
 
     //&& user && !user.is_superuser
-
-
   }, []);
   return (
     <div className="">

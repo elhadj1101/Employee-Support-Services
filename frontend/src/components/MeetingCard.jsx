@@ -28,10 +28,10 @@ export default function MeetingCard() {
           <div className="w-[6px] h-[6px] bg-green-500 rounded-full mr-[2px]" />
           online
         </p>
-        {/* <p className="text-red-500 text-sm capitalize font-semibold flex items-center">
+        <p className="text-red-500 text-sm capitalize font-semibold flex items-center">
             <div className="w-[6px] h-[6px] bg-red-500 rounded-full mr-[2px]" />{" "}
             Presentiel
-          </p> */}
+          </p>
       </div>
       <p className="ml-2 text-sm text-gray-500 flex items-center gap-1">
         <p>Lien:</p>

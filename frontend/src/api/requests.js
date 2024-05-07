@@ -352,7 +352,17 @@ const updateStatus = async (id, type, newStatus) => {
 
 
 }
+
+const getCommity = async ()=>{
+  try{
+    const response = await Axios.get('/funds/commity/1/');
+    return response.data;
+  }catch(error){
+    console.log(error);
+  }
+
+}
 export { getLoans , getAids, financial_aid_infos,
     statusColorMap, getAllAids, getAllLoans,
     canApplyForLoan, deleteLoan, deleteAid,
-    updateStatus};
+    updateStatus , getCommity};

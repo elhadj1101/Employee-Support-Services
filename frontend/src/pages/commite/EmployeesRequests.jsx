@@ -14,6 +14,7 @@ function EmployeesRequests() {
     setAllLoans,
     setUpdated,
     setFetchedAllLoans,
+    user
   } = useStore();
   const loancols = loanColumns([], true) || [];
   const aidscols = aidsColumns([], true) || [];
@@ -45,7 +46,7 @@ function EmployeesRequests() {
         Les demandes d'aide financiere
       </div>
       <RequestsTable
-        data={allAids}
+        data={user.role==='tresorier'? allAids.filter((aid)=>aid.financial_aid_status === 'approved'): allAids}
         columns={aidscols}
         filteredColumn="employee"
       />
@@ -54,7 +55,7 @@ function EmployeesRequests() {
         Les demandes de prets
       </div>
       <RequestsTable
-        data={allLoans}
+        data={user.role==='tresorier'? allLoans.filter((loan)=>loan.loan_status === 'approved'): allAids}
         columns={loancols}
         filteredColumn="employee"
       />
