@@ -2,11 +2,6 @@ from django_filters import rest_framework as filters
 from .models import Loan, Financial_aid
 
 
-# searching / filtering /  oredering / throttling
-# get all loans-financilal aid
-# filtering by (amount , loan_status, loan_period ,request_created_at, employee)
-
-
 class LoanFilter(filters.FilterSet):
     class Meta:
         model = Loan
