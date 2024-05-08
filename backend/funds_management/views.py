@@ -9,7 +9,7 @@ from .serializers import RecordSerializer, CommitySerializer, RecordAnaliticsSer
 from .permissions import IsTreasurer, CanViewCommity
 from django.core.exceptions import ValidationError
 from django.db.models import Sum, Count, Q, F
-
+from requests.models import Financial_aid 
 
 # Create your views here.
 class RecordView(generics.ListCreateAPIView):
@@ -17,7 +17,6 @@ class RecordView(generics.ListCreateAPIView):
     serializer_class = RecordSerializer
     # permission_classes = [AllowAny]
     permission_classes = [IsAuthenticated,IsTreasurer]
-    Record.objects.aggregate()
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
@@ -35,9 +34,9 @@ class RecordView(generics.ListCreateAPIView):
         if serializer.validated_data.get('type') == "income" and serializer.validated_data.get('loan', None) is not None:
             loan = serializer.validated_data.get('loan')
             if loan.loan_status != "approved":
-                raise ValidationError("you can't pay an unapproved loan")
+                return Response({"error": "you can't pay an unapproved loan"}, status=status.HTTP_400_BAD_REQUEST)
             if loan.paid_amount + serializer.validated_data.get('amount') > loan.amount:
-                raise ValidationError("you can't pay more than the loan amount")
+                return Response({"error": "you can't pay more than the loan amount"}, status=status.HTTP_400_BAD_REQUEST)                
             loan.paid_amount += serializer.validated_data.get('amount')
             loan.save()
         # update commity balance
@@ -92,6 +91,7 @@ class SingleCommityView(generics.RetrieveUpdateDestroyAPIView):
 
 class GeneralAnalitics(APIView):
     permission_classes = [IsAuthenticated,IsTreasurer]
+    # permission_classes = [AllowAny]
     def get(self, request):
         anotations  = dict(total_expense=Sum('amount', filter=Q(type="expense")) ,total_income=Sum('amount', filter=Q(type="income")) ,
                     total_records=Count('id'), count_loans_expense=Count('loan', filter=Q(type='expense')),
@@ -100,16 +100,23 @@ class GeneralAnalitics(APIView):
                     total_expense_loans=Sum('amount', filter=Q(type="expense",loan__isnull=False)) ,
                     total_income_loans=Sum('amount', filter=Q(type="income",loan__isnull=False)) ,
                     total_expense_financial_aids=Sum('amount', filter=Q(type="expense",financial_aid__isnull=False)))
-
+        financial_aid_by_type = dict(
+            total_amount=Sum('amount', distinct=True),
+            aid_type=F('financial_aid__financial_aid_type')
+        )
 
         period_type = request.GET.get('period', "monthly")
         year = request.GET.get('year', date.today().year)
         week = request.GET.get('week',None)
         start_date = request.GET.get('start_date', "2022-01-01")
         end_date = request.GET.get('end_date', "2024-12-31")
-        
-        total = request.GET.get('total', False)
-        total = True if total == "true" else False
+        aids = True if request.GET.get('aids', False) == "true" else False
+        total = True if request.GET.get('total', False) == "true" else False
+        if (aids):
+            records = Record.objects.filter(created_at__year=year, type="expense", financial_aid__isnull=False)
+            new_records = records.values('financial_aid__financial_aid_type').annotate(**financial_aid_by_type)
+            serializer = RecordAnaliticsSerializer(new_records, many=True)
+            return Response(serializer.data, status=200)
         if total:
             records = Record.objects.filter(created_at__year=year)
             new_records = records.aggregate(**anotations)
@@ -128,8 +135,7 @@ class GeneralAnalitics(APIView):
                     start_date = date.fromisocalendar(year, int(week), 1).strftime("%Y-%m-%d")
                     end_date = date.fromisocalendar(year, int(week), 7).strftime("%Y-%m-%d")
                     records = Record.objects.filter(created_at__range=[start_date, end_date]).order_by('-created_at')   
-                    new_records = records.values('created_at__day').annotate(**anotations, created_at=F('created_at')).order_by('created_at')
-                    print(new_records)
+                    new_records = records.values('created_at__day').annotate(**anotations, created_at=F('created_at')).order_by('created_at__day')
                 elif (period_type == "yearly"):
                     records = Record.objects.filter(created_at__range=[start_date, end_date])
                     new_records = records.values('created_at__year').annotate(**anotations).order_by('created_at__year')

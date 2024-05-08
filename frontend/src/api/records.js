@@ -21,9 +21,9 @@ const addRecord = async (record) => {
 };
 
 
-const getAnalitics = async(year,week="", period="monthly", total=false) =>{
+const getAnalitics = async(year,week="", period="monthly", total=false, aid=false) =>{
    try {
-    const response = await Axios.get(`funds/analitics/?${(period && "period="+period+"&") || ""}${(year && "year="+year+"&") || ""}${(week && "week="+ week+"&") || ""}${"total="+total}` );
+    const response = await Axios.get(`funds/analitics/?${(period && "period="+period+"&") || ""}${(year && "year="+year+"&") || ""}${(week && "week="+ week+"&") || ""}${"aids="+aid+"&"}${"total="+total}` );
     return response.data ;
   } catch (error) {
     console.log(error);
@@ -68,8 +68,8 @@ async function fetchAnalitics(setAnaliticsByMonth,year=null, week=null, period="
       setAnaliticsByMonth(dat)
     }
 
-async function fetchDoghnouts(setDoghnoutsData,year=null) {
-      let dat = await getAnalitics(year,"" ,"",true);
+async function fetchDoghnouts(setDoghnoutsData,year=null,total=true,aid=false) {
+      let dat = await getAnalitics(year,"" ,"",total,aid);
       setDoghnoutsData(dat)
     }
 export  {getRecords , addRecord, getAnalitics, fetchAnalitics,fetchDoghnouts}

@@ -20,7 +20,7 @@ class Meeting(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     pv = models.FileField(
-        upload_to=get_path, null=True, validators=[extention_validator]
+        upload_to=get_path, null=True, validators=[extention_validator], blank=True
     )
     doc_field = "pv"
 
