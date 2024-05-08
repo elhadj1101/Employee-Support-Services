@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "offres",
     "funds_management",
     "meetings",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
