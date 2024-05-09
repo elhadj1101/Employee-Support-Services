@@ -38,6 +38,7 @@ class RecordView(generics.ListCreateAPIView):
             if loan.paid_amount + serializer.validated_data.get('amount') > loan.amount:
                 return Response({"error": "you can't pay more than the loan amount"}, status=status.HTTP_400_BAD_REQUEST)                
             loan.paid_amount += serializer.validated_data.get('amount')
+            loan.loan_status = "payment_started"
             loan.save()
         # update commity balance
         commity = Commity.objects.all().first()
@@ -62,6 +63,14 @@ class RecordView(generics.ListCreateAPIView):
             else:
                 commity.current_year_income += serializer.validated_data.get('amount')
         commity.save()
+        if serializer.validated_data.get('type') == "expense": 
+            financial_aid = serializer.validated_data.get('financial_aid', None)
+            if financial_aid is not None:
+                if (financial_aid.financial_aid_status == "approved") :
+                    financial_aid.financial_aid_status = "finished"
+                    financial_aid.save()
+                else:
+                    return Response({"error": "you can't pay an unapproved or finished financial aid"}, status=status.HTTP_400_BAD_REQUEST)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

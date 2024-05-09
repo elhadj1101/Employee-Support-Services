@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 function FinancialAid() {
   const { user, setUpdated, aids } = useStore();
   const [oldFiles, setOldFiles] = useState([]);
+
   const parts = window.location.pathname
     .split("/")
     .filter((part) => part.trim() !== "");
@@ -46,6 +47,7 @@ function FinancialAid() {
     aidType: "",
     familyMember: "",
     employeeType: employeeType,
+    amount: 0,
   });
   const [amount, setAmount] = useState(0);
   const handleSubmit = (e) => {
@@ -53,6 +55,10 @@ function FinancialAid() {
     const { name } = e.target;
     let isDraft = "false";
     if (name === "draft") isDraft = "true";
+    if (amount === 0) {
+      toast.error("Veuillez choisir le montant que vous voulez bénéficié");
+      return;
+    }
     if (aidData.aidType === "") {
       toast.error("Veuillez choisir un type d'aide");
       return;
@@ -96,6 +102,8 @@ function FinancialAid() {
         : `/requests/financial-aids/${aidDraftId}?draft=`;
     const formData = new FormData();
     formData.append("financial_aid_type", aidData.aidType);
+    formData.append("amount", amount);
+
     if (aidData.aidType === "family_member_death") {
       formData.append("family_member", aidData.familyMember);
     }
@@ -197,7 +205,9 @@ function FinancialAid() {
         : sessionStorage.getItem("aid/familyMember") || "",
       employeeType: employeeType,
     };
-
+    let amnt = crrntAid
+        ? crrntAid.amount
+        : 0;
     let oldF = crrntAid
       ? crrntAid.documents.map((doc) => {
           return {
@@ -210,28 +220,30 @@ function FinancialAid() {
     setOldFiles(oldF);
     if (data.aidType !== "") {
       let ff = financial_aid_infos[typeIndMap[data.aidType]].files;
-      let amnt = 0;
+      if (amnt === 0) {
+
       if (data.aidType === "family_member_death") {
-        Object.entries(
-          financial_aid_infos[typeIndMap[data.aidType]].types
-        ).forEach((key) => {
-          if (key[0] === data.familyMember) {
-            ff = ff.concat(key[1].files);
-            amnt = key[1].amount;
+          Object.entries(
+            financial_aid_infos[typeIndMap[data.aidType]].types
+          ).forEach((key) => {
+            if (key[0] === data.familyMember) {
+              ff = ff.concat(key[1].files);
+              amnt = key[1].amount;
           }
         });
       } else if (data.aidType === "employee_death") {
         if (data.employeeType) {
           amnt =
-            financial_aid_infos[typeIndMap[data.aidType]].types[
-              data.employeeType
-            ].amount;
+          financial_aid_infos[typeIndMap[data.aidType]].types[
+            data.employeeType
+          ].amount;
         } else {
           amnt = 0;
         }
       } else {
         amnt = financial_aid_infos[typeIndMap[data.aidType]].amount;
       }
+    }
       setFileNames(ff);
       setAmount(amnt);
     }
@@ -434,32 +446,44 @@ function FinancialAid() {
               </Select>
             </>
           )}
-          {amount !== 0 && (
-            <p className="text-lg font-semibold">
-              Le Montant bénéficié :
-              <span className="ml-3  text-light-blue ">
-                {formatPrice(amount, ",")}DA
-              </span>
-            </p>
-          )}
-          {aidData.aidType !== "" &&
-            aidData.aidType !== "family_member_death" &&
-            amount === 0 && (
-              <div className="text-lg font-semibold">
-                Le Montant bénéficié :
-                <ul className="pl-4 text-sm w- list-decimal font-light ">
-                  {financial_aid_infos[
-                    typeIndMap[aidData.aidType]
-                  ].amountNotes.map((note, ind) => {
-                    return (
-                      <li className="" key={ind}>
-                        {note}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+          {amount !== 0 &&
+            !financial_aid_infos[typeIndMap[aidData.aidType]].amountNotes && (
+              <p className="text-lg font-semibold">
+                Choisir Le Montant bénéficié :
+                <input
+                  type="text"
+                  value={amount}
+                  className="w-20 text-center border-2 border-gray-300 rounded-md mx-2"
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+                DA
+              </p>
             )}
+          {aidData.aidType !== "" &&
+            financial_aid_infos[typeIndMap[aidData.aidType]]?.amountNotes &&
+            aidData.aidType !== "family_member_death" && (
+                <div className="text-lg font-semibold">
+                  Choisir Le Montant bénéficié :
+                  <input
+                    type="text"
+                    value={amount}
+                    className="w-20 text-center border-2 border-gray-300 rounded-md mx-2"
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                  DA
+                  <ul className="pl-4 text-sm w- list-decimal font-light ">
+                    {financial_aid_infos[
+                      typeIndMap[aidData.aidType]
+                    ].amountNotes.map((note, ind) => {
+                      return (
+                        <li className="" key={ind}>
+                          {note}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
           {aidData.aidType !== "" && (
             <>
               <h2 className="font-semibold text-lg mt-4">

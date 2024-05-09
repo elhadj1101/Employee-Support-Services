@@ -86,16 +86,38 @@ export default function Sidebar() {
             </Link>
           </>
         )}
-        {user && user.role !== "employe" && (
-          <Link   to="/reunions">
+        {user && user.role === "tresorier" && (
+          <Link to="/reunions">
             <SideButton
               title="Les Réunions"
               icon={HiOutlineUserGroup}
               nestedBtns={[]}
               to="/reunions"
             />
-        </Link>
+          </Link>
         )}
+        {user &&
+          (user.role === "president" || user.role === "vice_president") && (
+            <Link to="/offres">
+              <SideButton
+                title="Les offres"
+                icon={HiOutlineUserGroup}
+                to="/offres"
+                nestedBtns={[
+                  {
+                    titleBtn: "Creer Un Offre",
+                    path: "/offres",
+                    Icon: HiOutlineUserPlus,
+                  },
+                  {
+                    titleBtn: "Liste Des Offres",
+                    path: "/create-offre",
+                    Icon: FaCircleCheck,
+                  },
+                ]}
+              />
+            </Link>
+          )}
       </div>
     </div>
   );

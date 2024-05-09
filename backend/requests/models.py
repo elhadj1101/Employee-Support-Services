@@ -19,6 +19,8 @@ class Loan(models.Model):
         ("waiting", "En attente"),
         ("refused", "Rejeté"),
         ("approved", "Approuvé"),
+        ("payment_started", "En cours de paiement"),
+        
         ("finished", "terminé"),
     ]
     payment_method_options = [
@@ -59,6 +61,7 @@ class Financial_aid(models.Model):
         ("waiting", "en attente"),
         ("refused", "refusé"),
         ("approved", "approuvé"),
+        ("finished", "terminé")
     ]
     family_member_options = [
         ("wife", "epouse"),
@@ -162,7 +165,7 @@ def post_save_financial_aid(sender, instance, created, **kwargs):
             instance.cached_status != instance.financial_aid_status
             and instance.cached_status == "draft"
         ):
-            instance.cached_status = instance.status
+            instance.cached_status = instance.financial_aid_status
         else:
             
             subject = "Financial aid status update"

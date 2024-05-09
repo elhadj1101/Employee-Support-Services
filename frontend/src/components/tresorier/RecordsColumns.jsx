@@ -185,19 +185,13 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                           <table class="border w-full text-sm text-left  text-gray-500 ">
                             <thead class=" text-xs text-gray-700 uppercase ">
                               <tr>
-                                <th
-                                  scope="col"
-                                  class="px-6 py-3 bg-gray-50 "
-                                >
+                                <th scope="col" class="px-6 py-3 bg-gray-50 ">
                                   id
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                   employeur
                                 </th>
-                                <th
-                                  scope="col"
-                                  class="px-6 py-3 bg-gray-50 "
-                                >
+                                <th scope="col" class="px-6 py-3 bg-gray-50 ">
                                   email
                                 </th>
                                 <th scope="col" class="px-6 py-3">
@@ -212,8 +206,8 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                                   class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white "
                                 >
                                   #
-                                  {row.original.loan?.id ||
-                                    row.original.finaincial_aid?.id}
+                                  {row.original.loan?.employee.id ||
+                                    row.original.finaincial_aid?.employee.id}
                                 </th>
                                 <td class="px-6 py-4">
                                   {row.original.loan?.employee.last_name ||
@@ -248,9 +242,7 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                       </div>
                     </DialogDescription>
                   </DialogHeader>
-                  <DialogFooter>
-                  
-                  </DialogFooter>
+                  <DialogFooter></DialogFooter>
                 </DialogContent>
               </Dialog>
               <Dialog>

@@ -181,8 +181,15 @@ class FinancialaidView(generics.ListCreateAPIView):
             return Response(
                 {"error": "employee is not retired"}, status=status.HTTP_403_FORBIDDEN
             )
+        try:
+            amount = float(request.data["amount"])
+        except Exception as e:
+            return Response(
+                {"error": "amount must be a number"}, status=status.HTTP_400_BAD_REQUEST
+            )
         created_instance = serializer.save(
             employee=request.user,
+            amount=amount,
             family_member=family_member,
             financial_aid_status=aid_status,
             request_created_at=(date.today() if aid_status == "waiting" else None),

@@ -13,7 +13,6 @@ function FileInput({
   setFiles = null,
   accepts = "application/pdf",
   fileTypes = "PDF",
-
   multpl = false,
 }) {
   const uploadInputEltest = useRef(null);
@@ -137,7 +136,7 @@ function FileInput({
   // }, [uploadInputElRef]);
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 " >
       {labell !== "" && (
         <label htmlFor="upload" className="">
           {labell}

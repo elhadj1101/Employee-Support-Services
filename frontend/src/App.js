@@ -12,7 +12,7 @@ import Users from "./pages/admin/Users";
 import { Toaster } from "sonner";
 import RequireAuth from "./RequireAuth";
 import Loan from "pages/Loan";
-
+import AddOffre from "pages/commite/AddOffre";
 import UserProfile from "pages/admin/UserProfile";
 import FinancialAid from "pages/employee/FinancialAid";
 import ListLoans from "pages/employee/ListLoans";
@@ -52,7 +52,6 @@ function App() {
               <Route path="" element={<InitialDashboard />} />
               <Route path="demande-pret" element={<Loan key={2} />} />
               <Route path="demande-pret/:lDId" element={<Loan key={1} />} />
-              <Route path="tresaurier" element={<tresaurierDashboard />} />
 
               <Route path="demande-aide-financiere" element={<FinancialAid key={2} />} />
               <Route path="demande-aide-financiere/:aDId" element={< FinancialAid key={1} />} />
@@ -66,9 +65,16 @@ function App() {
               <Route path="demandes-employe" element={<EmployeesRequests/>} />
               <Route path="demandes-employe/pret/:dmId" element={<SingleDemandLoan  employee={false} />} />
               <Route path="demandes-employe/aid/:dmId" element={<SingleDemandAid employee={false} />} />
+            </Route>
+            <Route element={<RequireAuth requiredRoles={["tresorier"]} excludedRoles={[]} />} >
               <Route path="reunions" element={<Meetings/>} />
+            </Route>
+            <Route element={<RequireAuth requiredRoles={["president", "vice_president"]} excludedRoles={[]} />} >
+              <Route path="offres" element={<AddOffre/>} />
+              <Route path="create-offre" element={<AddOffre/>} />
 
             </Route>
+
             </Route>
           </Route>
 
