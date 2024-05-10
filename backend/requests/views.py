@@ -18,6 +18,7 @@ from rest_framework import generics
 from .utils import calculate_max_loan
 from django.http import HttpResponse
 from datetime import date
+from .filters import LoanFilter, FinancialaidFilter
 
 
 # Create your views here.
@@ -31,7 +32,7 @@ from datetime import date
 
 
 class LoanView(APIView):
-    permission_classes = [IsAuthenticated, IsLoanApplier]
+    permission_classes = [IsAuthenticated, CanViewRequests, IsLoanApplier]
 
     def post(self, request):
         serializer = LoanSerializer(data=request.data)
@@ -95,9 +96,12 @@ class LoanView(APIView):
 
     def get(self, request):
         execlution_criteria = {"loan_status": "draft"}
-        loans = Loan.objects.exclude(**execlution_criteria).order_by('-request_response_at','-request_created_at')
-        if loans.exists():
-            serializer = LoanSerializer(loans, many=True)
+        loans = Loan.objects.exclude(**execlution_criteria).order_by(
+            "-request_response_at", "-request_created_at"
+        )
+        filter = LoanFilter(request.GET, queryset=loans)
+        if filter.qs.exists():
+            serializer = LoanSerializer(filter.qs, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("No current loans", status=status.HTTP_200_OK)
 
@@ -118,7 +122,9 @@ class LoanHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        loans = Loan.objects.filter(employee=request.user).order_by('-request_created_at')
+        loans = Loan.objects.filter(employee=request.user).order_by(
+            "-request_created_at"
+        )
         serializer = LoanSerializer(loans, many=True)
         if loans:
             return Response(serializer.data)
@@ -175,12 +181,18 @@ class FinancialaidView(generics.ListCreateAPIView):
             return Response(
                 {"error": "employee is not retired"}, status=status.HTTP_403_FORBIDDEN
             )
+        try:
+            amount = float(request.data["amount"])
+        except Exception as e:
+            return Response(
+                {"error": "amount must be a number"}, status=status.HTTP_400_BAD_REQUEST
+            )
         created_instance = serializer.save(
             employee=request.user,
+            amount=amount,
             family_member=family_member,
             financial_aid_status=aid_status,
-            request_created_at=(
-                date.today() if aid_status == "waiting" else None)
+            request_created_at=(date.today() if aid_status == "waiting" else None),
         )
         # now create the files
         files = request.FILES.getlist("files[]", [])
@@ -203,9 +215,12 @@ class FinancialaidView(generics.ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         execlution_criteria = {"financial_aid_status": "draft"}
-        financail_aids = Financial_aid.objects.exclude(**execlution_criteria).order_by('-request_response_at','-request_created_at')
-        if financail_aids.exists():
-            serializer = FinancialaidSerializer(financail_aids, many=True)
+        financail_aids = Financial_aid.objects.exclude(**execlution_criteria).order_by(
+            "-request_response_at", "-request_created_at"
+        )
+        filter = FinancialaidFilter(request.GET, queryset=financail_aids)
+        if filter.qs.exists():
+            serializer = FinancialaidSerializer(filter.qs, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response([], status=status.HTTP_200_OK)
 
@@ -217,7 +232,9 @@ class FinancialaidHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        financial_aids = Financial_aid.objects.filter(employee=request.user).order_by('-request_created_at')
+        financial_aids = Financial_aid.objects.filter(employee=request.user).order_by(
+            "-request_created_at"
+        )
         if financial_aids.exists():
             serializer = FinancialaidSerializer(financial_aids, many=True)
             return Response(serializer.data)

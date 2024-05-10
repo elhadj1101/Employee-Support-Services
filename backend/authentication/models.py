@@ -127,15 +127,18 @@ If you have any questions or need further assistance, please don't hesitate to c
 
 Best regards,
 """
-        send_mail(
-            subject,
-            message,
-            EMAIL_HOST_USER,
-            [
-                instance.email
-                # Because we don't have real employee emails , I used this email to check ,
-                # you can add your email here to check
-            ],
-            fail_silently=False,
-        )
+        try:
+            send_mail(
+                subject,
+                message,
+                EMAIL_HOST_USER,
+                [
+                    instance.email
+                    # Because we don't have real employee emails , I used this email to check ,
+                    # you can add your email here to check
+                ],
+                fail_silently=False,
+            )
+        except:
+            pass
         instance.cached_plain_pass = ""

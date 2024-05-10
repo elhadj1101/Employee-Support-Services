@@ -5,14 +5,32 @@ from .serializers import MeetingSerializer
 from .permissions import IsCommitte, CanCreateMeeting
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from django_filters import rest_framework as filters
+
 
 # Create your views here.
 
 
+class MeetingFilter(filters.FilterSet):
+    title = filters.CharFilter(lookup_expr="icontains")
+    description = filters.CharFilter(lookup_expr="icontains")
+
+    class Meta:
+        model = Meeting
+        fields = {
+            "day": ["exact", "gte", "lte", "lt", "gt"],
+            "title": ["exact"],
+            "description": ["exact"],
+        }
+
+
 class MeetingsView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated, IsCommitte, CanCreateMeeting]
+
+    # permission_classes = [IsAuthenticated, IsCommitte, CanCreateMeeting]
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = MeetingFilter
 
 
 class SingleMeetingView(generics.RetrieveUpdateDestroyAPIView):

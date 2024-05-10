@@ -146,7 +146,7 @@ export default function SingleDemandLoan({ employee }) {
                   montant Total de l'aide
                 </h3>
                 <p className="pl-2 font-semibold text-gray-500">
-                  {requestedAid?.amount * requestedAid?.loan_period} DA
+                  {requestedAid?.amount } DA
                 </p>
               </div>
 

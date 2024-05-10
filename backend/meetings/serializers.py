@@ -12,25 +12,35 @@ class MeetingSerializer(serializers.ModelSerializer):
         
     def validate(self, attrs):
 
-        start_time = attrs["start_time"]
-        end_time = attrs["end_time"]
-        if start_time > end_time:
+        start_time = attrs.get("start_time")
+        end_time = attrs.get("end_time")
+        if (start_time and not end_time) or (not start_time and end_time):
+            raise serializers.ValidationError(
+                "End time and start time must change at the same time."
+            )
+        if start_time and end_time and start_time > end_time:
             raise serializers.ValidationError("End time must be after start time.")
 
         # checking if the meeting time is after the current time
-        meeting_day = attrs["day"]
+        meeting_day = attrs.get("day")
         now = datetime.now().time()
         day = date.today()
 
         if (
-            day == meeting_day and (start_time < now or end_time < now)
+            meeting_day and day == meeting_day and (start_time < now or end_time < now)
         ) or meeting_day < day:
             raise serializers.ValidationError(
                 "Meeting should be scheduled after current time."
             )
 
+        instance = getattr(self, "instance", None)
         # checking that this meeting does not overlap with an existing meeting
+        if instance and not meeting_day:
+            meeting_day = instance.day
         same_day_meetings = Meeting.objects.filter(day=meeting_day)
+        if instance and (not start_time and not end_time):
+            start_time = instance.start_time
+            end_time = instance.end_time
         overlaped_meetings = same_day_meetings.filter(
             # using Q object to check for all extreme possibilities inside one single filter
             Q(start_time__gte=start_time, start_time__lt=end_time)
@@ -38,10 +48,8 @@ class MeetingSerializer(serializers.ModelSerializer):
             | Q(start_time__lte=start_time, end_time__gte=end_time)
         )
 
-        instance = getattr(self, "instance", None)
         if instance:
             overlaped_meetings = overlaped_meetings.exclude(pk=instance.pk)
-            print(overlaped_meetings)
         if overlaped_meetings:
             raise serializers.ValidationError(
                 "Meeting time overlaps with and an existing meeting"

@@ -83,7 +83,7 @@ function TresaurierDashboard() {
           motif: newRecord.motif,
           [newRecord.conection]: newRecord.id,
         });
-        console.log(res);
+        
         HandleOpen();
         setDemmandeSelecter({});
       }
@@ -96,7 +96,7 @@ function TresaurierDashboard() {
           motif: newRecord.motif,
           ...(newRecord.conection && { [newRecord.conection]: newRecord.id }),
         });
-        console.log(res);
+        
         HandleOpen();
         setDemmandeSelecter({});
       }
@@ -124,9 +124,8 @@ function TresaurierDashboard() {
 
   useEffect(() => {
     fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear);
-    fetchDoghnouts(setDoughnoutData, new Date().getFullYear());
+    fetchDoghnouts(setDoughnoutData, new Date().getFullYear(), true);
   }, []);
-  console.log(Commity?.current_year_income ,Number(Commity?.current_year_income),'eeeeeeeeeeeeeeeeeee');
   return (
     <div className="mt-6">
       <div className="flex gap-6 ">
@@ -148,6 +147,7 @@ function TresaurierDashboard() {
       </div>
       <TresorierCharts
         doughnoutData={doughnoutData}
+        setDoughnoutData={setDoughnoutData}
         monthlyData={analiticsByMonth}
         currentPeriodData={currentPeriodData}
         setCurrentPeriodData={setCurrentPeriodData}
@@ -282,7 +282,7 @@ function TresaurierDashboard() {
                             placeholder="100000"
                             value={newRecord?.amount}
                             onChange={(e) => {
-                              console.log(demmandeSelecter);
+                              
                               const price = Number(e.target.value);
                               if (!isNaN(price)) {
                                 if (
@@ -315,7 +315,7 @@ function TresaurierDashboard() {
                             value={newRecord.motif}
                             onChange={(e) =>
                               setNewRecord((prev) => {
-                                console.log(e.target.value, newRecord.motif);
+                                
                                 return { ...prev, motif: e.target.value };
                               })
                             }
@@ -423,7 +423,7 @@ function TresaurierDashboard() {
             </div>
             {all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).length === 0 ? <p className="text-center my-5 text-sm text-gray-500">Il n'existe aucune demande acceptée.</p> :''}
           
-            { all.filter(demmande => (demmande?.loan_status === 'approved' || demmande?.financial_aid_status === 'approved' )).length !==0   && type ==='' && all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).slice(0,5).map((demmande)=>( <div className="flex items-center justify-between p-2 my-2">
+            { all.filter(demmande => (demmande?.loan_status === 'approved' || demmande?.financial_aid_status === 'approved' )).length !==0   && type ==='' && all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).slice(0,5).map((demmande,i)=>( <div key={i} className="flex items-center justify-between p-2 my-2">
             <div className="text-base">
               <p>{demmande?.employee?.first_name} {' '} {demmande?.employee?.last_name}</p>
               <p className="text-[11px] text-gray-500 leading-3 ml-1">

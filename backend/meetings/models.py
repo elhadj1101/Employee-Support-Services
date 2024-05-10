@@ -20,7 +20,7 @@ class Meeting(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     pv = models.FileField(
-        upload_to=get_path, null=True, validators=[extention_validator]
+        upload_to=get_path, null=True, validators=[extention_validator], blank=True
     )
     doc_field = "pv"
 
@@ -46,7 +46,7 @@ def post_save(sender, instance, created, **kwargs):
         ):
             subject = "Change in Meeting Time"
             message = f"""
-Dear Committee Members,
+Dear Committee Member,
 
 I hope this email finds you well. I am writing to inform you that the meeting time for {instance.day} has been changed. Please find the updated details below:
 
@@ -58,16 +58,18 @@ New Date and Time: {instance.day} {instance.start_time} to {instance.end_time}
                 role__in=committe_roles
             ).values_list("email", flat=True)
             committe_emails = list(committe_emails)
-            print(committe_emails)
-            send_mail(
-                subject,
-                message,
-                EMAIL_HOST_USER,
-                # committe_emails,
-                [
-                    "pj0pj0pj000@gmail.com"
-                    # Because we don't have real committe emails , I used this email to check ,
-                    # you can add your email here to check
-                ],
-                fail_silently=False,
-            )
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    EMAIL_HOST_USER,
+                    # committe_emails,
+                    [
+                        "pj0pj0pj000@gmail.com"
+                        # Because we don't have real committe emails , I used this email to check ,
+                        # you can add your email here to check
+                    ],
+                    fail_silently=False,
+                )
+            except:
+                pass
