@@ -20,7 +20,6 @@ class Loan(models.Model):
         ("refused", "Rejeté"),
         ("approved", "Approuvé"),
         ("payment_started", "En cours de paiement"),
-        
         ("finished", "terminé"),
     ]
     payment_method_options = [
@@ -37,6 +36,7 @@ class Loan(models.Model):
     loan_period = models.IntegerField(null=False)
     loan_status = models.CharField(choices=status_options, max_length=30, null=False)
     paid_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0)
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.cached_status = self.loan_status
@@ -61,7 +61,7 @@ class Financial_aid(models.Model):
         ("waiting", "en attente"),
         ("refused", "refusé"),
         ("approved", "approuvé"),
-        ("finished", "terminé")
+        ("finished", "terminé"),
     ]
     family_member_options = [
         ("wife", "epouse"),
@@ -142,19 +142,21 @@ Thank you for your attention to this matter.
 
 Best regards,
 """
-            print(instance.employee.email)
-            send_mail(
-                subject,
-                message,
-                EMAIL_HOST_USER,
-                [
-                    # employee_email ,
-                    "pj0pj0pj000@gmail.com"
-                    # Because we don't have real committe emails , I used this email to check ,
-                    # you can add your email here to check
-                ],
-                fail_silently=False,
-            )
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    EMAIL_HOST_USER,
+                    [
+                        # employee_email ,
+                        "pj0pj0pj000@gmail.com"
+                        # Because we don't have real committe emails , I used this email to check ,
+                        # you can add your email here to check
+                    ],
+                    fail_silently=False,
+                )
+            except:
+                pass
 
 
 @receiver(post_save, sender=Financial_aid)
@@ -167,7 +169,7 @@ def post_save_financial_aid(sender, instance, created, **kwargs):
         ):
             instance.cached_status = instance.financial_aid_status
         else:
-            
+
             subject = "Financial aid status update"
             message = f"""
 Dear {instance.employee.first_name},
@@ -185,16 +187,18 @@ Thank you for your attention to this matter.
 
 Best regards,
 """
-            
-            print(instance.employee.email)
-            send_mail(
-                subject,
-                message,
-                EMAIL_HOST_USER,
-                [  # employee_email ,
-                    "pj0pj0pj000@gmail.com"
-                    # Because we don't have real committe emails , I used this email to check ,
-                    # you can add your email here to check
-                ],
-                fail_silently=False,
-            )
+
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    EMAIL_HOST_USER,
+                    [  # employee_email ,
+                        "pj0pj0pj000@gmail.com"
+                        # Because we don't have real committe emails , I used this email to check ,
+                        # you can add your email here to check
+                    ],
+                    fail_silently=False,
+                )
+            except:
+                pass
