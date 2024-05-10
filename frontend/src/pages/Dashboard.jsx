@@ -14,6 +14,7 @@ import {
   getCommity,
 } from "../api/requests.js";
 import { getRecords } from "api/records";
+import { getMeetings } from "api/meetings";
 
 function Dashboard() {
   const [open, setOpen] = useState(false);
@@ -84,14 +85,14 @@ function Dashboard() {
     }
     async function fetchAllAids() {
       const dat = await getAllAids();
-      console.log("fetched All Aids");
+      console.log("fetched All Aids" , dat);
 
       setAllAids(dat);
       setFetchedAllAids(true);
     }
     async function fetchAllLoans() {
       const dat = await getAllLoans();
-      console.log("fetched All Loans");
+      console.log("fetched All Loans" );
       setAllLoans(dat);
       setFetchedAllLoans(true);
     }
@@ -103,11 +104,10 @@ function Dashboard() {
     }
     async function fetchCommity() {
       const dat = await getCommity();
-      console.log("datttttttttttttttttttttttttttttttttttttttttttt", dat);
       setCommity(dat);
       setFetchedCommity(true);
     }
-
+    console.log(getMeetings() , 'testttttttttt meetings');
     if (user && user.is_superuser && !fetchedAdminUsers) fetchUsers();
     if (user && user.role === "tresorier" && !fetchedRecords) fetchRecords();
     if (user && user.role === "tresorier" && !fetchedCommity) fetchCommity();

@@ -77,15 +77,16 @@ export default function Meetings() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <div className="mt-4 w-[90%] mx-auto">
-        <MeetingCard />
-        <MeetingCard />
-        <MeetingCard />
-        <MeetingCard />
-        <MeetingCard />
-        <MeetingCard />
-        <MeetingCard />
-        <MeetingCard />
+      <div className="mt-4 w-full mx-auto">
+      <MeetingCard  online={true}/>
+        <MeetingCard   online={false}/>
+        <MeetingCard   online={false}/>
+        <MeetingCard   online={true}/>
+        <MeetingCard  online={false} />
+        <MeetingCard  online={true} />
+        <MeetingCard  online={true} />
+        <MeetingCard  online={false} />
+        <MeetingCard  online={true} />
       </div>
     </div>
   );

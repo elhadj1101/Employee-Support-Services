@@ -59,7 +59,7 @@ export function ComboBox({
             {/* <CommandEmpty>No results found.</CommandEmpty> */}
             {loans.length !== 0 ? (
               <CommandGroup heading="Prets">
-                {loans.map((demmande) => (
+                {loans.filter((pret)=>(pret.loan_status ==='approved')).map((demmande) => (
                   <CommandItem
                     key={demmande.id}
                     value={demmande.id}
@@ -74,7 +74,7 @@ export function ComboBox({
                       <p>
                         {" "}
                         {demmande?.employee?.email ||
-                          demmande?.employee?.email}{" "}
+                          demmande?.employee?.email}
                       </p>
                       <p className="ml-auto">
                         {demmande?.amount} da (
@@ -97,7 +97,7 @@ export function ComboBox({
             )}
             {newRecord.type!=='income' && aids.length !== 0 ? (
               <CommandGroup heading="Aids">
-                {aids.map((demmande) => (
+                {aids.filter((aid)=>(aid.financial_aid_status  === 'approved')).map((demmande) => (
                   <CommandItem
                     key={demmande.id}
                     value={demmande.id}
