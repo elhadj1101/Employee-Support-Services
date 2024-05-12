@@ -8,8 +8,8 @@ from django.db.models import Q
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = [ "name" , "description" , "day","start_time" , "end_time"]
-        
+        fields = "__all__"
+
     def validate(self, attrs):
 
         start_time = attrs.get("start_time")

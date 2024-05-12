@@ -19,6 +19,7 @@ class Meeting(models.Model):
     end_time = models.TimeField(null=False)
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
+    link = models.CharField(max_length=255, null=True)
     pv = models.FileField(
         upload_to=get_path, null=True, validators=[extention_validator], blank=True
     )
