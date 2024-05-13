@@ -81,7 +81,27 @@ class SingleRecordView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated,IsTreasurer]
     def get_queryset(self):
         return Record.objects.filter(pk=self.kwargs['pk'])
-
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.type == "income" and obj.loan is not None:
+            obj.loan.paid_amount -= obj.amount
+            obj.loan.save()
+        commity = Commity.objects.all().first()
+        if commity is None:
+            return Response({"error": "no commity found"}, status=400)
+        if obj.type == "expense":
+            commity.current_balance += obj.amount
+            commity.current_year_expenses -= obj.amount
+        else:
+            commity.current_balance -= obj.amount
+            commity.current_year_income -= obj.amount
+        commity.save()
+        if obj.type == "expense":
+            financial_aid = obj.financial_aid
+            if financial_aid is not None:
+                financial_aid.financial_aid_status = "approved"
+                financial_aid.save()
+        return self.destroy(request, *args, **kwargs)
 class CommityView(generics.ListCreateAPIView):
     queryset = Commity.objects.all()
     serializer_class = CommitySerializer

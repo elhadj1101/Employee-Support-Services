@@ -13,7 +13,7 @@ extention_validator = FileExtensionValidator(["pdf", "jpg", "png"])
 
 
 class Meeting(models.Model):
-
+    canceled = models.BooleanField(default=False)
     day = models.DateField(null=False)
     start_time = models.TimeField(null=False)
     end_time = models.TimeField(null=False)
