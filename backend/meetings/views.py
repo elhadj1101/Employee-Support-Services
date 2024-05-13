@@ -39,3 +39,8 @@ class SingleMeetingView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Meeting.objects.filter(pk=self.kwargs["pk"])
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.cancelled = True
+        obj.save()
+        return Response({"success": "meeting has been deleted succesfuly."}, status=status.HTTP_200_OK)
