@@ -168,7 +168,7 @@ function TresaurierDashboard() {
               </DialogTrigger>
               <DialogContent className=" ">
                 <DialogHeader>
-                  <DialogTitle>Ajouter un nouveau enregistrement </DialogTitle>
+                  <DialogTitle> Ajouter un nouveau enregistrement </DialogTitle>
                   <DialogDescription>
                     <div className="p-3">
                       <h2 className="pb-2">Type</h2>

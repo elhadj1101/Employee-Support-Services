@@ -130,7 +130,7 @@ function Dashboard() {
       >
         <Sidebar />
       </div>
-      <div className=" lg:ml-[235px] flex flex-col h-screen   ">
+      <div className=" lg:ml-[235px] flex flex-grow flex-col h-screen   ">
         <div className=" flex items-center sticky top-0 w-full z-30   ">
           <img
             className=" h-7 w-7 lg:hidden  "
@@ -140,7 +140,7 @@ function Dashboard() {
           />
           <Navbar />
         </div>
-        <div onClick={hideSidebar} className="h-full">
+        <div onClick={hideSidebar} className="h-full overflow-hidden ">
           <Outlet />
         </div>
       </div>

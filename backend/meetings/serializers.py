@@ -6,9 +6,10 @@ from django.db.models import Q
 
 
 class MeetingSerializer(serializers.ModelSerializer):
+    pv = serializers.FileField()
     class Meta:
         model = Meeting
-        fields = [ "name" , "description" , "day","start_time" , "end_time"]
+        fields = [ "description" , "day","start_time" , "end_time" , "pv"]
         
     def validate(self, attrs):
 

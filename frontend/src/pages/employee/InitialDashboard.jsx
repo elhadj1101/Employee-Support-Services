@@ -18,7 +18,7 @@ function InitialDashboard() {
   const { offres, loans, user } = useStore();
   const cols = loanColumns(["employee"]) || [];
   return (
-    <div className="px-6 py-4  w-full flex-grow  bg-lightgray  ">
+    <div className="px-6 py-4  w-full flex-grow  bg-lightgray   h-full overflow-y-auto ">
       {offres.length === 0 ? (
         <div className="p-2 text-center">
           Il y a pas des offres pour le moments
