@@ -21,7 +21,7 @@ function formatPrice(price, delm=".") {
     // if (newPrice.split(".").length  === 2) {
     //     let afterDellm = newPrice.split(".")[1].slice(0, 2);
     //     newPrice = newPrice.split(".")[0] + "." + afterDellm;
-    //     console.log("Pice: ", newPrice);
+    //     
         
     // }
     rest = rest.slice(0,3)

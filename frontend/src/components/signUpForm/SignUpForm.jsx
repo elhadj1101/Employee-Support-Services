@@ -54,7 +54,7 @@ const SignUpForm = () => {
     // If all validations pass, submit the form
     try {
       const response = await signUp(email, pass);
-      console.log('signup', response);
+      
       if (response === 'success') {
         navigate('/login')
       }

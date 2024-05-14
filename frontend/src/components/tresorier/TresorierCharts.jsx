@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { Chart as ChartJS, defaults } from 'chart.js/auto'
-import { Bar, Pie } from 'react-chartjs-2'
+import { Bar, Doughnut } from 'react-chartjs-2'
 import {
 
   IoIosArrowBack,
@@ -148,9 +148,9 @@ function TresorierCharts({
 
     }
   };
-  const handleYearlyChange = () =>{
+  // const handleYearlyChange = () =>{
     
-  }
+  // }
   function getWeekDates(year, weekNumber) {
     // Calculate the first day of the year
     var firstDayOfYear = new Date(year, 0, 1);
@@ -199,13 +199,13 @@ function TresorierCharts({
             >
               Monthly
             </button>
-            <button
+            {/* <button
               id="yearlyBtn"
               onClick={handleChangePeriod}
               className="analitics-btn"
             >
               Yearly
-            </button>
+            </button> */}
           </div>
           {currntPeriod === "weekly" && (
             <div className="flex justify-between items-center basis-[60%] ">
@@ -276,7 +276,7 @@ function TresorierCharts({
               </div>
             </div>
           )}
-          {currntPeriod === "yearly" && (
+          {/* {currntPeriod === "yearly" && (
             <div className="flex justify-between gap-10 items-center basis-[60%]">
               <div className="basis-[50%]">
                 <label htmlFor="startYear" className="text-xs font-light ">
@@ -305,7 +305,7 @@ function TresorierCharts({
                 />
               </div>
             </div>
-          )}
+          )} */}
         </div>
         <Bar
           className="w-full"
@@ -367,7 +367,7 @@ function TresorierCharts({
             Aides Financieres
           </button>
         </div>
-        <Pie
+        <Doughnut
           className="w-full"
           options={{
             tooltips: {

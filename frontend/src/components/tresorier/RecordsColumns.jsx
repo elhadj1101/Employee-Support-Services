@@ -148,7 +148,6 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
               <Dialog>
                 <DialogTrigger style={{ width: "100%" }}>
                   <div
-                    onClick={() => console.log(row.original)}
                     className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100"
                   >
                     Details

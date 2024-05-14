@@ -23,7 +23,7 @@ export function ComboBox({
   error,
 }) {
   const [open, setOpen] = React.useState(false);
-  console.log(loans);
+  
   return (
     <Popover open={open} onOpenChange={setOpen} className="w-full   ">
       <PopoverTrigger asChild>

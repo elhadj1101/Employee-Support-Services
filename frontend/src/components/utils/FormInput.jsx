@@ -51,8 +51,9 @@ function FormInput(
           name={name}
           value={value}
           onChange={handleValueChange}
+
           className={
-            "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 outline-none block w-full sm:text-sm border border-gray-300 rounded-md p-4 " +
+            "shadow-sm focus:ring-indigo-500 h-[100px] focus:border-indigo-500 outline-none block w-full sm:text-sm border border-gray-300 rounded-md p-4 " +
             inputClassName +
             (error
               ? " bg-red-50 border border-red-500 text-red-900  placeholder-red-700  focus:ring-red-500 focus:border-red-500"

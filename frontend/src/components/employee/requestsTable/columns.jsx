@@ -104,7 +104,6 @@ export const columns = [
     accessorKey: "loan_period",
     header: () => <div className="text-left">Period (mois)</div>,
     cell: ({ row }) => {
-      console.log(row);
       return (
         <div className="text-left font-medium">
           {row.getValue("loan_period")}

@@ -1,16 +1,19 @@
 import FileUploaded from "components/FileUploaded";
+import { set } from "date-fns";
 import React, { useState, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 function FileInput({
   labell = "",
+  iconSrc = "/icons/Pdf-icon.png",
   oldFiles = [],
   setOldFiles = null,
   uploadInputElRef = null,
   files = null,
   maxFiles = -1,
   setFiles = null,
+  setSingleFile = null,
   accepts = "application/pdf",
   fileTypes = "PDF",
   multpl = false,
@@ -39,7 +42,10 @@ function FileInput({
       e.preventDefault();
       setIsDragActive(false);
       const droppedFiles = Array.from(e.dataTransfer.files);
-      if (maxFiles !== -1 && files?.length + droppedFiles.length + oldFiles.length > maxFiles) {
+      if (
+        maxFiles !== -1 &&
+        files?.length + droppedFiles.length + oldFiles.length > maxFiles
+      ) {
         toast.warning(
           `Vous ne pouvez pas ajouter plus de ${maxFiles} fichiers`
         );
@@ -55,26 +61,33 @@ function FileInput({
         }
         return accpted;
       });
-
-      setFiles((prv) => {
-        return [...prv, ...acceptedFiles];
-      });
+      if (setSingleFile) {
+        setSingleFile(acceptedFiles[0]);
+        setFiles((prv) => {
+          return [...prv, ...acceptedFiles];
+        });
+      }
     },
     [files]
   );
   const handleDelete = (e) => {
     e.preventDefault();
     const { name } = e.target.dataset;
-    const  newFiles = files.filter((file) => file.name !== name);
-    const newOlds = oldFiles.filter((f) => f.name !== name )
-    setOldFiles(newOlds)
+    const newFiles = files.filter((file) => file.name !== name);
+    const newOlds = oldFiles.filter((f) => f.name !== name);
+    setOldFiles(newOlds);
 
     let container = new DataTransfer();
     newFiles.forEach((file) => {
       container.items.add(file);
     });
     uploadInputElRef.current.files = container.files;
-    setFiles(newFiles);
+    if (setSingleFile) {
+      setFiles([]);
+      setSingleFile(null);
+    } else {
+      setFiles(newFiles);
+    }
   };
 
   if (!uploadInputElRef || typeof uploadInputElRef !== "object") {
@@ -86,18 +99,22 @@ function FileInput({
       e.preventDefault();
       setIsDragActive(false);
       const droppedFiles = Array.from(e.target.files);
-      let accptedF = []
-      droppedFiles.forEach((f) =>{
-        let chk1 = oldFiles.filter ((of) => of.name === f.name)
-        let chk2 = files.filter ((ff) => ff.name === f.name)
+      let accptedF = [];
+      droppedFiles.forEach((f) => {
+        let chk1 = oldFiles.filter((of) => of.name === f.name);
+        let chk2 = files.filter((ff) => ff.name === f.name);
         if (chk1.length + chk2.length > 0) {
-          toast.error ("Vous ne pouvez pas ajouter des fichiers ayont le meme nom.")
-
-        }else{
-          accptedF.push(f)
+          toast.error(
+            "Vous ne pouvez pas ajouter des fichiers ayont le meme nom."
+          );
+        } else {
+          accptedF.push(f);
         }
-      })
-      if (maxFiles !== -1 && files.length + accptedF.length + oldFiles.length > maxFiles) {
+      });
+      if (
+        maxFiles !== -1 &&
+        files.length + accptedF.length + oldFiles.length > maxFiles
+      ) {
         toast.warning(
           `Vous ne pouvez pas ajouter plus de ${maxFiles} fichiers`
         );
@@ -113,10 +130,13 @@ function FileInput({
         }
         return accpted;
       });
-
-      setFiles((prv) => {
-        return [...prv, ...acceptedFiles];
-      });
+      if (setSingleFile) {
+        setSingleFile(acceptedFiles[0]);
+        setFiles((prv) => {
+          return [...prv, ...acceptedFiles];
+        });
+        return;
+      }
     },
     [files]
   );
@@ -136,7 +156,7 @@ function FileInput({
   // }, [uploadInputElRef]);
 
   return (
-    <div className="flex flex-col gap-1 " >
+    <div className="flex flex-col gap-1 ">
       {labell !== "" && (
         <label htmlFor="upload" className="">
           {labell}
@@ -202,18 +222,23 @@ function FileInput({
       </div>
       {files.length + oldFiles.length > 0 && (
         <div className="flex flex-wrap gap-3 mt-4">
-          {oldFiles.map((file) => {
+          {oldFiles.map((file, i) => {
             return (
-              <Link to={"http://127.0.0.1:8000" + file.url} target="blank">
+              <Link
+                key={i}
+                to={"http://127.0.0.1:8000" + file.url}
+                target="blank"
+              >
                 <FileUploaded
                   name={file.name}
                   size={file.size}
                   Delete={handleDelete}
+                  iconSrc={iconSrc}
                 />
               </Link>
             );
           })}
-          {files.map((file) => (
+          {files.map((file, i) => (
             /*      <div
               className="flex items-center bg-green-500 text-slate-100 p-2 rounded-md"
               key={file.name}
@@ -225,9 +250,11 @@ function FileInput({
               </button>
             </div>  */
             <FileUploaded
+              key={i}
               name={file.name}
               size={file.size}
               Delete={handleDelete}
+              iconSrc={iconSrc}
             />
           ))}
         </div>

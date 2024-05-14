@@ -16,7 +16,8 @@ Axios.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+    console.log(error)
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = false;
       const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) {
