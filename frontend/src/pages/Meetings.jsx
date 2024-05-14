@@ -1,5 +1,5 @@
 import MeetingCard from "components/MeetingCard";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,13 +7,33 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
   DialogFooter,
 } from "../components/ui/dialog";
+import { getMeetings } from "api/meetings";
 import { GoPlus } from "react-icons/go";
+import useStore from "store";
+import { Input } from "components/ui/input";
+import { DatePickerMeetings } from "components/ui/DatePikerMeetings";
+
 export default function Meetings() {
+  const { Meetings, setMeetings } = useStore();
+  const [date, setDate] = useState();
+
+  useEffect(() => {
+    const fetchMeetings = async () => {
+      try {
+        const meetingsData = await getMeetings();
+        setMeetings(meetingsData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMeetings();
+  }, []);
+
   return (
-    <div className="flex-grow flex flex-col h-full  bg-lightgray p-6">
+    <div className="flex-grow flex flex-col  h-full  bg-lightgray p-6">
       <Dialog>
         <DialogTrigger>
           <button className="flex items-center gap-1 ml-auto cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors bg-light-blue text-white rounded-md active:scale-95">
@@ -25,68 +45,59 @@ export default function Meetings() {
           <DialogHeader>
             <DialogTitle>Ajouter Un Reunions</DialogTitle>
             <DialogDescription>
-              {/* <div className="flex flex-col">
-                        <h2 className="mt-5 text-base">Type</h2>
-                        <span className="text-sm capitalize text-gray-800 font-semibold">
-                          {" "}
-                          {row.original.type}
-                        </span>
-                        <h2 className="mt-5 text-base">
-                          Date de Enregistrement
-                        </h2>
-                        <p className="text-sm capitalize text-gray-800 font-semibold">
-                          {" "}
-                          {row.original.created_at}
-                        </p>
-                        <h2 className="mt-5 text-base flex gap-2 items-center">
-                          la demande correspondant à l'enregistrement.
-                          <Link to="">
-                            {" "}
-                            <FaExternalLinkAlt
-                              size={15}
-                              className=" transition-all  cursor-pointer   hover:text-gray-600 bg-white"
-                            />
-                          </Link>
-                        </h2>
-                        <p className="text-sm capitalize text-gray-800 font-semibold">
-                          #
-                          {row.original.loan?.id ||
-                            row.original.finaincial_aid?.id}{" "}
-                          {row.original.loan?.employee ||
-                            row.original.finaincial_aid?.employee}{" "}
-                          {row.original.loan?.amount ||
-                            row.original.finaincial_aid?.amount}{" "}
-                          da
-                        </p>
-                        <h2 className="mt-5  text-base">Montant</h2>
-                        <p className="text-sm capitalize text-gray-800 font-semibold">
-                          {" "}
-                          {row.original.amount} da
-                        </p>
-                        <h2 className="mt-5  text-base">Motif</h2>
-                        <p className="text-sm capitalize text-gray-800 font-semibold">
-                          {row.original.motif}
-                        </p>
-                      </div> */}
+              <div className="p-3">
+                <div className="flex flex-col">
+                  <h2 className="mt-5 mb-2">
+                    Title
+                    <span className="text-red-600 ml-1">*</span>
+                  </h2>
+                  <Input
+                    type="text"
+                    placeholder="objective ..."
+                    value={""}
+                    className="placeholder:text-slate-500 disabled:opacity-50 "
+                  />
+                  <h2 className="mt-5 mb-2">date</h2>
+                  <DatePickerMeetings
+                    className="placeholder:text-slate-500  "
+                    date={date}
+                    setDate={setDate}
+                  />
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="mt-5 mb-2">temp début</h2>
+                    </div>
+
+                    <div>
+                      <h2 className="mt-5 mb-2 ">temp fin</h2>
+                      <Input
+                        type="number"
+                        placeholder="100000"
+                        value={""}
+                        className="placeholder:text-slate-500 disabled:opacity-50 "
+                      />
+                    </div>
+                  </div>
+                  <h2 className="mt-5 mb-2">Description</h2>
+                  <textarea
+                    className="placeholder:text-slate-500 outline-none focus:outline-none resize-none w-full shadow-sm   max-h-20 h-20 border border-gray-200  rounded-md  p-2    "
+                    type="text"
+                    placeholder="Décriver qulque chose ....."
+                    value={""}
+                    // onChange={}
+                  />
+                </div>
+              </div>
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            {/* <DialogClose>
-                          <DeleteButton id={row.original.id} />
-                        </DialogClose> */}
-          </DialogFooter>
+          <DialogFooter>{/* Your content here */}</DialogFooter>
         </DialogContent>
       </Dialog>
-      <div className="mt-4 w-full mx-auto">
-      <MeetingCard  online={true}/>
-        <MeetingCard   online={false}/>
-        <MeetingCard   online={false}/>
-        <MeetingCard   online={true}/>
-        <MeetingCard  online={false} />
-        <MeetingCard  online={true} />
-        <MeetingCard  online={true} />
-        <MeetingCard  online={false} />
-        <MeetingCard  online={true} />
+      <div className="mt-4 w-full mx-auto h-full overflow-y-auto">
+        {Meetings?.map((meeting, index) => (
+          <MeetingCard key={index} meeting={meeting} />
+        ))}
       </div>
     </div>
   );

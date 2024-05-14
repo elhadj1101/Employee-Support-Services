@@ -1,3 +1,4 @@
+import Meetings from "pages/Meetings";
 import { create } from "zustand";
 
 // the hook that will be used to accses the state in our raect app
@@ -61,7 +62,8 @@ const useStore = create((set) => ({
   setLoanRequestedId: (newLoanRequestedId) => set({ LoanRequestedId: newLoanRequestedId}),
   AidRequestedId: sessionStorage.getItem("requestedAidId") || null,
   setAidRequestedId: (newAidRequestedId) => set({ AidRequestedId: newAidRequestedId}),
-
+  Meetings:[],
+  setMeetings:(newMeetings) => set({Meetings:newMeetings}),
   setAddUserData: (newFormData) => set({ AddUserData: newFormData }),
   setProfileUserData : (newFormData) => set({ UserProfileData: newFormData }),
   user: null,

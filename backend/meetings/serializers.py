@@ -6,6 +6,7 @@ from django.db.models import Q
 
 
 class MeetingSerializer(serializers.ModelSerializer):
+    pv = serializers.FileField()
     class Meta:
         model = Meeting
         fields = ["day", "start_time", "end_time", "title", "description", "link", "pv", 'canceled']
