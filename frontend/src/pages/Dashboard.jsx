@@ -57,7 +57,7 @@ function Dashboard() {
   React.useEffect(() => {
     async function fetchUsers() {
       const dat = await getUsers();
-      console.log("fetched users");
+      
 
       setAdminUsers(dat);
       setFetchedAdminUsers(true);
@@ -72,27 +72,27 @@ function Dashboard() {
       const canApply = await canApplyForLoan();
       const cond = canApply === "True";
       setCanApplyLoan(cond);
-      console.log("fetched loans");
+      
 
       setLoans(dat);
       setFetchedLoans(true);
     }
     async function fetchAids() {
       const dat = await getAids();
-      console.log("fetched Aids");
+      
       setAids(dat);
       setFetchedAids(true);
     }
     async function fetchAllAids() {
       const dat = await getAllAids();
-      console.log("fetched All Aids" , dat);
+      
 
       setAllAids(dat);
       setFetchedAllAids(true);
     }
     async function fetchAllLoans() {
       const dat = await getAllLoans();
-      console.log("fetched All Loans" );
+      
       setAllLoans(dat);
       setFetchedAllLoans(true);
     }

@@ -9,8 +9,8 @@ class MeetingSerializer(serializers.ModelSerializer):
     pv = serializers.FileField()
     class Meta:
         model = Meeting
-        fields = [ "description" , "day","start_time" , "end_time" , "pv"]
-        
+        fields = ["day", "start_time", "end_time", "title", "description", "link", "pv", 'canceled']
+
     def validate(self, attrs):
 
         start_time = attrs.get("start_time")

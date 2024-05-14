@@ -43,7 +43,6 @@ export function DatePickerDemo({input}) {
                 .reverse()
                 
                 const date = formattedDate[0] + '-'+ formattedDate[2] + '-'+ formattedDate[1] 
-                console.log(e);
               localStorage.setItem(`form/${input}`, date);
               const updatedUserData = { ...AddUserData, [input]: date }; 
               setAddUserData(updatedUserData);

@@ -45,7 +45,7 @@ We are excited to announce a new employee benefit that has just become available
 
 As valued members of our team, we are constantly looking for ways to enhance your experience here at ESI-SBA. We are thrilled to introduce our latest offering: {instance.title}.
 
-{instance.title} is designed to {instance.descritpion}.
+{instance.title} is designed to {instance.description}.
 
 To take advantage of this fantastic opportunity, simply visit our website.
 

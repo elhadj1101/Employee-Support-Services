@@ -29,7 +29,7 @@ function RecordForm({ onSubmitHandler = null, customclassName = "" }) {
         description: description,
       }),
     });
-    console.log(resp);
+    
 
     if (resp.status == 200) {
       setResults("Successfully created the record");
