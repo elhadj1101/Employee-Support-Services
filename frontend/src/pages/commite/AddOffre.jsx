@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import FormInput from "../../components/utils/FormInput";
 import FileInput from "components/utils/FileInput";
 import Axios from "api/axios";
@@ -13,6 +13,7 @@ function AddOffre() {
     max_participants: 10,
     cover: null,
   });
+  const btnRef = useRef();
 
   const [error, setError] = useState({
     title: "",
@@ -41,7 +42,6 @@ function AddOffre() {
 
 
   const handleSubmit = () => {
-    console.log(offre);
     if (offre.title == "") {
       setError((prv) => {
         return { ...prv, title: "Le titre est requis" };
@@ -83,7 +83,10 @@ function AddOffre() {
       return;
     }
     
- 
+    if (btnRef.current) {
+      btnRef.current.disabled = true;
+      btnRef.current.classList.add("cursor-not-allowed");
+    }
     const formData = new FormData();
     formData.append("title", offre.title);
     formData.append("description", offre.description);
@@ -100,11 +103,31 @@ function AddOffre() {
       .then((res) => {
         console.log("offre added");
         toast.success("Offre ajoutée avec succès");
+        if (btnRef.current) {
+          btnRef.current.disabled = false;
+          btnRef.current.classList.remove("cursor-not-allowed");
+        }
+        setOffre(
+          {
+            title: "",
+            description: "",
+            start_date: new Date().toISOString().split("T")[0],
+            end_date: new Date().toISOString().split("T")[0],
+            max_participants: 10,
+            cover: null,
+          }
+        )
       })
       .catch((err) => {
         console.log("error");
         toast.error("Erreur lors de l'ajout de l'offre");
         console.log(err);
+        if (btnRef.current) {
+          btnRef.current.disabled = false;
+          btnRef.current.classList.remove("cursor-not-allowed");
+
+        }
+
       });
   }
   return (
@@ -193,6 +216,7 @@ function AddOffre() {
             </div>
           </form>
           <button
+            ref={btnRef}
             onClick={(e) => {
               e.preventDefault();
               handleSubmit();

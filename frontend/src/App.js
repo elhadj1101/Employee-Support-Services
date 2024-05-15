@@ -22,21 +22,20 @@ import SingleDemandLoan from "pages/SingleDemandLoan";
 import SingleDemandAid from "pages/SingleDemandAid";
 import tresaurierDashboard from "pages/commite/TresaurierDashboard";
 import Meetings from "pages/Meetings";
+import ListOffre from "pages/commite/ListOffre";
 function App() {
   return (
     <main className="h-screen w-full">
       <Routes>
         {/* public routes */}
-        <Route  path="/login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/email" element={<Email />} />
         <Route path="/reset" element={<Reset />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-    {/*      <Route path="/pop" element={<Popup />} /> */}
- 
+        {/*      <Route path="/pop" element={<Popup />} /> */}
 
-     
-{/* 
+        {/* 
          <Route path="/test/" element={<Dashboard />} >
             <Route path="demande-pret" element={<Loan />} /> 
         </Route>    */}
@@ -44,41 +43,87 @@ function App() {
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
           <Route path="/" element={<Dashboard />}>
             <Route element={<RequireAuth requiredRoles={["admin"]} />}>
-              <Route  path="utilisateurs/add-user" element={<AddUser />} />
+              <Route path="utilisateurs/add-user" element={<AddUser />} />
               <Route path="utilisateurs" element={<Users />} />
               <Route path="utilisateurs/:userId" element={<UserProfile />} />
             </Route>
-            <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={[]} />} >
+            <Route
+              element={
+                <RequireAuth requiredRoles={["any"]} excludedRoles={[]} />
+              }
+            >
               <Route path="" element={<InitialDashboard />} />
               <Route path="demande-pret" element={<Loan key={2} />} />
               <Route path="demande-pret/:lDId" element={<Loan key={1} />} />
 
-              <Route path="demande-aide-financiere" element={<FinancialAid key={2} />} />
-              <Route path="demande-aide-financiere/:aDId" element={< FinancialAid key={1} />} />
+              <Route
+                path="demande-aide-financiere"
+                element={<FinancialAid key={2} />}
+              />
+              <Route
+                path="demande-aide-financiere/:aDId"
+                element={<FinancialAid key={1} />}
+              />
 
               <Route path="liste-demandes-pret" element={<ListLoans />} />
-              <Route path="liste-demandes-pret/:dmId" element={<SingleDemandLoan employee={true}   />} />
-              <Route path="liste-demandes-aide-financiere" element={<ListAids />} />
-              <Route path="liste-demandes-aide-financiere/:dmId" element={<SingleDemandAid employee={true}  /> } />
+              <Route
+                path="liste-demandes-pret/:dmId"
+                element={<SingleDemandLoan employee={true} />}
+              />
+              <Route
+                path="liste-demandes-aide-financiere"
+                element={<ListAids />}
+              />
+              <Route
+                path="liste-demandes-aide-financiere/:dmId"
+                element={<SingleDemandAid employee={true} />}
+              />
 
-            <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={["employe"]} />} >
-              <Route path="demandes-employe" element={<EmployeesRequests/>} />
-              <Route path="demandes-employe/pret/:dmId" element={<SingleDemandLoan  employee={false} />} />
-              <Route path="demandes-employe/aid/:dmId" element={<SingleDemandAid employee={false} />} />
-            </Route>
-            <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={["employe"]} />} >
-              <Route path="reunions" element={<Meetings/>} />
-            </Route>
-            <Route element={<RequireAuth requiredRoles={["president", "vice_president"]} excludedRoles={[]} />} >
-              <Route path="offres" element={<AddOffre/>} />
-              <Route path="create-offre" element={<AddOffre/>} />
-
-            </Route>
-
+              <Route
+                element={
+                  <RequireAuth
+                    requiredRoles={["any"]}
+                    excludedRoles={["employe"]}
+                  />
+                }
+              >
+                <Route
+                  path="demandes-employe"
+                  element={<EmployeesRequests />}
+                />
+                <Route
+                  path="demandes-employe/pret/:dmId"
+                  element={<SingleDemandLoan employee={false} />}
+                />
+                <Route
+                  path="demandes-employe/aid/:dmId"
+                  element={<SingleDemandAid employee={false} />}
+                />
+              </Route>
+              <Route
+                element={
+                  <RequireAuth
+                    requiredRoles={["any"]}
+                    excludedRoles={["employe"]}
+                  />
+                }
+              >
+                <Route path="reunions" element={<Meetings />} />
+              </Route>
+              <Route
+                element={
+                  <RequireAuth
+                    requiredRoles={["president", "vice_president"]}
+                    excludedRoles={[]}
+                  />
+                }
+              >
+                <Route path="offres" element={<AddOffre />} />
+                <Route path="create-offre" element={<ListOffre />} />
+                <Route path="list-offre" element={<ListOffre />} />
+              </Route>
             </Route>
           </Route>
-
-        
         </Route>
       </Routes>
       <Toaster richColors closeButton position="bottom-right" />

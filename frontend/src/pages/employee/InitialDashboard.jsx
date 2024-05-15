@@ -40,8 +40,8 @@ function InitialDashboard() {
                       <div className="text-3xl font-bold">
                         {offre.title.toUpperCase()}
                       </div>
-                      <div className="font-medium text-lg">
-                        {offre.description}
+                      <div className="font-medium text-md">
+                        {offre.description?.slice(0, 250) + ((offre.description?.length > 250) ? "..." : "")}
                       </div>
                       <div>
                         <Button
