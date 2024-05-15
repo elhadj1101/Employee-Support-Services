@@ -27,7 +27,7 @@ class MeetingFilter(filters.FilterSet):
 class MeetingsView(generics.ListCreateAPIView):
 
     # permission_classes = [IsAuthenticated, IsCommitte, CanCreateMeeting]
-    queryset = Meeting.objects.all()
+    queryset = Meeting.objects.filter(canceled=False).order_by("day")
     serializer_class = MeetingSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = MeetingFilter
@@ -41,6 +41,6 @@ class SingleMeetingView(generics.RetrieveUpdateDestroyAPIView):
         return Meeting.objects.filter(pk=self.kwargs["pk"])
     def delete(self, request, *args, **kwargs):
         obj = self.get_object()
-        obj.cancelled = True
+        obj.canceled = True
         obj.save()
         return Response({"success": "meeting has been deleted succesfuly."}, status=status.HTTP_200_OK)

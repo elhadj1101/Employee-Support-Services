@@ -16,24 +16,25 @@ import { Input } from "components/ui/input";
 import { DatePickerMeetings } from "components/ui/DatePikerMeetings";
 
 export default function Meetings() {
-  const { Meetings, setMeetings } = useStore();
+  const { Meetings,user, setMeetings } = useStore();
   const [date, setDate] = useState();
-
-  useEffect(() => {
-    const fetchMeetings = async () => {
-      try {
+  const refresh = async () => {
+     try {
         const meetingsData = await getMeetings();
         setMeetings(meetingsData);
       } catch (error) {
         console.log(error);
       }
-    };
+  }
+  useEffect(() => {
+    
 
-    fetchMeetings();
+    refresh();
   }, []);
 
   return (
     <div className="flex-grow flex flex-col  h-full  bg-lightgray p-6">
+      { (user?.role === "president" || user?.role === "vice_president") && (
       <Dialog>
         <DialogTrigger>
           <button className="flex items-center gap-1 ml-auto cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors bg-light-blue text-white rounded-md active:scale-95">
@@ -94,10 +95,11 @@ export default function Meetings() {
           <DialogFooter>{/* Your content here */}</DialogFooter>
         </DialogContent>
       </Dialog>
-      <div className="mt-4 w-full mx-auto h-full overflow-y-auto">
-        {Meetings?.map((meeting, index) => (
-          <MeetingCard key={index} meeting={meeting} />
-        ))}
+      )}
+      <div className="mt-4 w-full mx-auto overflow-y-auto flex ">
+        {Meetings?.length !== 0 ? (Meetings?.map((meeting, index) => (
+          <MeetingCard key={index} meeting={meeting} refresh={refresh} />
+        ))) : (<p>Il ya pas des reunion maintenant...</p>)}
       </div>
     </div>
   );

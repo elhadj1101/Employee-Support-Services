@@ -63,6 +63,7 @@ class RecordView(generics.ListCreateAPIView):
             else:
                 commity.current_year_income += serializer.validated_data.get('amount')
         commity.save()
+        print("ggg: ", serializer.validated_data)
         if serializer.validated_data.get('type') == "expense": 
             financial_aid = serializer.validated_data.get('financial_aid', None)
             if financial_aid is not None:
