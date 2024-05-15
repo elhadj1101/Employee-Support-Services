@@ -66,7 +66,7 @@ function App() {
               <Route path="demandes-employe/pret/:dmId" element={<SingleDemandLoan  employee={false} />} />
               <Route path="demandes-employe/aid/:dmId" element={<SingleDemandAid employee={false} />} />
             </Route>
-            <Route element={<RequireAuth requiredRoles={["tresorier"]} excludedRoles={[]} />} >
+            <Route element={<RequireAuth requiredRoles={["any"]} excludedRoles={["employe"]} />} >
               <Route path="reunions" element={<Meetings/>} />
             </Route>
             <Route element={<RequireAuth requiredRoles={["president", "vice_president"]} excludedRoles={[]} />} >

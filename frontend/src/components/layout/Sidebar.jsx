@@ -86,7 +86,7 @@ export default function Sidebar() {
             </Link>
           </>
         )}
-        {user && user.role === "tresorier" && (
+        {user && (user.role !== "employe" ) && (
           <Link to="/reunions">
             <SideButton
               title="Les Réunions"
