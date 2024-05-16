@@ -28,3 +28,10 @@
 .active-doghnout-btn, .active-analitics-btn {
   @apply bg-darkblue text-white border-darkblue hover:bg-darkblue hover:text-white hover:border-darkblue;
 }
+
+
+.rbc-month-row, .rbc-timeslot-group{
+  display: inline-table !important;
+  flex: 0 0 0 !important;
+  min-height: 50px !important;
+}

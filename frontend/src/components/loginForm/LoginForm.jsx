@@ -65,7 +65,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div>
+    <div className="h-full w-full p-4">
       <div className="header">
         <div className="logo">
           <img src="./assets/esi sba 3.png" alt="icon" />
@@ -77,7 +77,7 @@ const LoginForm = () => {
       <form>
         <label
           htmlFor="email"
-          className="text flex  mx-auto sm: w-full sm:mx-auto "
+          className="text flex  mx-auto sm: w-full"
         >
           Address e-mail
         </label>
@@ -115,7 +115,7 @@ const LoginForm = () => {
         >
           Se connecte
         </div>
-        <div className="  sm:flex sm:justify-center ">
+        <div className="  sm:flex sm:justify-center mt-2">
 
 <div className="flex justify-center sm:flex sm:justify-center  ">
 Vous n’avez pas de compte ?
