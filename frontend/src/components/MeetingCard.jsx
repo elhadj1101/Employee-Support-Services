@@ -46,7 +46,7 @@ export default function MeetingCard({ meeting, refresh= ()=>{} }) {
   ];
   return (
     <div
-      className={`  shadoww bg-white rounded-[30px] m-4 my-3 p-4 transition-all duration-500 basis-1/2`}
+      className={`shadoww bg-white rounded-[30px] p-2 transition-all duration-500 basis-1/2`}
     >
       <div className="flex  items-center ">
         <div className="mr-10 flex basis-1/4 flex-col items-center ">

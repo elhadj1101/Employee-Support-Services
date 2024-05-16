@@ -38,8 +38,7 @@
 .input {
   padding: 0px 10px;
   height: 45px;
-}
-input {
+
     background: transparent;
   border: 1px solid gainsboro;
   outline: none;

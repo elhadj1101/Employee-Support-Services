@@ -64,7 +64,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <div >
+    <div className="h-full  w-full p-4" >
       <div className="header ">
         <div className="logo">
           <img src="./assets/esi sba 3.png" alt="icon" />
@@ -81,7 +81,7 @@ const SignUpForm = () => {
           Address e-mail
         </label>
         <input
-          className="  max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full  "
+          className=" input max-w-xs flex mx-auto  sm:flex sm:mx-auto sm:min-w-full  "
           name="email"
           type="email"
           value={email}
@@ -100,7 +100,7 @@ const SignUpForm = () => {
           Mot de passe (envoyé par l'administrateur)
         </label>
         <input
-          className=" max-w-xs flex mx-auto   sm:flex sm:mx-auto sm:min-w-full md:min-w-full lg:min-w-full"
+          className="input max-w-xs flex mx-auto   sm:flex sm:mx-auto sm:min-w-full md:min-w-full lg:min-w-full"
           name="password"
           type="password"
           value={pass}
@@ -119,7 +119,7 @@ const SignUpForm = () => {
           acitver
         </button>
 
-        <div className=" sm:flex sm:justify-center  ">
+        <div className=" sm:flex sm:justify-center mt-2  ">
 
           <div className=" flex justify-center sm:flex sm:justify-center   ">
             Vous avez déjà activer votre compte?
