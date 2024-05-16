@@ -96,7 +96,7 @@ export default function Meetings() {
         </DialogContent>
       </Dialog>
       )}
-      <div className="mt-4 w-full mx-auto overflow-y-auto flex ">
+      <div className="mt-4 w-full mx-auto overflow-y-auto grid grid-cols-2 ">
         {Meetings?.length !== 0 ? (Meetings?.map((meeting, index) => (
           <MeetingCard key={index} meeting={meeting} refresh={refresh} />
         ))) : (<p>Il ya pas des reunion maintenant...</p>)}
