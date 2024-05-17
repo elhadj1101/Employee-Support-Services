@@ -23,6 +23,7 @@ import SingleDemandAid from "pages/SingleDemandAid";
 import tresaurierDashboard from "pages/commite/TresaurierDashboard";
 import Meetings from "pages/Meetings";
 import ListOffre from "pages/commite/ListOffre";
+import SingleOffre from "pages/commite/SingleOffre";
 function App() {
   return (
     <main className="h-screen w-full">
@@ -121,6 +122,16 @@ function App() {
                 <Route path="offres" element={<AddOffre />} />
                 <Route path="create-offre" element={<ListOffre />} />
                 <Route path="list-offre" element={<ListOffre />} />
+              </Route>
+              <Route
+                element={
+                  <RequireAuth
+                    requiredRoles={["any"]}
+                    excludedRoles={["employe"]}
+                  />
+                }
+              >
+                <Route path="offres/:oId" element={<SingleOffre />} />
               </Route>
             </Route>
           </Route>

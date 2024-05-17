@@ -11,12 +11,10 @@ import { Button } from "components/ui/button";
 import ServiceCard from "components/employee/ServiceCard";
 import useStore from "../../store/index.js";
 import TresaurierDashboard from "pages/commite/TresaurierDashboard";
-import { loanColumns } from "components/employee/Columns/loanColumns";
 
 
 function InitialDashboard() {
-  const { offres, loans, user } = useStore();
-  const cols = loanColumns(["employee"]) || [];
+  const { offres, user } = useStore();
   return (
     <div className="px-6 py-4  w-full flex-grow  bg-lightgray   h-full overflow-y-auto ">
       {offres.length === 0 ? (
@@ -102,7 +100,6 @@ function InitialDashboard() {
         <TresaurierDashboard />
       )}
 
-      {/* <div className=" mx-6 mb-4  text-2xl font-bold">Dernieres Offres</div> */}
     </div>
   );
 }
