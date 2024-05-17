@@ -6,10 +6,20 @@ from django.db.models import Q
 
 
 class MeetingSerializer(serializers.ModelSerializer):
-    pv = serializers.FileField()
+
     class Meta:
         model = Meeting
-        fields = ['id',"day", "start_time", "end_time", "title", "description", "link", "pv", 'canceled']
+        fields = [
+            "id",
+            "day",
+            "start_time",
+            "end_time",
+            "title",
+            "description",
+            "link",
+            "pv",
+            "canceled",
+        ]
 
     def validate(self, attrs):
 
@@ -27,21 +37,22 @@ class MeetingSerializer(serializers.ModelSerializer):
         now = datetime.now().time()
         day = date.today()
 
+        instance = getattr(self, "instance", None)
+        if instance and (not start_time and not end_time):
+            start_time = instance.start_time
+            end_time = instance.end_time
+
         if (
             meeting_day and day == meeting_day and (start_time < now or end_time < now)
-        ) or meeting_day < day:
+        ) or (meeting_day and meeting_day < day):
             raise serializers.ValidationError(
                 "Meeting should be scheduled after current time."
             )
 
-        instance = getattr(self, "instance", None)
         # checking that this meeting does not overlap with an existing meeting
         if instance and not meeting_day:
             meeting_day = instance.day
         same_day_meetings = Meeting.objects.filter(day=meeting_day)
-        if instance and (not start_time and not end_time):
-            start_time = instance.start_time
-            end_time = instance.end_time
         overlaped_meetings = same_day_meetings.filter(
             # using Q object to check for all extreme possibilities inside one single filter
             Q(start_time__gte=start_time, start_time__lt=end_time)

@@ -31,6 +31,9 @@ class Meeting(models.Model):
         self.cached_end_time = self.end_time
         self.cached_day = self.day
 
+    def __str__(self) -> str:
+        return f"{self.title} on {self.day} from {self.start_time} to {self.end_time}"
+
 
 post_delete.connect(file_cleanup, sender=Meeting, dispatch_uid="meeting.file_cleanup")
 

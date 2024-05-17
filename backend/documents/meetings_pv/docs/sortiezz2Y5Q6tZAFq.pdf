@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Employees>
+    <Employee Corps="Agent">
+        <Matricule>E05</Matricule>
+        <Nom>Kadri</Nom>
+        <Prénom>Amina</Prénom>
+        <Date_N>23-11-1995</Date_N>
+        <Département>Dept3</Département>
+    </Employee>
+    <Employee Corps="Agent">
+        <Matricule>E04</Matricule>
+        <Nom>Abelmalk</Nom>
+        <Prénom>Hakima</Prénom>
+        <Date_N>18-10-1977</Date_N>
+        <Département>Dept3</Département>
+    </Employee>
+    <Employee Corps="Technique">
+        <Matricule>E01</Matricule>
+        <Nom>Nouar</Nom>
+        <Prénom>Mohamed</Prénom>
+        <Date_N>08-04-1975</Date_N>
+        <Département>Dept1</Département>
+    </Employee>
+    <Employee Corps="Administratif">
+        <Matricule>E02</Matricule>
+        <Nom>Benali</Nom>
+        <Prénom>Mostapha</Prénom>
+        <Date_N>06-07-1965</Date_N>
+        <Département>Dept2</Département>
+    </Employee>
+    <Employee Corps="Agent">
+        <Matricule>E06</Matricule>
+        <Nom>Safi</Nom>
+        <Prénom>Mostapha</Prénom>
+        <Date_N>23-12-1966</Date_N>
+        <Département>Dept4</Département>
+    </Employee>
+    <Employee Corps="Administratif">
+        <Matricule>E03</Matricule>
+        <Nom>Drissi</Nom>
+        <Prénom>Oussama</Prénom>
+        <Date_N>21-09-1956</Date_N>
+        <Département>Dept2</Département>
+    </Employee>
+    <Employee Corps="Agent">
+        <Matricule>E07</Matricule>
+        <Nom>Nadji</Nom>
+        <Prénom>Youssef</Prénom>
+        <Date_N>31-12-1985</Date_N>
+        <Département>Dept4</Département>
+    </Employee>
+    <Employee>
+        <Matricule>E08</Matricule>
+        <Nom>Salem</Nom>
+        <Prenom>Ali</Prenom>
+        <Date_N>02-03-2000</Date_N>
+        <Departement>Dept1</Departement>
+    </Employee>
+</Employees>
