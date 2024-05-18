@@ -21,7 +21,6 @@ import { MdCheck, MdDelete } from "react-icons/md";
 import useStore from "store";
 import { toast } from "sonner";
 import Axios from "../../api/axios";
-import FileInput from "components/utils/FileInput";
 function MeetingsCalendar({ meetings, refresh }) {
   const { user } = useStore();
   const [formatedMeetings, setFormatedMeetings] = useState([]);
@@ -138,12 +137,14 @@ function MeetingsCalendar({ meetings, refresh }) {
       try {
         const formData = new FormData();
         formData.append("file", file);
-        const res = await Axios.patch(`/meetings/${showPopup.id}/`, formData, {
+        const res = await Axios.patch(`/meetings/${showPopup.id}/`,{pv: file} , {
           headers: {
             "Content-Type": "multipart/form-data", 
           },
         });
-        console.log(res);
+        toast.success('PV téléchargé avec succès');
+        setOpen(false);
+        refresh();
       } catch (error) {
         console.log(error);
       }
@@ -220,11 +221,11 @@ function MeetingsCalendar({ meetings, refresh }) {
                       </>
                     )}
                   </p>
-                  <h2 className="mt-2  font-semibold">description</h2>
+                  <h2 className="mt-2  font-semibold">Description</h2>
                   <p className="text-sm ml-1">{showPopup.description}</p>
                   {showPopup.pv && (
                     <>
-                      <p className="mb-2">Le Pv: </p>
+                      <p className="mb-2 font-semibold">Pv</p>
                       <FileUploaded
                         name={
                           showPopup.pv?.split("/")[

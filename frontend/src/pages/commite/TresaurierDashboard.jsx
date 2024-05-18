@@ -121,7 +121,17 @@ function TresaurierDashboard() {
       });
     }
   };
-
+const handelTopSectionAddRecord =(demmande)=>{
+  setOpen(true);
+  setNewRecord({
+    type: "expense",
+    amount: "",
+    motif: "",
+    conection: null,
+    id: "",
+  });
+  setDemmandeSelecter(demmande);
+}
   useEffect(() => {
     fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear);
     fetchDoghnouts(setDoughnoutData, new Date().getFullYear(), true);
@@ -427,11 +437,12 @@ function TresaurierDashboard() {
             <div className="text-base">
               <p>{demmande?.employee?.first_name} {' '} {demmande?.employee?.last_name}</p>
               <p className="text-[11px] text-gray-500 leading-3 ml-1">
-              {demmande?.employee?.email}/ pret
+              {demmande?.employee?.email}/ {demmande?.loan_status ?'pret':'aid'}
               </p>
             </div>
             <div className="flex gap-3 items-center ">
               <FaMoneyBillTransfer
+              onClick={()=>handelTopSectionAddRecord(demmande)}
                 size={20}
                 className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
               />
@@ -452,6 +463,7 @@ function TresaurierDashboard() {
             <div className="flex gap-3 items-center ">
               <FaMoneyBillTransfer
                 size={20}
+                onClick={()=>handelTopSectionAddRecord(loan)}
                 className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
               />
               <Link to={`demandes-employe/pret/${loan.id}`}  target="_blank">
@@ -470,6 +482,7 @@ function TresaurierDashboard() {
             </div>
             <div className="flex gap-3 items-center ">
               <FaMoneyBillTransfer
+               onClick={()=>handelTopSectionAddRecord(aid)}
                 size={20}
                 className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
               />

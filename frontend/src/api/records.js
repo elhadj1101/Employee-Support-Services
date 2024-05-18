@@ -14,9 +14,12 @@ const getRecords = async () => {
 const addRecord = async (record) => {
   try {
     const response = await Axios.post("funds/" , {...record});
+  console.log(response.data);
+  toast.success('Enregistrement ajouté avec succès');
     return response.data ;
+  
   } catch (error) {
-    console.log(error);
+    toast.error(error.response.data.error);
   }
 };
 
