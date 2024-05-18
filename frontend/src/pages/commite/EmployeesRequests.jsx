@@ -16,8 +16,8 @@ function EmployeesRequests() {
     setFetchedAllLoans,
     user
   } = useStore();
-  const loancols = loanColumns([], true) || [];
-  const aidscols = aidsColumns([], true) || [];
+  const loancols = loanColumns([], true, user.role) || [];
+  const aidscols = aidsColumns([], true, user.role) || [];
   React.useEffect(() => {
     async function fetchAllAids() {
       const dat = await getAllAids();
@@ -41,24 +41,43 @@ function EmployeesRequests() {
     }
   }, []);
   return (
-    <div className="bg-gray-bg py-2 h-full">
-      <div className=" mx-6 mb-4  text-2xl font-bold">
-        Les demandes d'aide financiere
+    <div className="w-full h-full px-6 pb-4 flex-grow flex flex-col  bg-lightgray overflow-y-auto">
+      <div className="flex items-center justify-between">
+        <h1 className=" sticky top-[60px] pt-5 pb-6 text-xl lg:text-2xl text-black font-bold capitalize">
+          Les demandes d'aide financiere
+        </h1>
       </div>
-      <RequestsTable
-        data={user.role==='tresorier'? allAids.filter((aid)=>aid.financial_aid_status === 'approved'): allAids}
-        columns={aidscols}
-        filteredColumn="employee"
-      />
-
-      <div className=" mx-6 mb-4  text-2xl font-bold">
-        Les demandes de prets
+      <div className="relative w-full bg-white p-4 pt-0 lg:p-6 rounded-lg ">
+        <RequestsTable
+          data={
+            user.role === "tresorier"
+              ? allAids.filter((aid) => aid.financial_aid_status === "approved")
+              : allAids
+          }
+          columns={aidscols}
+          filteredColumn="employee"
+        />
       </div>
-      <RequestsTable
-        data={user.role==='tresorier'? allLoans.filter((loan)=>loan.loan_status === 'approved'): allAids}
-        columns={loancols}
-        filteredColumn="employee"
-      />
+      <div className="flex items-center justify-between">
+        <h1 className=" sticky top-[60px] pt-5 pb-6 text-xl lg:text-2xl text-black font-bold capitalize">
+          Les demandes de prets
+        </h1>
+      </div>
+      <div className="relative w-full bg-white p-4 pt-0 lg:p-6 rounded-lg ">
+        <RequestsTable
+          data={
+            user.role === "tresorier"
+              ? allLoans.filter(
+                  (loan) =>
+                    loan.loan_status === "approved" ||
+                    loan.loan_status === "payment_started"
+                )
+              : allLoans
+          }
+          columns={loancols}
+          filteredColumn="employee"
+        />
+      </div>
     </div>
   );
 }

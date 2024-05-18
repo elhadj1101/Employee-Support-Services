@@ -26,9 +26,8 @@ import { Input } from "components/ui/input";
 import { useEffect, useState } from "react";
 import { Button } from "components/ui/button";
 import { addRecord, fetchAnalitics, fetchDoghnouts } from "api/records";
-import { weekNumber } from "components/utils/utilFunctions";
+import { formatPrice, weekNumber } from "components/utils/utilFunctions";
 import { Link } from "react-router-dom";
-import { getCommity } from "api/requests";
 
 function TresaurierDashboard() {
   const recordCol = recordsColumns([], true) || [];
@@ -77,7 +76,7 @@ function TresaurierDashboard() {
       if (!newRecord.conection) {
         setError(true);
       } else {
-        const res = addRecord({
+        addRecord({
           type: newRecord.type,
           amount: newRecord.amount,
           motif: newRecord.motif,
@@ -90,7 +89,7 @@ function TresaurierDashboard() {
     } else {
       // type=income
       if (newRecord.amount !== 0) {
-        const res = addRecord({
+        addRecord({
           type: newRecord.type,
           amount: newRecord.amount,
           motif: newRecord.motif,
@@ -141,17 +140,17 @@ const handelTopSectionAddRecord =(demmande)=>{
       <div className="flex gap-6 ">
         <Card
           title="Budget"
-          price={Commity?.current_balance}
+          price={formatPrice(Commity?.current_balance, " ")}
           ReactIcon={<FaCashRegister size={40} color="" />}
         />
         <Card
           title="Revenue"
-          price={Number(Commity?.current_year_income)}
+          price={formatPrice(Commity?.current_year_income, " ")}
           ReactIcon={<MdOutlineAttachMoney size={40} />}
         />
         <Card
           title="Dépense"
-          price={Number(Commity?.current_year_expenses)}
+          price={formatPrice(Commity?.current_year_expenses, " ")}
           ReactIcon={<MdMoneyOffCsred size={40} />}
         />
       </div>
@@ -163,8 +162,8 @@ const handelTopSectionAddRecord =(demmande)=>{
         setCurrentPeriodData={setCurrentPeriodData}
         setAnaliticsByMonth={setAnaliticsByMonth}
       />
-
-      <div className=" w-full  flex flex-grow flex-wrap h-full lg:flex-nowrap gap-6   ">
+      
+      <div id="records" className=" w-full  flex flex-grow flex-wrap h-full lg:flex-nowrap gap-6   ">
         <div className="shadoww  w-full lg:max-w-[66%] flex-grow bg-white p-4 rounded-lg">
           <div className="flex justify-between items-center">
             <h1 className=" pt-2 text-[#262b40] text-xl font-bold capitalize">
@@ -189,8 +188,11 @@ const handelTopSectionAddRecord =(demmande)=>{
                               return {
                                 ...prev,
                                 type: prev.type === "expense" ? "" : "expense",
+                                conection: null,
                               };
                             });
+                          setDemmandeSelecter({});
+
                           }}
                           className={` shadow-sm cursor-pointer flex items-center gap-3 px-5 py-[14.1px] w-1/2 rounded-lg border   text-[#262b40]  ${
                             newRecord.type === "expense"
@@ -207,7 +209,9 @@ const handelTopSectionAddRecord =(demmande)=>{
                             setNewRecord((prev) => ({
                               ...prev,
                               type: prev.type === "income" ? "" : "income",
+                              conection: null,
                             }));
+                            setDemmandeSelecter({})
                           }}
                           className={` shadow-sm cursor-pointer flex items-center gap-3 p-5  w-1/2 rounded-lg border   text-[#262b40]  ${
                             newRecord.type === "income"
@@ -284,21 +288,31 @@ const handelTopSectionAddRecord =(demmande)=>{
                             <span className="text-red-600 ml-1">*</span>
                             <span className="text-xs ml-1">
                               ( Le montant doit être inférieur au total de la
-                              demande. {demmandeSelecter.amount})
+                              demande.{" "}
+                              {demmandeSelecter.amount *
+                                demmandeSelecter.loan_period}
+                              )
                             </span>
                           </h2>
                           <Input
-                            type="number"
+                            type="text"
                             placeholder="100000"
                             value={newRecord?.amount}
                             onChange={(e) => {
-                              
-                              const price = Number(e.target.value);
+                              const price = parseFloat(e.target.value);
+                              console.log(
+                                parseFloat(
+                                  demmandeSelecter.amount *
+                                    demmandeSelecter.loan_period -
+                                    demmandeSelecter.paid_amount
+                                )
+                              );
                               if (!isNaN(price)) {
                                 if (
                                   demmandeSelecter.id &&
-                                  Number(
-                                    demmandeSelecter.amount -
+                                  parseFloat(
+                                    demmandeSelecter.amount *
+                                      demmandeSelecter.loan_period -
                                       demmandeSelecter.paid_amount
                                   ) >= price
                                 ) {
@@ -325,7 +339,6 @@ const handelTopSectionAddRecord =(demmande)=>{
                             value={newRecord.motif}
                             onChange={(e) =>
                               setNewRecord((prev) => {
-                                
                                 return { ...prev, motif: e.target.value };
                               })
                             }
@@ -429,72 +442,141 @@ const handelTopSectionAddRecord =(demmande)=>{
               } flex items-center gap-2  rounded-md cursor-pointer text-center px-2 py-1.5 text-sm transition-color   hover:bg-slate-100 hover:text-black hover:border-black`}
             >
               Prets
-              </div>
             </div>
-            {all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).length === 0 ? <p className="text-center my-5 text-sm text-gray-500">Il n'existe aucune demande acceptée.</p> :''}
-          
-            { all.filter(demmande => (demmande?.loan_status === 'approved' || demmande?.financial_aid_status === 'approved' )).length !==0   && type ==='' && all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).slice(0,5).map((demmande,i)=>( <div key={i} className="flex items-center justify-between p-2 my-2">
-            <div className="text-base">
-              <p>{demmande?.employee?.first_name} {' '} {demmande?.employee?.last_name}</p>
-              <p className="text-[11px] text-gray-500 leading-3 ml-1">
-              {demmande?.employee?.email}/ {demmande?.loan_status ?'pret':'aid'}
-              </p>
-            </div>
-            <div className="flex gap-3 items-center ">
-              <FaMoneyBillTransfer
-              onClick={()=>handelTopSectionAddRecord(demmande)}
-                size={20}
-                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
-              />
-               <Link to={`demandes-employe/${demmande?.loan_status === 'approved' ?"pret":'aid'}/${demmande.id}`} target="_blank">
-              <IoEye
-                size={20}
-                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
-              /></Link>
-            </div>
-          </div>))}
-            { all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).length !==0   && type ==='prets' && allLoans && allLoans.filter(loan => loan.loan_status === 'approved').slice(0,5).map((loan)=>( <div className="flex items-center justify-between p-2 my-2">
-            <div className="text-base">
-              <p>{loan?.employee?.first_name} {' '} {loan?.employee?.last_name}</p>
-              <p className="text-[11px] text-gray-500 leading-3 ml-1">
-              {loan?.employee?.email}/ pret
-              </p>
-            </div>
-            <div className="flex gap-3 items-center ">
-              <FaMoneyBillTransfer
-                size={20}
-                onClick={()=>handelTopSectionAddRecord(loan)}
-                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
-              />
-              <Link to={`demandes-employe/pret/${loan.id}`}  target="_blank">
-              <IoEye
-                size={20}
-                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
-              /></Link>
-            </div>
-          </div>))}
-          { all.filter(demmande => (demmande?.loan_status === 'approved'|| demmande?.financial_aid_status === 'approved' )).length !==0   &&  type ==='aids' && allAids && allAids.filter(aid => aid.financial_aid_status === 'approved').slice(0,5).map((aid)=>( <div className="flex items-center justify-between p-2 my-2">
-            <div className="text-base">
-              <p>{aid?.employee?.first_name} {' '} {aid?.employee?.last_name}</p>
-              <p className="text-[11px] text-gray-500 leading-3 ml-1">
-              {aid?.employee?.email} / aid
-              </p>
-            </div>
-            <div className="flex gap-3 items-center ">
-              <FaMoneyBillTransfer
-               onClick={()=>handelTopSectionAddRecord(aid)}
-                size={20}
-                className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
-              />
-              <Link to={`demandes-employe/aid/${aid.id}`}  target="_blank">
-              <IoEye
-                size={20}
-                className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
-              />
-              </Link>
-            
-            </div>
-          </div>))}
+          </div>
+          {all.filter(
+            (demmande) =>
+              demmande?.loan_status === "approved" ||
+              demmande?.financial_aid_status === "approved"
+          ).length === 0 ? (
+            <p className="text-center my-5 text-sm text-gray-500">
+              Il n'existe aucune demande acceptée.
+            </p>
+          ) : (
+            ""
+          )}
+
+          {all.filter(
+            (demmande) =>
+              demmande?.loan_status === "approved" ||
+              demmande?.financial_aid_status === "approved"
+          ).length !== 0 &&
+            type === "" &&
+            all
+              .filter(
+                (demmande) =>
+                  demmande?.loan_status === "approved" ||
+                  demmande?.financial_aid_status === "approved"
+              )
+              .slice(0, 5)
+              .map((demmande, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-2 my-2"
+                >
+                  <div className="text-base">
+                    <p>
+                      {demmande?.employee?.first_name}{" "}
+                      {demmande?.employee?.last_name}
+                    </p>
+                    <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                      {demmande?.employee?.email}/{" "}
+                      {demmande?.loan_status ? "pret" : "aid"}
+                    </p>
+                  </div>
+                  <div className="flex gap-3 items-center ">
+                    <FaMoneyBillTransfer
+                      onClick={() => handelTopSectionAddRecord(demmande)}
+                      size={20}
+                      className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+                    />
+                    <Link
+                      to={`demandes-employe/${
+                        demmande?.loan_status === "approved" ? "pret" : "aid"
+                      }/${demmande.id}`}
+                      target="_blank"
+                    >
+                      <IoEye
+                        size={20}
+                        className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+                      />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+          {all.filter(
+            (demmande) =>
+              demmande?.loan_status === "approved" ||
+              demmande?.financial_aid_status === "approved"
+          ).length !== 0 &&
+            type === "prets" &&
+            allLoans &&
+            allLoans
+              .filter((loan) => loan.loan_status === "approved")
+              .slice(0, 5)
+              .map((loan) => (
+                <div className="flex items-center justify-between p-2 my-2">
+                  <div className="text-base">
+                    <p>
+                      {loan?.employee?.first_name} {loan?.employee?.last_name}
+                    </p>
+                    <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                      {loan?.employee?.email}/ pret
+                    </p>
+                  </div>
+                  <div className="flex gap-3 items-center ">
+                    <FaMoneyBillTransfer
+                      size={20}
+                      onClick={() => handelTopSectionAddRecord(loan)}
+                      className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+                    />
+                    <Link
+                      to={`demandes-employe/pret/${loan.id}`}
+                      target="_blank"
+                    >
+                      <IoEye
+                        size={20}
+                        className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+                      />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+          {all.filter(
+            (demmande) =>
+              demmande?.loan_status === "approved" ||
+              demmande?.financial_aid_status === "approved"
+          ).length !== 0 &&
+            type === "aids" &&
+            allAids &&
+            allAids
+              .filter((aid) => aid.financial_aid_status === "approved")
+              .slice(0, 5)
+              .map((aid) => (
+                <div className="flex items-center justify-between p-2 my-2">
+                  <div className="text-base">
+                    <p>
+                      {aid?.employee?.first_name} {aid?.employee?.last_name}
+                    </p>
+                    <p className="text-[11px] text-gray-500 leading-3 ml-1">
+                      {aid?.employee?.email} / aid
+                    </p>
+                  </div>
+                  <div className="flex gap-3 items-center ">
+                    <FaMoneyBillTransfer
+                      onClick={() => handelTopSectionAddRecord(aid)}
+                      size={20}
+                      className=" transition-all hover:bg-green-600 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-green-600 bg-white"
+                    />
+                    <Link to={`demandes-employe/aid/${aid.id}`} target="_blank">
+                      <IoEye
+                        size={20}
+                        className=" transition-all hover:bg-yellow-500 cursor-pointer hover:text-white rounded-full  p-1 w-7 h-7 text-yellow-500 bg-white"
+                      />
+                    </Link>
+                  </div>
+                </div>
+              ))}
         </div>
       </div>
     </div>

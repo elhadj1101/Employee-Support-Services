@@ -29,16 +29,21 @@ class RecordView(generics.ListCreateAPIView):
         return Response(serializer.data)
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        print(request.data)
         serializer.is_valid(raise_exception=True)
         # alter loan paid_amount if the record is income and have loan
         if serializer.validated_data.get('type') == "income" and serializer.validated_data.get('loan', None) is not None:
             loan = serializer.validated_data.get('loan')
-            if loan.loan_status != "approved":
+            print(loan.loan_status)
+            if loan.loan_status != "approved" and loan.loan_status != "payment_started":
+                
                 return Response({"error": "you can't pay an unapproved loan"}, status=status.HTTP_400_BAD_REQUEST)
             if loan.paid_amount + serializer.validated_data.get('amount') > loan.amount:
-                return Response({"error": "you can't pay more than the loan amount"}, status=status.HTTP_400_BAD_REQUEST)                
+                return Response({"error": "you can't pay more than the loan amount"}, status=status.HTTP_400_BAD_REQUEST)  
+            if (loan.paid_amount + serializer.validated_data.get('amount') == loan.amount*loan.loan_period):
+                loan.loan_status = "finished"        
             loan.paid_amount += serializer.validated_data.get('amount')
-            loan.loan_status = "payment_started"
+            
             loan.save()
         # update commity balance
         commity = Commity.objects.all().first()
@@ -72,6 +77,16 @@ class RecordView(generics.ListCreateAPIView):
                     financial_aid.save()
                 else:
                     return Response({"error": "you can't pay an unapproved or finished financial aid"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                loan = serializer.validated_data.get('loan', None)
+                if (loan is not None) :
+                    if (loan.loan_status == "approved") :
+                        loan.loan_status = "payment_started"
+                        loan.save()
+                    else:
+                        return Response({"error": "you can't pay an unapproved or finished loan"}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response({"error": "please select a loan or financial aid to pay"}, status=status.HTTP_400_BAD_REQUEST)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

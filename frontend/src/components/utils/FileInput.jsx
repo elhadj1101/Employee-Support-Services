@@ -29,7 +29,6 @@ function FileInput({
     e.preventDefault();
     setIsDragActive(true);
   }, []);
-
   const handleDragLeave = useCallback((e) => {
     e.preventDefault();
     setIsDragActive(false);
@@ -63,6 +62,10 @@ function FileInput({
       });
       if (setSingleFile) {
         setSingleFile(acceptedFiles[0]);
+        setFiles((prv) => {
+          return [...prv, ...acceptedFiles];
+        });
+      }else{
         setFiles((prv) => {
           return [...prv, ...acceptedFiles];
         });
@@ -122,7 +125,8 @@ function FileInput({
       }
       const acceptedFiles = accptedF.filter((file) => {
         const ext = file.name.split(".").pop();
-        const accpted = fileTypes.includes(ext.toUpperCase());
+        const accpted = fileTypes.includes(ext.toUpperCase().trim() +" ");
+
         if (!accpted) {
           toast.warning(
             `le fichier ${file.name} n'est pas accepté car l'extemsion n'est pas supporter, seulement les fichiers de type ${fileTypes} sont acceptés`
@@ -136,6 +140,10 @@ function FileInput({
           return [...prv, ...acceptedFiles];
         });
         return;
+      }else {
+        setFiles((prv) => {
+          return [...prv, ...acceptedFiles];
+        });
       }
     },
     [files]

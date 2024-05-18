@@ -7,7 +7,7 @@ import Signup from "./pages/Signup";
 import InitialDashboard from "./pages/employee/InitialDashboard";
 import Dashboard from "./pages/Dashboard";
 import Unauthorized from "./pages/Unauthorized";
-import { Route, Routes, Outlet } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Users from "./pages/admin/Users";
 import { Toaster } from "sonner";
 import RequireAuth from "./RequireAuth";
@@ -20,7 +20,6 @@ import ListAids from "pages/employee/ListAids";
 import EmployeesRequests from "pages/commite/EmployeesRequests";
 import SingleDemandLoan from "pages/SingleDemandLoan";
 import SingleDemandAid from "pages/SingleDemandAid";
-import tresaurierDashboard from "pages/commite/TresaurierDashboard";
 import Meetings from "pages/Meetings";
 import ListOffre from "pages/commite/ListOffre";
 import SingleOffre from "pages/commite/SingleOffre";
@@ -119,9 +118,13 @@ function App() {
                   />
                 }
               >
-                <Route path="offres" element={<AddOffre />} />
-                <Route path="create-offre" element={<ListOffre />} />
-                <Route path="list-offre" element={<ListOffre />} />
+                <Route path="create-offre" element={<AddOffre />} />
+                <Route path="offres" element={<ListOffre />} />
+                <Route
+                  path="edit-offre/:oid"
+                  element={<AddOffre edit={true} key={1} />}
+                />
+
               </Route>
               <Route
                 element={

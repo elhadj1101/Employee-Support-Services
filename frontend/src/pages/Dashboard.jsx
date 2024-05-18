@@ -107,7 +107,6 @@ function Dashboard() {
       setCommity(dat);
       setFetchedCommity(true);
     }
-    console.log(getMeetings() , 'testttttttttt meetings');
     if (user && user.is_superuser && !fetchedAdminUsers) fetchUsers();
     if (user && user.role === "tresorier" && !fetchedRecords) fetchRecords();
     if (user && user.role === "tresorier" && !fetchedCommity) fetchCommity();

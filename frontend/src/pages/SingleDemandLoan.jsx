@@ -325,8 +325,9 @@ export default function SingleDemandLoan({ employee }) {
             </h1>
             <div className="flex gap-3 flex-wrap">
               {requestedLoan?.documents?.length !== 0 ? (
-                requestedLoan?.documents?.map((doc) => (
-                  <Link
+                requestedLoan?.documents?.map((doc,i) => (
+                  <Link 
+                  key={i}
                     to={"http://127.0.0.1:8000" + doc.document_file}
                     target="_blank"
                   >

@@ -17,11 +17,11 @@ import {
 } from "components/ui/dialog";
 import FileUploaded from "components/FileUploaded";
 import { FaExternalLinkAlt } from "react-icons/fa";
-import { MdCheck, MdDelete } from "react-icons/md";
+import {  MdDelete } from "react-icons/md";
+import { IoCloudUploadSharp } from "react-icons/io5";
 import useStore from "store";
 import { toast } from "sonner";
 import Axios from "../../api/axios";
-import FileInput from "components/utils/FileInput";
 import { formatTime } from "components/utils/utilFunctions";
 function MeetingsCalendar({ meetings, refresh }) {
   const { user } = useStore();
@@ -130,7 +130,7 @@ function MeetingsCalendar({ meetings, refresh }) {
       try {
         const formData = new FormData();
         formData.append("file", file);
-        const res = await Axios.patch(`/meetings/${showPopup.id}/`,{pv: file} , {
+        await Axios.patch(`/meetings/${showPopup.id}/`,{pv: file} , {
           headers: {
             "Content-Type": "multipart/form-data", 
           },
@@ -138,8 +138,30 @@ function MeetingsCalendar({ meetings, refresh }) {
         toast.success('PV téléchargé avec succès');
         setOpen(false);
         refresh();
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
+        if (err.response) {
+          if (err.response.data) {
+            if (err.response.status === 500) {
+              toast.error(
+                "Une erreur s'est produite lors de la modification de l'offre"
+              );
+            }
+            if (err.response.data.detail) {
+              toast.error(err.response.data.detail);
+            }
+            let msg = "";
+            let errs = Object.keys(err.response.data);
+            errs.forEach((k) => {
+              msg = msg + err.response.data[k].join("\n");
+            });
+            toast.error(msg);
+          } else {
+            toast.error(
+              "Une erreur s'est produite lors de la modification de l'offre"
+            );
+          }
+        }
       }
     }
   };
@@ -168,12 +190,19 @@ function MeetingsCalendar({ meetings, refresh }) {
                         style={{ display: "none" }}
                         onChange={handleFileChange}
                       />
-                     
-                      <MdCheck
-                        size={20}
-                        className="cursor-pointer text-green-500 hover:text-white hover:bg-green-600 w-7 h-7 p-1 rounded-full"
-                        onClick={handleUploadPv}
-                      />
+
+                      <div className="tooltip">
+                        <IoCloudUploadSharp
+                          size={20}
+                          className="tooltip cursor-pointer text-green-500 hover:text-white hover:bg-green-600 w-7 h-7 p-1 rounded-full"
+                          onClick={handleUploadPv}
+                        />
+                        <div
+                          className="tooltiptext"
+                        >
+                          {showPopup.pv ? "Modifier le " : "Telecharger un "} PV
+                        </div>
+                      </div>
 
                       <MdDelete
                         onClick={(e) => deleteMeeting(showPopup.id, e)}

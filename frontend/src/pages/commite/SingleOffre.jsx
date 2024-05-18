@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useStore from "store";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { FaClock } from "react-icons/fa";
 import { MdPeopleAlt } from "react-icons/md";
@@ -47,12 +47,15 @@ function SingleOffre() {
         </h1>
         {(user?.role === "president" || user?.role === "vice_president") && (
           <div>
+            <Link to={`/edit-offre/${OffreId}`}>
             <Button
               className="flex items-center gap-1 ml-auto cursor-pointer text-left  px-4 py-2 text-sm transition-colors bg-light-blue hover:bg-light-blue hover:text-white text-white rounded-md active:scale-95"
               variant="outline"
             >
               Modifier
             </Button>
+
+            </Link>
           </div>
         )}
       </div>

@@ -63,17 +63,22 @@ const DeleteButton = ({ id }) => {
     </Button>
   );
 };
-const NavigateDropdownMenuItem = ({ id, text }) => {
+const NavigateDropdownMenuItem = ({ id, text, path=null }) => {
   // const { setLoanRequestedId } = useStore();
 
   const navigate = useNavigate();
   const parts = window.location.pathname
     .split("/")
     .filter((part) => part.trim() !== "");
+  
   let employee = parts[parts.length - 1];
   const handleNavigate = () => {
     // setLoanRequestedId(id);
     // localStorage.setItem("setLoanRequestedId", id);
+    if (path) {
+      navigate(path);
+      return;
+    }
     if (employee === "liste-demandes-aide-financiere") {
       navigate(`${id}`);
     } else navigate(`aid/${id}`);
@@ -81,7 +86,7 @@ const NavigateDropdownMenuItem = ({ id, text }) => {
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 };
-export const aidsColumns = (colsToHide = [], hideDelete = false) => {
+export const aidsColumns = (colsToHide = [], hideDelete = false, role="any") => {
   const cols = [
     {
       id: "select",
@@ -186,15 +191,21 @@ export const aidsColumns = (colsToHide = [], hideDelete = false) => {
                 id={row.original.id}
                 text={"Détails de la demande"}
               />
+              {role === "tresorier" &&
+                row.original.financial_aid_status === "approved" && (
+                  <NavigateDropdownMenuItem
+                    path={"/"}
+                    id={""}
+                    text={"Payement de la demande"}
+                  />
+                )}
               {row.original.financial_aid_status === "draft" && (
                 <NavigateDropdownMenuItem
                   id={"/demande-aide-financiere/" + row.original.id}
                   text={"Modifier le broullion"}
                 />
               )}
-              {["draft"].includes(
-                row.original.financial_aid_status
-              ) &&
+              {["draft"].includes(row.original.financial_aid_status) &&
                 !hideDelete && (
                   <Dialog>
                     <DialogTrigger style={{ width: "100%" }}>

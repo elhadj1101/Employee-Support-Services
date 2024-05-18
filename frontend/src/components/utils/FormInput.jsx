@@ -3,6 +3,7 @@ import React from 'react'
 function FormInput(
     {handleValueChange = (e)=> e.preventDefault(),
     name = "",
+    label=  true,
     type = "text",
     inputLabel = "",
     placeholder = "",
@@ -12,22 +13,24 @@ function FormInput(
     error = false,
     errMsg = "",
     isTextarea = false,
-    containerClassname =""
+    containerClassname ="",
 }
 
 ) {
   return (
     <div className={containerClassname}>
-      <label
-        for={name}
-        className={
-          "block mb-2 text-sm font-medium " +
-          labelClassName +
-          (error ? " text-red-700 " : "")
-        }
-      >
-        {inputLabel}
-      </label>
+      {label && (
+        <label
+          htmlFor={name}
+          className={
+            "block mb-2 text-sm font-medium " +
+            labelClassName +
+            (error ? " text-red-700 " : "")
+          }
+        >
+          {inputLabel}
+        </label>
+      )}
       {!isTextarea ? (
         <input
           id={name}
@@ -43,6 +46,7 @@ function FormInput(
               : "")
           }
           placeholder={placeholder}
+
         />
       ) : (
         <textarea
@@ -51,7 +55,6 @@ function FormInput(
           name={name}
           value={value}
           onChange={handleValueChange}
-
           className={
             "shadow-sm focus:ring-indigo-500 h-[100px] focus:border-indigo-500 outline-none block w-full sm:text-sm border border-gray-300 rounded-md p-4 " +
             inputClassName +

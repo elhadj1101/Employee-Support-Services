@@ -6,7 +6,8 @@ from .permissions import IsCommitte, CanCreateMeeting
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django_filters import rest_framework as filters
-
+import os
+from django.core.files.storage import default_storage
 
 # Create your views here.
 
@@ -39,7 +40,25 @@ class SingleMeetingView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Meeting.objects.filter(pk=self.kwargs["pk"])
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data.copy()
+        if type(data.get('pv')) == str:
+            data.pop('pv')
+        else:
+            old_file = instance.pv.path
+            if (os.path.exists(old_file)):
+                default_storage.delete(old_file)
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
 
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
     def delete(self, request, *args, **kwargs):
         obj = self.get_object()
         obj.canceled = True
