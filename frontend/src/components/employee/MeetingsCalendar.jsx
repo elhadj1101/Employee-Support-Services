@@ -21,14 +21,14 @@ import { MdCheck, MdDelete } from "react-icons/md";
 import useStore from "store";
 import { toast } from "sonner";
 import Axios from "../../api/axios";
+import FileInput from "components/utils/FileInput";
+import { formatTime } from "components/utils/utilFunctions";
 function MeetingsCalendar({ meetings, refresh }) {
   const { user } = useStore();
   const [formatedMeetings, setFormatedMeetings] = useState([]);
   const [showPopup, setShowPopup] = useState(-1);
   const [open, setOpen] = useState(false);
-  const formatTime = (time) => {
-    return time.split(":")[0] + ":" + time.split(":")[1];
-  };
+ 
   const openBtn = useRef();
 
   const handleEventClick = (event) => {
@@ -89,15 +89,8 @@ function MeetingsCalendar({ meetings, refresh }) {
         },
       };
     });
-    kk.push({
-      id: 52,
-      title: <p>meeting.title</p>,
-
-      start: new Date(2024, 5, 16),
-      end: new Date(2024, 5, 16),
-    });
-    console.log(kk);
-    setFormatedMeetings(kk);
+    
+      setFormatedMeetings(kk);
   }, [meetings]);
   const deleteMeeting = (id, e) => {
     e.preventDefault();
@@ -151,7 +144,7 @@ function MeetingsCalendar({ meetings, refresh }) {
     }
   };
   return (
-    <div className="p-5 h-screen">
+    <div className="p-5 max-h-full">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <button ref={openBtn} hidden></button>

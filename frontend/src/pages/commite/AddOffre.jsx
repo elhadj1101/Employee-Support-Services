@@ -47,14 +47,12 @@ function AddOffre() {
         return { ...prv, title: "Le titre est requis" };
       });
       return;
-
     }
     if (offre.description == "") {
       setError((prv) => {
         return { ...prv, description: "La description est requise" };
       });
       return;
-
     }
     if (offre.start_date == "") {
       setError((prv) => {
@@ -67,33 +65,35 @@ function AddOffre() {
         return { ...prv, end_date: "La date de fin est requise" };
       });
       return;
-
     }
     if (offre.max_participants <= 0) {
       setError((prv) => {
-        return { ...prv, max_participants: "Le nombre de participants est requis" };
+        return {
+          ...prv,
+          max_participants: "Le nombre de participants est requis",
+        };
       });
       return;
-
     }
     if (offre.cover === null) {
       setError((prv) => {
         return { ...prv, cover: "L'image de couverture est requise" };
-      })
+      });
       return;
     }
-    
+
     if (btnRef.current) {
       btnRef.current.disabled = true;
+      btnRef.current.classList.remove("cursor-pointer");
       btnRef.current.classList.add("cursor-not-allowed");
     }
-    const formData = new FormData();
-    formData.append("title", offre.title);
-    formData.append("description", offre.description);
-    formData.append("start_date", offre.start_date);
-    formData.append("end_date", offre.end_date);
-    formData.append("max_participants", parseInt(offre.max_participants));
-    formData.append("cover", offre.cover);
+    // const formData = new FormData();
+    // formData.append("title", offre.title);
+    // formData.append("description", offre.description);
+    // formData.append("start_date", offre.start_date);
+    // formData.append("end_date", offre.end_date);
+    // formData.append("max_participants", parseInt(offre.max_participants));
+    // formData.append("cover", offre.cover);
 
     Axios.post("/offres/", offre, {
       headers: {
@@ -106,6 +106,8 @@ function AddOffre() {
         if (btnRef.current) {
           btnRef.current.disabled = false;
           btnRef.current.classList.remove("cursor-not-allowed");
+          btnRef.current.classList.add("cursor-pointer");
+
         }
         setOffre(
           {
@@ -125,6 +127,7 @@ function AddOffre() {
         if (btnRef.current) {
           btnRef.current.disabled = false;
           btnRef.current.classList.remove("cursor-not-allowed");
+          btnRef.current.classList.add("cursor-pointer");
 
         }
 
@@ -137,7 +140,7 @@ function AddOffre() {
           Creer Un Offre
         </h1>
       </div>
-      <div className=" relative w-full bg-white p-4 lg:p-6 rounded-lg  overflow-auto">
+      <div className="relative w-full bg-white p-4 lg:p-6 rounded-lg  overflow-auto">
         <div className="w-full">
           <form className="w-full flex gap-3">
             <div className="basis-1/2 flex-col flex gap-4">
@@ -178,7 +181,9 @@ function AddOffre() {
                 multpl={false}
                 iconSrc="/icons/png.png"
               />
-              {error.cover && <p className="mt-2 text-sm text-red-600 ">{error.cover}</p>}
+              {error.cover && (
+                <p className="mt-2 text-sm text-red-600 ">{error.cover}</p>
+              )}
             </div>
             <div className="basis-1/2 flex-col flex gap-4">
               <FormInput
