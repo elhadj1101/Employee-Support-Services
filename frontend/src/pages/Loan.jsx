@@ -227,7 +227,7 @@ const Loan = () => {
     setShowModal(false);
   };
   return (
-    <div className=" pt-2 bg-lightgray h-[100vh]">
+    <div className=" py-2 bg-lightgray h-full overflow-auto">
       <h1 className="font-semibold tet-2xl ml-6 text-2xl my-2">
         {loanDraftId === false
           ? "Demande De Pret"
@@ -237,14 +237,13 @@ const Loan = () => {
         <div className="  max-w-sm mx-auto sm:flex sm:justify-between sm:mx-6 sm:space-x-3 sm:max-w-full    ">
           <Card
             title="Montant max prét"
-            sub='(12 mois)'
+            sub="(12 mois)"
             price={maxLoan}
             icon="/icons/loan.png"
           />
           <Card
             title="Max paiment/mois"
-            sub='(12 mois)'
-
+            sub="(12 mois)"
             price={maxPayMois}
             icon="/icons/timeloan.png"
           />
@@ -292,7 +291,7 @@ const Loan = () => {
       {((canApplyLoan && !loanDraftId) ||
         (crrntLoan && loanDraftId && crrntLoan.loan_status === "draft")) && (
         <form className=" sm:px-7 h-auto bg-white mx-5 rounded-xl p-4">
-          <span className="  sm:mt-8 font-medium text-xl flex mb-7 ">
+          <span className=" p-4 sm:mt-8 font-medium text-xl flex mb-7 ">
             {loanDraftId === false
               ? "Nouvelle demande de prét"
               : "Modification d'un brouillon (N°:" + loanDraftId + ")"}
@@ -303,7 +302,7 @@ const Loan = () => {
           </label>
           <input
             name="montant"
-            className=" p-3  w-full   "
+            className="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base "
             value={Montant}
             type="number"
             onChange={handleChange}
@@ -317,7 +316,7 @@ const Loan = () => {
                 Durée de remboursement souhaitée (en mois [1-12])
               </label>
               <input
-                className=" p-3 w-full  mt-2 "
+                className="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                 name="duration"
                 value={Duration}
                 type="number"
@@ -336,7 +335,7 @@ const Loan = () => {
                 value={payment_method}
                 onValueChange={handleSelectChange}
               >
-                <SelectTrigger className="w-full h-auto p-3 mt-2 rounded-lg">
+                <SelectTrigger className="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -357,7 +356,7 @@ const Loan = () => {
           {showModal && (
             <div className="absolute min-h-full h-[110vh] inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-75 shadow-2xl">
               <Popup
-              requiredFiles={requiredFiles}
+                requiredFiles={requiredFiles}
                 handleClose={handleClose}
                 oldFiles={oldFiles}
                 setOldFiles={setOldFiles}

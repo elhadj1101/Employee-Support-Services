@@ -1,10 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import FormInput from "../../components/utils/FormInput";
 import FileInput from "components/utils/FileInput";
 import Axios from "api/axios";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import useStore from "store";
 
-function AddOffre() {
+
+function AddOffre({edit = false}) {
   const [offre, setOffre] = useState({
     title: "",
     description: "",
@@ -13,6 +16,32 @@ function AddOffre() {
     max_participants: 10,
     cover: null,
   });
+  const [filee, setFilee] = useState([])
+  const {offres, setOffres} = useStore();
+  const parts = window.location.pathname
+    .split("/")
+    .filter((part) => part.trim() !== "");
+  const navigate = useNavigate();
+  
+  let OffreId = parts[parts.length - 1];
+  useEffect (() => {
+    if (edit && !OffreId ) {
+      toast.warning("Offre non trouvée");
+      navigate("/");
+      return;
+    }
+    if (edit && offres.length > 0) {
+      const currentOffre = offres.filter((offre) => offre.id === parseInt(OffreId));
+      if (currentOffre.length === 0) {
+        toast.warning("Offre non trouvée");
+        navigate("/");
+        return;
+      }
+      setOffre(currentOffre[0]);
+      setFilee([currentOffre[0].cover])
+    }
+
+  }, [offres])
   const btnRef = useRef();
 
   const [error, setError] = useState({
@@ -42,19 +71,19 @@ function AddOffre() {
 
 
   const handleSubmit = () => {
-    if (offre.title == "") {
+    if (offre.title === "") {
       setError((prv) => {
         return { ...prv, title: "Le titre est requis" };
       });
       return;
     }
-    if (offre.description == "") {
+    if (offre.description === "") {
       setError((prv) => {
         return { ...prv, description: "La description est requise" };
       });
       return;
     }
-    if (offre.start_date == "") {
+    if (offre.start_date === "") {
       setError((prv) => {
         return { ...prv, start_date: "La date de debut est requise" };
       });
@@ -87,57 +116,97 @@ function AddOffre() {
       btnRef.current.classList.remove("cursor-pointer");
       btnRef.current.classList.add("cursor-not-allowed");
     }
-    // const formData = new FormData();
-    // formData.append("title", offre.title);
-    // formData.append("description", offre.description);
-    // formData.append("start_date", offre.start_date);
-    // formData.append("end_date", offre.end_date);
-    // formData.append("max_participants", parseInt(offre.max_participants));
-    // formData.append("cover", offre.cover);
+    if (edit) {
+      Axios.patch(`/offres/${OffreId}/`, offre,{
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }})
+        .then((res) => {
+          console.log("offre updated");
+          toast.success("Offre modifiée avec succès");
+          let newOffres = offres.filter((o) => o.id !== parseInt(OffreId));
+          newOffres.push(res.data);
+          setOffres(newOffres);
+          setOffre({...res.data, cover: null});
+          if (btnRef.current) {
+            btnRef.current.disabled = false;
+            btnRef.current.classList.remove("cursor-not-allowed");
+            btnRef.current.classList.add("cursor-pointer");
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.data){
+              if (err.response.status === 500){
+                toast.error(
+                  "Une erreur s'est produite lors de la modification de l'offre"
+                );
+              }
+              if (err.response.data.detail) {
+                toast.error(err.response.data.detail);
+              }
+              let msg = ""
+              let errs = Object.keys(err.response.data)
+              errs.forEach((k) => {
+                msg = msg + err.response.data[k].join("\n");
+              })
+              toast.error(msg)
+            }else {
+              toast.error(
+                "Une erreur s'est produite lors de la modification de l'offre"
+              );
 
-    Axios.post("/offres/", offre, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res) => {
-        console.log("offre added");
-        toast.success("Offre ajoutée avec succès");
-        if (btnRef.current) {
-          btnRef.current.disabled = false;
-          btnRef.current.classList.remove("cursor-not-allowed");
-          btnRef.current.classList.add("cursor-pointer");
-
-        }
-        setOffre(
-          {
+            }
+          }
+          if (btnRef.current) {
+            btnRef.current.disabled = false;
+            btnRef.current.classList.remove("cursor-not-allowed");
+            btnRef.current.classList.add("cursor-pointer");
+          }
+        });
+    }else {
+      Axios.post("/offres/", offre, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+        .then(() => {
+          console.log("offre added");
+          toast.success("Offre ajoutée avec succès");
+          if (btnRef.current) {
+            btnRef.current.disabled = false;
+            btnRef.current.classList.remove("cursor-not-allowed");
+            btnRef.current.classList.add("cursor-pointer");
+          }
+          setOffre({
             title: "",
             description: "",
             start_date: new Date().toISOString().split("T")[0],
             end_date: new Date().toISOString().split("T")[0],
             max_participants: 10,
             cover: null,
+          });
+          setFilee([]);
+
+        })
+        .catch((err) => {
+          console.log("error");
+          toast.error("Erreur lors de l'ajout de l'offre");
+          console.log(err);
+          if (btnRef.current) {
+            btnRef.current.disabled = false;
+            btnRef.current.classList.remove("cursor-not-allowed");
+            btnRef.current.classList.add("cursor-pointer");
           }
-        )
-      })
-      .catch((err) => {
-        console.log("error");
-        toast.error("Erreur lors de l'ajout de l'offre");
-        console.log(err);
-        if (btnRef.current) {
-          btnRef.current.disabled = false;
-          btnRef.current.classList.remove("cursor-not-allowed");
-          btnRef.current.classList.add("cursor-pointer");
-
-        }
-
-      });
+        });
+    }
+    navigate('/offres');
   }
   return (
     <div className="w-full h-full px-6 pb-4 flex-grow flex flex-col  bg-lightgray">
       <div className="flex items-center justify-between">
         <h1 className=" sticky top-[60px] pt-5 pb-6 text-xl lg:text-2xl text-black font-bold capitalize">
-          Creer Un Offre
+          {edit ? `Modifier l'offre (${OffreId})` : "Ajouter une offre"}
         </h1>
       </div>
       <div className="relative w-full bg-white p-4 lg:p-6 rounded-lg  overflow-auto">
@@ -166,18 +235,33 @@ function AddOffre() {
               />
               <FileInput
                 labell="Ajouter une image de couverture"
-                oldFiles={[]}
+                oldFiles={
+                  typeof(offre.cover) ==="string"
+                    ? [
+                        {
+                          url: offre?.cover?.replaceAll(
+                            "http://localhost:8000",
+                            ""
+                          ),
+                          name:offre.cover?.split("/")[
+                            offre.cover?.split("/").length - 1
+                          ],
+                          size: 250,
+                        },
+                      ]
+                    : []
+                }
                 setOldFiles={() => {}}
                 setSingleFile={(file) => {
-                  console.log(offre);
                   setOffre((prv) => {
                     return { ...prv, cover: file };
                   });
+                  setFilee([file])
                 }}
-                files={offre.cover}
+                files={filee}
                 accepts="image/*"
                 maxFiles={1}
-                fileTypes={["PNG", "JPG", "JPEG"]}
+                fileTypes={["PNG ", "JPG ", "JPEG "]}
                 multpl={false}
                 iconSrc="/icons/png.png"
               />

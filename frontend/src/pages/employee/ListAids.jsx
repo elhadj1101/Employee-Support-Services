@@ -20,11 +20,15 @@ function ListAids() {
     }
   }, []);
   return (
-    <div className="bg-gray-bg py-2 h-full">
-      <div className=" mx-6 mb-4  text-2xl font-bold">
-        Votre demandes d'aide financiere
+    <div className="w-full h-full px-6 pb-4 flex-grow flex flex-col  bg-lightgray overflow-y-auto">
+      <div className="flex items-center justify-between">
+        <h1 className=" sticky top-[60px] pt-5 pb-6 text-xl lg:text-2xl text-black font-bold capitalize">
+          Votre demandes d'aide financiere
+        </h1>
       </div>
-      <RequestsTable data={aids} columns={cols} filteredColumn="id" />
+      <div className="relative w-full bg-white p-4 pt-0 lg:p-6 rounded-lg ">
+        <RequestsTable data={aids} columns={cols} filteredColumn="id" />
+      </div>
     </div>
   );
 }

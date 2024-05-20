@@ -59,73 +59,82 @@ export function ComboBox({
             {/* <CommandEmpty>No results found.</CommandEmpty> */}
             {loans.length !== 0 ? (
               <CommandGroup heading="Prets">
-                {loans.filter((pret)=>(pret.loan_status ==='approved')).map((demmande) => (
-                  <CommandItem
-                    key={demmande.id}
-                    value={demmande.id}
-                    onSelect={(currentValue) => {
-                      handleComboBox(currentValue, demmande, "loan");
-                      setOpen(false);
-                    }}
-                  >
-                    <div className="w-full flex gap-2 items-center">
-                      {/* !!!!!!!! the space after the id is very important !!!!!!!! */}
-                      <p>#{demmande?.id} </p>
-                      <p>
-                        {" "}
-                        {demmande?.employee?.email ||
-                          demmande?.employee?.email}
-                      </p>
-                      <p className="ml-auto">
-                        {demmande?.amount} da (
-                        {demmande?.paid_amount} )
-                      </p>
-                    </div>
-                    <CheckIcon
-                      className={cn(
-                        "ml-auto h-4 w-4",
-                        demmandeSelecter.id === demmande.id
-                          ? "opacity-100"
-                          : "opacity-0"
-                      )}
-                    />
-                  </CommandItem>
-                ))}
+                {loans
+                  .filter(
+                    (pret) =>
+                      (pret.loan_status === "approved" &&
+                        newRecord.type === "expense") ||
+                      (pret.loan_status === "payment_started" &&
+                        newRecord.type === "income")
+                  )
+                  .map((demmande) => (
+                    <CommandItem
+                      key={demmande.id}
+                      value={demmande.id}
+                      onSelect={(currentValue) => {
+                        handleComboBox(currentValue, demmande, "loan");
+                        setOpen(false);
+                      }}
+                    >
+                      <div className="w-full flex gap-2 items-center">
+                        {/* !!!!!!!! the space after the id is very important !!!!!!!! */}
+                        <p>#{demmande?.id} </p>
+                        <p>
+                          {" "}
+                          {demmande?.employee?.email ||
+                            demmande?.employee?.email}
+                        </p>
+                        <p className="ml-auto">
+                          {demmande?.amount} da ({demmande?.paid_amount} )
+                        </p>
+                      </div>
+                      <CheckIcon
+                        className={cn(
+                          "ml-auto h-4 w-4",
+                          demmandeSelecter.id === demmande.id
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
               </CommandGroup>
             ) : (
               ""
             )}
-            {newRecord.type!=='income' && aids.length !== 0 ? (
+            {newRecord.type !== "income" && aids.length !== 0 ? (
               <CommandGroup heading="Aids">
-                {aids.filter((aid)=>(aid.financial_aid_status  === 'approved')).map((demmande) => (
-                  <CommandItem
-                    key={demmande.id}
-                    value={demmande.id}
-                    onSelect={(currentValue) => {
-                      handleComboBox(currentValue, demmande, "finacial_aid");
-                      setOpen(false);
-                    }}
-                  >
-                    <div className="w-full flex gap-2 items-center">
-                      {/* !!!!!!!! the space after the id is very important !!!!!!!! */}
-                      <p>#{demmande?.id} </p>
-                      <p>
-                        {" "}
-                        {demmande?.employee?.email ||
-                          demmande?.employee?.email}{" "}
-                      </p>
-                      <p className="ml-auto">{demmande?.amount} da</p>
-                    </div>
-                    <CheckIcon
-                      className={cn(
-                        "ml-auto h-4 w-4",
-                        demmandeSelecter.id === demmande.id
-                          ? "opacity-100"
-                          : "opacity-0"
-                      )}
-                    />
-                  </CommandItem>
-                ))}
+                {aids
+                  .filter((aid) => aid.financial_aid_status === "approved")
+                  .map((demmande) => (
+                    <CommandItem
+                      key={demmande.id}
+                      value={demmande.id}
+                      onSelect={(currentValue) => {
+                        handleComboBox(currentValue, demmande, "financial_aid");
+                        setOpen(false);
+                      }}
+                    >
+                      <div className="w-full flex gap-2 items-center">
+                        {/* !!!!!!!! the space after the id is very important !!!!!!!! */}
+                        <p>#{demmande?.id} </p>
+                        <p>
+                          {" "}
+                          {demmande?.employee?.email ||
+                            demmande?.employee?.email}{" "}
+                        </p>
+                        <p className="ml-auto">{demmande?.amount} da</p>
+                      </div>
+                      <CheckIcon
+                        className={cn(
+                          "ml-auto h-4 w-4",
+                          demmandeSelecter.id === demmande.id
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
               </CommandGroup>
             ) : (
               ""

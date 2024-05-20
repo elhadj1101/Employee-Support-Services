@@ -1,5 +1,7 @@
 function formatPrice(price, delm=".") {
-    
+    if (price === undefined || price === null) {
+      return "0";
+    }
     let strPrice = price.toString();
     if (isNaN(strPrice)) {
         return "0";

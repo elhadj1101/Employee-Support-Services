@@ -58,7 +58,7 @@ export default function RequestsTable({
   });
 
   return (
-    <div className="w-full flex flex-col flex-grow bg-white p-4 rounded-lg mt-4">
+    <div className="w-full flex flex-col flex-grow bg-white rounded-lg">
       {showFilter && (
         <div className="flex items-center py-4 ">
           <Input

@@ -86,7 +86,7 @@ export default function Sidebar() {
             </Link>
           </>
         )}
-        {user && (user.role !== "employe" ) && (
+        {user && user.role !== "employe" && (
           <Link to="/reunions">
             <SideButton
               title="Les Réunions"
@@ -102,16 +102,15 @@ export default function Sidebar() {
               <SideButton
                 title="Les offres"
                 icon={HiOutlineUserGroup}
-                to="/offres"
                 nestedBtns={[
                   {
                     titleBtn: "Creer Un Offre",
-                    path: "/offres",
+                    path: "/create-offre",
                     Icon: HiOutlineUserPlus,
                   },
                   {
                     titleBtn: "Liste Des Offres",
-                    path: "/create-offre",
+                    path: "/offres",
                     Icon: FaCircleCheck,
                   },
                 ]}

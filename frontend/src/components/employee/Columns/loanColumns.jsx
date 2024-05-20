@@ -25,7 +25,7 @@ import { statusColorMap } from "api/requests";
 import { useNavigate } from "react-router-dom";
 import useStore from "../../../store/index";
 import { toast } from "sonner";
-import { deleteLoan, getLoans, canApplyForLoan} from "api/requests";
+import { deleteLoan, getLoans, canApplyForLoan } from "api/requests";
 const DeleteButton = ({ id }) => {
   const { setLoans, setCanApplyLoan } = useStore();
   const handleDeleteClick = async (e) => {
@@ -61,28 +61,37 @@ const DeleteButton = ({ id }) => {
     </Button>
   );
 };
-const NavigateDropdownMenuItem = ({ id, text }) => {
+const NavigateDropdownMenuItem = ({ id, text, path = null }) => {
   // const { setLoanRequestedId } = useStore();
 
   const navigate = useNavigate();
   const parts = window.location.pathname
     .split("/")
     .filter((part) => part.trim() !== "");
+
   let employee = parts[parts.length - 1];
 
   const handleNavigate = () => {
     // setLoanRequestedId(id);
     // localStorage.setItem("setLoanRequestedId", id);
+      if (path) {
+        navigate(path);
+        return;
+      }
     if (employee === "liste-demandes-pret") {
       navigate(`${id}`);
-    } else if (employee ==="demandes-employe")  navigate(`pret/${id}`)
+    } else if (employee === "demandes-employe") navigate(`pret/${id}`);
     else navigate(`/liste-demandes-pret/${id}`);
   };
 
   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 };
 
-export const loanColumns = (colsToHide = [], hideDelete = false) => {
+export const loanColumns = (
+  colsToHide = [],
+  hideDelete = false,
+  role = "any"
+) => {
   const cols = [
     {
       id: "select",
@@ -112,23 +121,23 @@ export const loanColumns = (colsToHide = [], hideDelete = false) => {
       cell: ({ row }) => {
         return (
           <div className="text-center font-medium">{row.getValue("id")}</div>
-          );
-        },
+        );
       },
-      {
-        accessorKey: "employee",
-        header: () => <div className="text-center">ID-Employer</div>,
-        // to filter ids
-        accessorFn: (orow) => {
-          return orow.employee.id.toString();
-        },
-        cell: ({ row }) => (
-          <div className="text-center font-medium">
-            {row.getValue("employee")}
-          </div>
-        ),
+    },
+    {
+      accessorKey: "employee",
+      header: () => <div className="text-center">ID-Employer</div>,
+      // to filter ids
+      accessorFn: (orow) => {
+        return orow.employee.id.toString();
       },
-      {
+      cell: ({ row }) => (
+        <div className="text-center font-medium">
+          {row.getValue("employee")}
+        </div>
+      ),
+    },
+    {
       accessorKey: "request_created_at",
       header: () => <div className="text-center">Date Demande</div>,
       cell: ({ row }) => {
@@ -208,37 +217,44 @@ export const loanColumns = (colsToHide = [], hideDelete = false) => {
                 id={row.original.id}
                 text={"Détails de la demande"}
               />
+              {role === "tresorier" &&
+                row.original.loan_status === "approved" && (
+                  <NavigateDropdownMenuItem
+                    path={"/"}
+                    id=""
+                    text={"Payement de la demande"}
+                  />
+                )}
               {row.original.loan_status === "draft" && (
                 <NavigateDropdownMenuItem
                   id={"/demande-pret/" + row.original.id}
                   text={"Modifier le broullion"}
                 />
               )}
-              {["draft"].includes(row.original.loan_status) &&
-                !hideDelete && (
-                  <Dialog>
-                    <DialogTrigger style={{ width: "100%" }}>
-                      <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
-                        Supprimer
-                      </div>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>
-                          Êtes-vous sûr de Supprimer Cette Demmande?
-                        </DialogTitle>
-                        <DialogDescription>
-                          Cette action va Supprimer definitivement la demmande
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <DialogClose>
-                          <DeleteButton id={row.original.id} />
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                )}
+              {["draft"].includes(row.original.loan_status) && !hideDelete && (
+                <Dialog>
+                  <DialogTrigger style={{ width: "100%" }}>
+                    <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+                      Supprimer
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        Êtes-vous sûr de Supprimer Cette Demmande?
+                      </DialogTitle>
+                      <DialogDescription>
+                        Cette action va Supprimer definitivement la demmande
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose>
+                        <DeleteButton id={row.original.id} />
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
