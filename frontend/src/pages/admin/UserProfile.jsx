@@ -260,10 +260,10 @@ Object.keys(formData).forEach((key) => {
   };
 
   return (
-    <div className="w-full flex-grow flex flex-col  bg-lightgray">
-      <div className="px-6 pb-4 flex flex-col flex-grow relative ">
-        <div className="flex items-center justify-between">
-          <h1 className=" sticky top-[60px] pt-5 pb-6 bg-lightgray text-xl lg:text-2xl text-black font-bold capitalize">
+    <div className="w-full flex-grow h-[90vh] flex flex-col bg-lightgray">
+      <div className="px-6 pb-4 flex flex-col flex-grow  h-[80vh]  relative ">
+        <div className="flex items-center justify-between ">
+          <h1 className=" sticky top-[60px] pt-5 pb-6 bg-lightgray text-xl lg:text-2xl text-black  font-bold capitalize">
             Remplir les données du nouveau utilisateur
           </h1>
           <div className="flex gap-2 justify-center items-center">
@@ -277,12 +277,11 @@ Object.keys(formData).forEach((key) => {
             </div>
           </div>
         </div>
-
-        <div className="w-full flex flex-col flex-grow bg-white p-4 rounded-lg  overflow-auto">
+        <div className="w-full flex flex-col flex-grow bg-white p-4 rounded-lg  overflow-y-auto">
           <p className="mb-4 font-medium ">
             Remplir les données du nouveau utilisateur
           </p>
-          <form className="grid lg:grid-cols-2 gap-10">
+          <form className="grid overflow-y-auto lg:grid-cols-2 gap-10">
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold py-2 mb-2 mt-4 border-l-4 border-light-blue px-3 bg-[#e2e8ff] text-light-blue text-lg  ">
                 1. Informations sur l'employé{" "}
@@ -418,13 +417,8 @@ Object.keys(formData).forEach((key) => {
               </div>
               <div className=" mt-5 flex flex-col gap-1">
                 <label className="pb-1" htmlFor="recruted_at">
-                date de Recrutement
-                  <span
-                    style={{ color: "red" }}
-                  >
-                    {" "}
-                    *
-                  </span>
+                  date de Recrutement
+                  <span style={{ color: "red" }}> *</span>
                 </label>
                 {readOnly ? (
                   <input
@@ -435,13 +429,14 @@ Object.keys(formData).forEach((key) => {
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
                   />
-                ) : 
-                <DatePickerDemo
-                  id="dateNaissance"
-                  name="dateNaissance"
-                  value={UserProfileData?.recruted_at}
-                  input='recruted_at'
-                />}
+                ) : (
+                  <DatePickerDemo
+                    id="dateNaissance"
+                    name="dateNaissance"
+                    value={UserProfileData?.recruted_at}
+                    input="recruted_at"
+                  />
+                )}
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
                   {newErrors?.recruted_at}
                 </p>
@@ -501,56 +496,49 @@ Object.keys(formData).forEach((key) => {
               </div>
 
               <div className="flex items-center gap-2 mt-4">
-              {!readOnly &&
-                <input
-                  id="retired"
-                  name="retired"
-                  type="checkbox"
-                  readOnly={readOnly}
-                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  checked={UserProfileData?.retired}
-                  onChange={(e) =>handleChange(e)}
-                />}
-                <label htmlFor="retired">
-                  Est-il retraité ?
-                </label>
-                {readOnly && (UserProfileData?.retired?'Oui':'Non')}
-              </div>
-          
-
-
-              { UserProfileData?.retired && <div className=" mt-5 flex flex-col gap-1">
-                <label htmlFor="retired_at">
-                date de Retirement
-                  <span
-                    style={{ color: "red" }}
-                  >
-                    {" "}
-                    *
-                  </span>
-                </label>
-                {readOnly ? (
+                {!readOnly && (
                   <input
-                    placeholder="date"
-                    value={UserProfileData?.retired_at}
-                    className={`w-full bg-transparent border-1 ${
-                      readOnly ? "border-none" : "border-gray-200"
-                    } outline-none h-12 rounded-lg px-4 text-base`}
+                    id="retired"
+                    name="retired"
+                    type="checkbox"
                     readOnly={readOnly}
+                    className="h-4 w-4 border-gray-300 rounded text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    checked={UserProfileData?.retired}
+                    onChange={(e) => handleChange(e)}
                   />
-                ) : 
-                <DatePickerDemo
-                  id="dateNaissance"
-                  name="dateNaissance"
-                  value={UserProfileData?.retired_at}
-                  input='retired_at'
-                />}
-                <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
-                  {newErrors?.retired_at}
-                </p>
-              </div>}
+                )}
+                <label htmlFor="retired">Est-il retraité ?</label>
+                {readOnly && (UserProfileData?.retired ? "Oui" : "Non")}
+              </div>
 
-
+              {UserProfileData?.retired && (
+                <div className=" mt-5 flex flex-col gap-1">
+                  <label htmlFor="retired_at">
+                    date de Retirement
+                    <span style={{ color: "red" }}> *</span>
+                  </label>
+                  {readOnly ? (
+                    <input
+                      placeholder="date"
+                      value={UserProfileData?.retired_at}
+                      className={`w-full bg-transparent border-1 ${
+                        readOnly ? "border-none" : "border-gray-200"
+                      } outline-none h-12 rounded-lg px-4 text-base`}
+                      readOnly={readOnly}
+                    />
+                  ) : (
+                    <DatePickerDemo
+                      id="dateNaissance"
+                      name="dateNaissance"
+                      value={UserProfileData?.retired_at}
+                      input="retired_at"
+                    />
+                  )}
+                  <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
+                    {newErrors?.retired_at}
+                  </p>
+                </div>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold py-2 mb-2 mt-4 border-l-4 border-light-blue px-3 bg-[#e2e8ff] text-light-blue text-lg  ">
@@ -785,7 +773,7 @@ Object.keys(formData).forEach((key) => {
                     id="dateNaissance"
                     name="dateNaissance"
                     value={UserProfileData?.birth_date}
-                    input={'birth_date'}
+                    input={"birth_date"}
                   />
                 )}
                 <p className="text-red-500 text-[11px]  font-light mb-1 h-3">
@@ -794,15 +782,17 @@ Object.keys(formData).forEach((key) => {
               </div>
             </div>
             <div className="flex gap-2 items-center">
-              {!readOnly && <div
-                onClick={(e) => {
-                  handleSubmit(e, UserProfileData);
-                }}
-                className=" bg-light-blue cursor-pointer rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg text-white  "
-              >
-                <p className="capitalize">Enregister</p>
-              </div>}
-             
+              {!readOnly && (
+                <div
+                  onClick={(e) => {
+                    handleSubmit(e, UserProfileData);
+                  }}
+                  className=" bg-light-blue cursor-pointer rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg text-white  "
+                >
+                  <p className="capitalize">Enregister</p>
+                </div>
+              )}
+
               {/* <div
                 onClick={() => {
                   Object.keys(localStorage).forEach((key) => {
