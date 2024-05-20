@@ -160,7 +160,7 @@ export const loanColumns = (
                 statusColorMap[row.getValue("loan_status")]
               }
             >
-              {row.getValue("loan_status")}
+              {row.getValue("loan_status")?.replace("_"," ")}
             </div>
           </div>
         );

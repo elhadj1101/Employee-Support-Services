@@ -6,6 +6,8 @@ const statusColorMap = {
   waiting: "text-yellow-900 bg-yellow-100",
   refused: "text-red-900 bg-red-100",
   admin: "text-gray-900 bg-gray-100",
+  finished: "text-blue-900 bg-blue-100",
+  payment_started: "text-teal-900 bg-teal-100",
 };
 const financial_aid_infos = [
     {

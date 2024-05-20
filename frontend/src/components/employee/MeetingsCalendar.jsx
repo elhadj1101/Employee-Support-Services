@@ -33,6 +33,7 @@ function MeetingsCalendar({ meetings, refresh }) {
 
   const handleEventClick = (event) => {
     console.log(event);
+    
     setShowPopup(event.data.meeting);
     openBtn.current?.click();
   };
@@ -243,7 +244,7 @@ function MeetingsCalendar({ meetings, refresh }) {
                       </>
                     )}
                   </p>
-                  <h2 className="mt-2  font-semibold">Description</h2>
+                  <p className="mt-2  font-semibold">Description</p>
                   <p className="text-sm ml-1">{showPopup.description}</p>
                   {showPopup.pv && (
                     <>
@@ -254,7 +255,7 @@ function MeetingsCalendar({ meetings, refresh }) {
                             showPopup.pv?.split("/").length - 1
                           ]
                         }
-                        size={showPopup.size}
+                        size={NaN}
                         fileLink={showPopup.pv}
                       />
                     </>
