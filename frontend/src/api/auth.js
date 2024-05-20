@@ -9,7 +9,9 @@ const roles = {
   tresorier: "Tresorier",
   "": "Admin",
 };
-const canViewRequests = Object.keys(roles).filter((e) => ![ "employe", ""].includes(e))
+const canViewRequests = Object.keys(roles).filter(
+  (e) => !["employe", ""].includes(e)
+);
 
 const getUsers = async () => {
   try {
@@ -37,6 +39,7 @@ const getUsers = async () => {
     }
   }
 };
+
 const getUser = async (id) => {
   try {
     const response = await Axios.get(`/users/${id}`);

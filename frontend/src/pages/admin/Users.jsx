@@ -14,7 +14,7 @@ export default function Users() {
           <Link
       
             to={"../utilisateurs/add-user"}
-            className=" bg-light-blue flex items-center justify-center  gap-2 rounded-lg   px-5 py-2 text-base  lg:px-10 lg:py-3 lg:text-lg text-white  "
+            className=" bg-light-blue flex items-center justify-center  gap-2 rounded-lg  border border-light-blue px-5 py-2 text-base text-white hover:text-light-blue hover:bg-white hover:border-white transition  "
           >
             <p className="capitalize">Ajouter un utilisateur</p>
             <img
