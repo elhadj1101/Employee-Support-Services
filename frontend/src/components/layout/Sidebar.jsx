@@ -10,8 +10,8 @@ import { Link } from "react-router-dom";
 export default function Sidebar() {
   const { user } = useStore();
   return (
-    <div className="w-[235px] fixed top-0 h-screen sidebar ">
-      <div className="  bg-gradient-to-b flex flex-col from-[#131C55] to-[#131c556a] w-full h-screen ">
+    <div className="w-[235px] fixed top-0  h-screen sidebar ">
+      <div className=" pt-20 bg-gradient-to-b flex flex-col from-[#131C55] to-[#131c556a] w-full h-screen ">
         {user && user.is_superuser && (
           <SideButton
             title="utilisateurs"
