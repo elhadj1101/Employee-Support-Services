@@ -109,15 +109,31 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
     },
     {
       accessorKey: "amount",
-      header: () => <div className="text-center">Montant</div>,
+      header: () => <div className="text-center">Debit</div>,
       cell: ({ row }) => (
-        <div className="text-center font-medium flex items-center justify-center gap-1">
+        <div className="text-center font-medium h-full w-full flex items-center justify-center ">
           {row?.original?.type === "expense" ? (
-            <IoArrowUpSharp size="20" color="red" className="rotate-180" />
+          <div className="w-full h-full text-red-500">
+            <p>{row.getValue("amount")}DA</p>
+            </div>
           ) : (
-            <IoArrowUpSharp size="20" color="green" />
+           '**'
           )}
-          <p>{row.getValue("amount")}DA</p>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "amount",
+      header: () => <div className="text-center">credit</div>,
+      cell: ({ row }) => (
+        <div className="text-center font-medium flex items-center justify-center gap-1 ">
+            {row?.original?.type === "expense" ? (
+              '**'
+          ) : (
+            <div className="w-full h-full text-green-500">
+            <p>{row.getValue("amount")}DA</p>
+            </div>
+          )}
         </div>
       ),
     },
