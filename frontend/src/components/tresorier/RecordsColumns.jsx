@@ -98,7 +98,15 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
     },
     {
       accessorKey: "created_at",
-      header: () => <div className="text-center">Date Demande</div>,
+
+      header: ({ column }) => (
+        <div
+          className="text-center cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date Demande
+        </div>
+      ),
       cell: ({ row }) => {
         return (
           <div className="text-center font-medium">

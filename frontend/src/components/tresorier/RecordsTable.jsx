@@ -47,7 +47,12 @@ export default function RecordsTable({
   columns = recordsColumns,
   RecordType,
 }) {
-  const [sorting, setSorting] = React.useState([]);
+  const [sorting, setSorting] = React.useState([
+          {
+            id: "created_at",
+            desc: true,
+          },
+        ]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -62,6 +67,17 @@ export default function RecordsTable({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    initialState: {
+      SortingTableState: {
+        sorting: [
+          {
+            id: "created_at",
+            desc: true,
+          },
+        ],
+      },
+    },
+
     state: {
       sorting,
       columnFilters,
