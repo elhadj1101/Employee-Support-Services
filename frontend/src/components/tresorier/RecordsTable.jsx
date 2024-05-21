@@ -113,21 +113,22 @@ export default function RecordsTable({
               RecordType === "" ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
-                    key={row.id}
+                    key={row.id + Math.random(15256)}
                     data-state={row.getIsSelected() && "selected"}
                     className="h-10 "
                   >
-                    {row.getVisibleCells().map((cell) =>
-                    {
-                      console.log('cell',cell);
+                    {row.getVisibleCells().map((cell) => {
                       return (
-                        <TableCell key={cell.id} className={`${cell.id.includes('amount')?'p-0 ':''}`}>
+                        <TableCell
+                          key={cell.id + Math.random(15256)}
+                          
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
                           )}
                         </TableCell>
-                      )
+                      );
                     })}
                   </TableRow>
                 ))
@@ -137,12 +138,12 @@ export default function RecordsTable({
                   .rows.filter((row) => row.original.type === "expense")
                   .map((row) => (
                     <TableRow
-                      key={row.id}
+                      key={row.id + Math.random(15256)}
                       data-state={row.getIsSelected() && "selected"}
                       className="h-10"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell key={cell.id + Math.random(15256)}>
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -157,12 +158,12 @@ export default function RecordsTable({
                   .rows.filter((row) => row.original.type === "income")
                   .map((row) => (
                     <TableRow
-                      key={row.id}
+                      key={row.id + Math.random(15256)}
                       data-state={row.getIsSelected() && "selected"}
                       className="h-10"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell key={cell.id + Math.random(15256)}>
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

@@ -34,7 +34,12 @@ export default function RequestsTable({
   columns = loanColumns,
   data = [],
 }) {
-  const [sorting, setSorting] = React.useState([]);
+  const [sorting, setSorting] = React.useState([
+    {
+      id: "request_created_at",
+      desc: true,
+    },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
