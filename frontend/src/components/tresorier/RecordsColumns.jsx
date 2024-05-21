@@ -109,15 +109,27 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
     },
     {
       accessorKey: "amount",
-      header: () => <div className="text-center">Montant</div>,
+      header: () => <div className="text-center">Debit</div>,
       cell: ({ row }) => (
         <div className="text-center font-medium flex items-center justify-center gap-1">
           {row?.original?.type === "expense" ? (
-            <IoArrowUpSharp size="20" color="red" className="rotate-180" />
+            <p className="text-red-500">{row.getValue("amount")}DA</p>
           ) : (
-            <IoArrowUpSharp size="20" color="green" />
+            "--"
           )}
-          <p>{row.getValue("amount")}DA</p>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "amount",
+      header: () => <div className="text-center">Credit</div>,
+      cell: ({ row }) => (
+        <div className="text-center font-medium flex items-center justify-center gap-1">
+          {row?.original?.type === "expense" ? (
+            "--"
+          ) : (
+            <p className="text-green-500">{row.getValue("amount")}DA</p>
+          )}
         </div>
       ),
     },
@@ -147,9 +159,7 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
             <DropdownMenuContent align="end">
               <Dialog>
                 <DialogTrigger style={{ width: "100%" }}>
-                  <div
-                    className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100"
-                  >
+                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
                     Details
                   </div>
                 </DialogTrigger>
