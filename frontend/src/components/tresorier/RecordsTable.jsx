@@ -99,16 +99,20 @@ export default function RecordsTable({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="h-10"
+                    className="h-10 "
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) =>
+                    {
+                      console.log('cell',cell);
+                      return (
+                        <TableCell key={cell.id} className={`${cell.id.includes('amount')?'p-0 ':''}`}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      )
+                    })}
                   </TableRow>
                 ))
               ) : RecordType === "expense" ? (
