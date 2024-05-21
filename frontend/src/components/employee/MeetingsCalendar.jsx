@@ -194,7 +194,7 @@ function MeetingsCalendar({ meetings, refresh }) {
                       <div className="tooltip">
                         <IoCloudUploadSharp
                           size={20}
-                          className="tooltip cursor-pointer text-green-500 hover:text-white hover:bg-green-600 w-7 h-7 p-1 rounded-full"
+                          className="tooltip cursor-pointer text-green-500 hover:text-white hover:bg-green-600 w-7 h-7 p-1 rounded-full transition"
                           onClick={handleUploadPv}
                         />
                         <div
@@ -207,7 +207,7 @@ function MeetingsCalendar({ meetings, refresh }) {
                       <MdDelete
                         onClick={(e) => deleteMeeting(showPopup.id, e)}
                         size={20}
-                        className="cursor-pointer text-red-500 hover:text-white  hover:bg-red-600 w-7 h-7 p-1 rounded-full"
+                        className="cursor-pointer text-red-500 hover:text-white  hover:bg-red-600 w-7 h-7 p-1 rounded-full transition"
                       />
                     </div>
                   )}
@@ -263,7 +263,7 @@ function MeetingsCalendar({ meetings, refresh }) {
               </DialogDescription>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button type="button">Close</Button>
+                  <Button type="button">Fermer</Button>
                 </DialogClose>
               </DialogFooter>
             </>

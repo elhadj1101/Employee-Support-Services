@@ -93,31 +93,10 @@ export const loanColumns = (
   role = "any"
 ) => {
   const cols = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+  
     {
       accessorKey: "id",
-      header: () => <div className="text-center">ID-Demande</div>,
+      header: () => <div className="text-center">ID</div>,
       cell: ({ row }) => {
         return (
           <div className="text-center font-medium">{row.getValue("id")}</div>
@@ -153,16 +132,16 @@ export const loanColumns = (
       header: () => <div className="text-center">Status</div>,
       cell: ({ row }) => {
         return (
-          <div className="capitalize w-full">
-            <div
-              className={
-                "w-fit p-2 m-auto rounded-lg " +
-                statusColorMap[row.getValue("loan_status")]
-              }
-            >
-              {row.getValue("loan_status")}
-            </div>
+          <div className="capitalize w-full flex justify-center">
+          <div
+            className={
+              "w-fit py-1 px-3 m-1 rounded-3xl " +
+              statusColorMap[row.getValue("loan_status").toLowerCase()]
+            }
+          >
+            {row.getValue("loan_status")}
           </div>
+        </div>
         );
       },
     },

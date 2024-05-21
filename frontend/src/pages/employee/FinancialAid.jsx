@@ -343,13 +343,6 @@ function FinancialAid() {
                   </SelectGroup>
                 );
               })}
-              {/* {financial_aid_infos.map((option, ind) => {
-              return (
-                <SelectItem key={ind} value={option.name}>
-                  {option.description}
-                </SelectItem>
-              );
-            })} */}
             </SelectContent>
           </Select>
           {aidData.aidType === "family_member_death" && (
@@ -521,8 +514,7 @@ function FinancialAid() {
               type="submit"
               onClick={handleSubmit}
               name="not-draft"
-              className=" bg-light-blue py-5 text-lg text-white hover:text-white hover:bg-light-blue"
-              variant="outline"
+              className=" bg-light-blue py-5   outline-none border-none text-white hover:text-light-blue hover:bg-white  transition"
             >
               Envoyer la demande
             </Button>
@@ -530,8 +522,8 @@ function FinancialAid() {
               type="submit"
               onClick={handleSubmit}
               name="draft"
-              className=" bg-white py-5 text-lg text-darkblue hover:border-darkblue hover:border-1"
-              variant="outline"
+              className=" bg-white py-5 text-light-blue  outline-none border-none  hover:bg-light-blue hover:text-white transition"
+
             >
               Sauvegarder comme brouillon
             </Button>

@@ -72,7 +72,7 @@ export default function RequestsTable({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+              Colonnes <ChevronDownIcon className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -149,8 +149,7 @@ export default function RequestsTable({
       </div>
       <div className="flex mt-auto items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+
         </div>
         <div className="space-x-2">
           <Button
@@ -159,7 +158,7 @@ export default function RequestsTable({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            avant
           </Button>
           <Button
             variant="outline"
@@ -167,7 +166,7 @@ export default function RequestsTable({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            suivant
           </Button>
         </div>
       </div>

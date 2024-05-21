@@ -254,7 +254,7 @@ export default function AddUser() {
                 onClick={(e) => {
                   handleSubmit(e, AddUserData);
                 }}
-                className=" bg-light-blue cursor-pointer rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg text-white  "
+                className=" bg-light-blue cursor-pointer rounded-lg px-5 py-2 text-white hover:bg-white hover:text-light-blue transition "
               >
                 <p className="capitalize">Enregister</p>
               </div>
@@ -266,7 +266,7 @@ export default function AddUser() {
                     }
                   });
                 }}
-                className=" border cursor-pointer bg-white border-[#e5e4e4] rounded-lg   px-5 py-2 text-base  lg:px-7  lg:text-lg  "
+                className=" text-light-blue  cursor-pointer bg-white rounded-lg  px-5 py-2 hover:bg-light-blue hover:text-white transition  "
               >
                 <p className="capitalize">Annuler</p>
               </div>

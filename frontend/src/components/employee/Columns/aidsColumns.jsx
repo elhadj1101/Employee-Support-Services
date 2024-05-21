@@ -88,31 +88,10 @@ const NavigateDropdownMenuItem = ({ id, text, path=null }) => {
 };
 export const aidsColumns = (colsToHide = [], hideDelete = false, role="any") => {
   const cols = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    
     {
       accessorKey: "id",
-      header: () => <div className="text-center">ID-Demande</div>,
+      header: () => <div className="text-center">ID</div>,
       cell: ({ row }) => {
         return (
           <div className="text-center font-medium">{row.getValue("id")}</div>
@@ -148,16 +127,17 @@ export const aidsColumns = (colsToHide = [], hideDelete = false, role="any") => 
       header: () => <div className="text-center">Status</div>,
       cell: ({ row }) => {
         return (
-          <div className="capitalize w-full">
-            <div
-              className={
-                "w-fit p-2 m-auto rounded-lg " +
-                statusColorMap[row.getValue("financial_aid_status")]
-              }
-            >
-              {row.getValue("financial_aid_status")}
-            </div>
+
+          <div className="capitalize w-full  flex items-center justify-center">
+          <div
+            className={
+              "w-fit py-1 px-3 rounded-3xl " +
+              statusColorMap[row.getValue("financial_aid_status")]
+            }
+          >
+            {row.getValue("financial_aid_status")}
           </div>
+        </div>
         );
       },
     },
