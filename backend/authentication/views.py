@@ -47,14 +47,14 @@ class UserDetailsView(generics.RetrieveUpdateDestroyAPIView):
         user = self.get_object()
         if not (user.is_active):
             return Response(
-                {"error": "User is already deleted"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "L'utilisateur est déjà supprimé"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         user.is_active = False
         user.save()
 
         return Response(
-            {"success": "User deleted successfuly"}, status=status.HTTP_200_OK
+            {"success": "Utilisateur supprimé avec succès"}, status=status.HTTP_200_OK
         )
 
     def partial_update(self, request, pk, *args, **kwargs):
@@ -67,7 +67,7 @@ class UserDetailsView(generics.RetrieveUpdateDestroyAPIView):
             serializer.save()
             return Response({"employee updated"})
         return Response(
-            {"error": "you don't have required permissions"},
+            {"error": "vous n'avez pas les autorisations requises"},
             status=status.HTTP_403_FORBIDDEN,
         )
 
@@ -91,7 +91,7 @@ class SignupView(APIView):
             user = Employee.objects.filter(email=email)
             if not (user.exists()):
                 return Response(
-                    [{"email": "User does not exist"}],
+                    [{"email": "L'utilisateur n'existe pas"}],
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             password = serializer.validated_data.get("password")
@@ -102,27 +102,22 @@ class SignupView(APIView):
             user = user.first()
             if user.is_active:
                 return Response(
-                    [{"email": "User is already active."}],
+                    [{"email": "L'utilisateur est déjà actif."}],
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             # user.set_password(password)
             is_same = check_password(password, user.password)
             if not (is_same):
                 return Response(
-                    [{"password": "The provided password is wrong."}],
+                    [{"password": "Le mot de passe fourni est erroné."}],
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             user.is_active = True
             user.save()
             return Response(
-                [{"success": "User activated successfuly."}], status=status.HTTP_200_OK
+                [{"success": "L'utilisateur a été activé avec succès."}], status=status.HTTP_200_OK
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# {
-#     "email":"testteat@test.com",
-#     "password":"testtest",
-#     "password2":"testtest"
-# }

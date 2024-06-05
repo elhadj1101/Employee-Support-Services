@@ -5,7 +5,7 @@ from backend.settings import CAN_VIEW_REQUESTS
 
 class IsLoanApplier(permissions.BasePermission):
     # we get the last record in the Loan table we give permission according to the Loan status
-    message = {'errors': 'you don\'t have permission to create loan'}
+    message = {"errors": "vous n'êtes pas autorisé à créer un prêt"}
     def has_permission(self, request, view):
         if request.method == "POST":
             loan = Loan.objects.filter(employee=request.user).last()
@@ -23,7 +23,7 @@ class IsLoanApplier(permissions.BasePermission):
 
 
 class IsFinancialaidApplier(permissions.BasePermission):
-    message = {'errors': 'you don\'t have permission to create financial-aid'}
+    message = {"errors": "vous n'êtes pas autorisé à créer une aide financière"}
     def has_permission(self, request, view):
         if request.method == "POST" and "financial_aid_type" in request.data:
             financial_aid_type = request.data["financial_aid_type"]
@@ -41,7 +41,7 @@ class IsFinancialaidApplier(permissions.BasePermission):
 
 
 class CanViewRequests(permissions.BasePermission):
-    message = {'errors': 'you don\'t have permission to view requests'}
+    message = {"errors": "vous n'êtes pas autorisé à afficher les demandes"}
     def has_permission(self, request, view):
         if request.method == "GET":
             
@@ -56,19 +56,19 @@ class CanViewRequests(permissions.BasePermission):
 
 class IsPresident(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.role == 'president'
+        return request.user.role == "president"
     
 
 class IsVicePresident(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.role == 'vice_president'
+        return request.user.role == "vice_president"
     
 class IsTresorier(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.role == 'tresorier'
+        return request.user.role == "tresorier"
     
 
 class IsCommiteMember(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.role == 'membre'
+        return request.user.role == "membre"
     

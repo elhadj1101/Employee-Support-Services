@@ -18,5 +18,5 @@ class OffresSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         if data.get('start_date') > data.get('end_date'):
-            raise serializers.ValidationError({"start_date":"Start date must be before end date"})
+            raise serializers.ValidationError({"start_date": "La date de début doit être antérieure à la date de fin"})
         return data

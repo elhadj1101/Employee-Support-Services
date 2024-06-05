@@ -37,9 +37,9 @@ class RecordView(generics.ListCreateAPIView):
             print(loan.loan_status)
             if loan.loan_status != "approved" and loan.loan_status != "payment_started":
                 
-                return Response({"error": "you can't pay an unapproved loan"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "vous ne pouvez pas payer un prêt non approuvé"}, status=status.HTTP_400_BAD_REQUEST)
             if loan.paid_amount + serializer.validated_data.get('amount') > loan.amount:
-                return Response({"error": "you can't pay more than the loan amount"}, status=status.HTTP_400_BAD_REQUEST)  
+                return Response({"error": "vous ne pouvez pas payer plus que le montant du prêt"}, status=status.HTTP_400_BAD_REQUEST)  
             if (loan.paid_amount + serializer.validated_data.get('amount') == loan.amount*loan.loan_period):
                 loan.loan_status = "finished"        
             loan.paid_amount += serializer.validated_data.get('amount')
@@ -48,7 +48,7 @@ class RecordView(generics.ListCreateAPIView):
         # update commity balance
         commity = Commity.objects.all().first()
         if commity is None:
-            return Response({"error": "no commity found"}, status=400)
+            return Response({"error": "aucun comité trouvé"}, status=400)
         if serializer.validated_data.get('type') == "expense":
             commity.current_balance -= serializer.validated_data.get('amount')
         else:
@@ -76,7 +76,7 @@ class RecordView(generics.ListCreateAPIView):
                     financial_aid.financial_aid_status = "finished"
                     financial_aid.save()
                 else:
-                    return Response({"error": "you can't pay an unapproved or finished financial aid"}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"error": "vous ne pouvez pas payer une aide financière non approuvée ou terminée"}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 loan = serializer.validated_data.get('loan', None)
                 if (loan is not None) :
@@ -84,9 +84,9 @@ class RecordView(generics.ListCreateAPIView):
                         loan.loan_status = "payment_started"
                         loan.save()
                     else:
-                        return Response({"error": "you can't pay an unapproved or finished loan"}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({"error": "vous ne pouvez pas rembourser un prêt non approuvé ou terminé"}, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return Response({"error": "please select a loan or financial aid to pay"}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"error": "veuillez sélectionner un prêt ou une aide financière à payer"}, status=status.HTTP_400_BAD_REQUEST)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -104,7 +104,7 @@ class SingleRecordView(generics.RetrieveUpdateDestroyAPIView):
             obj.loan.save()
         commity = Commity.objects.all().first()
         if commity is None:
-            return Response({"error": "no commity found"}, status=400)
+            return Response({"error": "aucun comité trouvé"}, status=400)
         if obj.type == "expense":
             commity.current_balance += obj.amount
             commity.current_year_expenses -= obj.amount
@@ -174,9 +174,9 @@ class GeneralAnalitics(APIView):
                     try:
                         week = int(week)
                     except ValueError:
-                        return Response({"error": "week must be an integer"}, status=400)
+                        return Response({"error": "la semaine doit être un nombre entier"}, status=400)
                     if (week == None or week < 1 or week > 53):
-                        return Response({"error": "week is required for weekly period"}, status=400)
+                        return Response({"error": "une semaine est requise pour une période hebdomadaire"}, status=400)
                     start_date = date.fromisocalendar(year, int(week), 1).strftime("%Y-%m-%d")
                     end_date = date.fromisocalendar(year, int(week), 7).strftime("%Y-%m-%d")
                     records = Record.objects.filter(created_at__range=[start_date, end_date]).order_by('-created_at')   
@@ -188,7 +188,7 @@ class GeneralAnalitics(APIView):
                     records = Record.objects.filter(created_at__year=year)
                     new_records = records.values('created_at__month').annotate(**anotations).order_by('created_at__month')
             except ValidationError:
-                return Response({"error": "invalid date format"}, status=400)
+                return Response({"error": "format de date invalide"}, status=400)
         serializer = RecordAnaliticsSerializer(new_records, many=True)
         return Response(serializer.data, status=200)
 
