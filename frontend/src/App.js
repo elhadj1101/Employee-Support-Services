@@ -35,10 +35,6 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         {/*      <Route path="/pop" element={<Popup />} /> */}
 
-        {/* 
-         <Route path="/test/" element={<Dashboard />} >
-            <Route path="demande-pret" element={<Loan />} /> 
-        </Route>    */}
         {/* protected routes */}
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
           <Route path="/" element={<Dashboard />}>
