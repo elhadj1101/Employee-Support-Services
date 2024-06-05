@@ -190,7 +190,7 @@ const getLoans = async () => {
 
       return [];
     }else{
-      console.log(error)
+      
     toast.error("Une erreur s'est produite lors de la récupération des prets.");
     return [];
     }
@@ -209,10 +209,10 @@ const getAids = async () => {
   } catch (error) {
     if (error.response){
       toast.error(error.response.data?.detail);
-      console.log(error.response);
+      ;
       return [];
     }else{
-      console.log(error)
+      
     toast.error("Une erreur s'est produite lors de la récupération des aides financieres.");
     return [];
     }
@@ -224,7 +224,7 @@ const getAllAids = async () => {
   try {
     const response = await Axios.get('/requests/financial-aids/');
     const data = response.data;
-    if (data.map ){
+    if (data.map){
       return data;
     }else {
       return [];
@@ -232,14 +232,20 @@ const getAllAids = async () => {
   } catch (error) {
     if (error.response){
       if (error.response.data){
-        console.log(error.response.data);
-        // toast.error(error.response.data.detail);
-
+        if (error.response.data.detail){
+          toast.error(error.response.data.detail);
+        }else if (error.response.data.error){
+        toast.error(error.response.data.error);
+          
+        }else {
+          toast.error("Une erreur s'est produite lors de la récupération des aides financieres.");
+        
+        }
       }
       
       return [];
     }else{
-      console.log(error)
+      
     toast.error("Une erreur s'est produite lors de la récupération des aides financieres.");
     return [];
     }
@@ -258,13 +264,20 @@ const getAllLoans = async () => {
   } catch (error) {
     if (error.response){
       if (error.response.data){
-        toast.error(error.response.data.detail);
-
+        if (error.response.data.detail) {
+          toast.error(error.response.data.detail);
+        } else if (error.response.data.error) {
+          toast.error(error.response.data.error);
+        } else {
+          toast.error(
+            "Une erreur s'est produite lors de la récupération des prets."
+          );
+        }
       }
       return [];
     }else{
-      console.log(error)
-    toast.error("Une erreur s'est produite lors de la récupération des aides financieres.");
+      
+    toast.error("Une erreur s'est produite lors de la récupération des prets.");
     return [];
     }
 
@@ -277,11 +290,25 @@ const canApplyForLoan = async () => {
     return response.data;
   } catch (error) {
     if (error.response){
-      toast.error(error.response.data?.detail);
-      console.log(error.response);
+      if (error.response.data){
+        if (error.response.data.detail) {
+          toast.error(error.response.data.detail);
+        } else if (error.response.data.error) {
+          toast.error(error.response.data.error);
+        } else {
+          toast.error(
+            "Une erreur s'est produite lors du fait de demande."
+          );
+        }
+      }else{
+        toast.error(
+          "Une erreur s'est produite lors du fait de demande."
+        );
+      }
+      ;
       return "False";
     }else{
-      console.log(error)
+      
     toast.error("Une erreur s'est produite lors de la connexion.");
     return "False";
     }
@@ -294,14 +321,22 @@ const deleteLoan = async (id) => {
     const response = await Axios.delete(`/requests/loans/${id}`);
     return true;
   } catch (error) {
-    if (error.response){
-      toast.error(error.response.data?.detail);
-      console.log(error.response);
-      return false;
-    }else{
-      console.log(error)
-    toast.error("Une erreur s'est produite lors de la suppression du pret.");
-    return  false;
+    if (error.response) {
+      if (error.response.data) {
+        if (error.response.data.detail) {
+          toast.error(error.response.data.detail);
+        } else if (error.response.data.error) {
+          toast.error(error.response.data.error);
+        } else {
+          toast.error("Une erreur s'est produite lors de la suppression du pret.");
+        }
+      } else {
+        toast.error("Une erreur s'est produite lors de la suppression du pret.");
+      }
+      return "False";
+    } else {
+      toast.error("Une erreur s'est produite lors de la connexion.");
+      return "False";
     }
 
 };
@@ -314,10 +349,10 @@ const deleteAid = async (id) => {
   } catch (error) {
     if (error.response){
       toast.error(error.response.data?.detail);
-      console.log(error.response);
+      ;
       return false;
     }else{
-      console.log(error)
+      
     toast.error("Une erreur s'est produite lors de la suppression du pret.");
     return  false;
     }
@@ -341,11 +376,11 @@ const updateStatus = async (id, type, newStatus) => {
         }
       }else{
         toast.error("Une erreur s'est produite lors de la mise à jour du statut.");
-        console.log(error.response);
+        ;
       }
       return false;
     }else{
-      console.log(error)
+      
     toast.error("Une erreur s'est produite lors de la mise à jour du statut.");
     return  false;
     }
@@ -360,7 +395,24 @@ const getCommity = async ()=>{
     const response = await Axios.get('/funds/commity/1/');
     return response.data;
   }catch(error){
-    console.log(error);
+    if (error.response){
+      if (error.response.data){
+        if (error.response.data.detail){
+          toast.error(error.response.data.detail);
+        }else if (error.response.data.error){
+          toast.error(error.response.data.error);
+        }else{
+          toast.error("Une erreur s'est produite lors de la récupération des données.");
+        }
+      }else{
+        toast.error("Une erreur s'est produite lors de la récupération des données.");
+      }
+      return [];
+    }else{
+      
+    toast.error("Une erreur s'est produite lors de la récupération des données.");
+    return [];
+    }
   }
 
 }

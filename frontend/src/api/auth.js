@@ -25,7 +25,6 @@ const getUsers = async () => {
 
       return user;
     });
-    console.log("users", dat);
     return dat;
   } catch (error) {
     if (error.response) {
@@ -78,10 +77,10 @@ const updateUser = async (data, id) => {
 const login = async (email, password) => {
   try {
     const response = await Axios.post("/login/", { email, password });
-    console.log("res", response);
+    ;
     return response.data;
   } catch (error) {
-    console.log("error", error.request);
+    ;
     if (error?.request?.status === 401) {
       toast.error(JSON.parse(error.request.response).detail);
     } else {
@@ -110,7 +109,7 @@ const signUp = async (email, password) => {
     return "success";
   } catch (error) {
     if (error.response) {
-      console.log(error.response.data[0]);
+      ;
       let kys = Object.keys(error.response.data[0]);
 
       toast.error(error.response.data[0][kys[0]]);
