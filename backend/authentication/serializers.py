@@ -2,9 +2,14 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Employee, options_role
 from .utils import is_digits
+from django.utils.translation import gettext_lazy as _
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    default_error_messages = {
+        "no_active_account": _("Aucun compte actif trouvé avec les informations d'identification fournies")
+    }
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -29,6 +34,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
             user.retired_at.strftime("%d-%m-%Y") if user.retired_at else ""
         )
         return token
+
 
 
 class EmployeeSerializer(serializers.ModelSerializer):

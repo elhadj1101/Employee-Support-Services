@@ -21,14 +21,14 @@ const LoginForm = () => {
     // Validate email
     if (!email.trim()) {
       valide = false;
-      setEmailError("Email is required.");
+      setEmailError("L'Email est requis.");
     } else {
       setEmailError("");
     }
     if (!pass.trim()) {
       valide = false;
 
-      setPassError("Password is required.");
+      setPassError("Le mot de passe est requis.");
     } else {
       setPassError("");
     }
@@ -40,7 +40,7 @@ const LoginForm = () => {
     try {
       const response = await login(email, pass);
       if (response) {
-        toast.success("login success");
+        toast.success("Vous êtes connecté avec success.");
         
         localStorage.setItem("access_token", response.access);
         localStorage.setItem("refresh_token", response.refresh);

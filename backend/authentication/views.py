@@ -18,7 +18,6 @@ from .filters import EmployeeFilter
 from rest_framework.filters import OrderingFilter
 
 
-# this is just for testing our add user enpoint
 class CreateUserView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
