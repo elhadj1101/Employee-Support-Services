@@ -2,9 +2,14 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Employee, options_role
 from .utils import is_digits
+from django.utils.translation import gettext_lazy as _
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    default_error_messages = {
+        "no_active_account": _("Aucun compte actif trouvé avec les informations d'identification fournies")
+    }
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -29,6 +34,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
             user.retired_at.strftime("%d-%m-%Y") if user.retired_at else ""
         )
         return token
+
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -62,64 +68,64 @@ class EmployeeSerializer(serializers.ModelSerializer):
         data = super().validate(attrs)
         if data.get("is_superuser", False):
             raise serializers.ValidationError(
-                {"is_superuser": "is_superuser field must be False"}
+                {"is_superuser": "Le champ is_superuser doit être Fals"}
             )
         if data.get("is_active", False):
             raise serializers.ValidationError(
-                {"is_active": "is_active field must be False"}
+                {"is_active": "Le champ is_active doit être False"}
             )
         # makes sure only one president is created
         if data.get("role", None) == options_role[0][0]:
             presidents = Employee.objects.filter(role=options_role[0][0])
             if presidents.exists():
                 raise serializers.ValidationError(
-                    {"role": "There can only be one president"}
+                    {"role": "Il ne peut y avoir qu'un seul président"}
                 )
         elif data.get("role", None) == options_role[1][0]:
             vice_presidents = Employee.objects.filter(role=options_role[1][0])
             if vice_presidents.exists():
                 raise serializers.ValidationError(
-                    {"role": "There can only be one vice president"}
+                    {"role": "Il ne peut y avoir qu'un seul vice-président"}
                 )
         elif data.get("role", None) == options_role[2][0]:
             tresorier = Employee.objects.filter(role=options_role[2][0])
             if tresorier.exists():
                 raise serializers.ValidationError(
-                    {"role": "There can only be one tresorier"}
+                    {"role": "Il ne peut y avoir qu'un seul trésorier"}
                 )
         if not (is_digits(data.get("phone_number", None))):
             raise serializers.ValidationError(
-                {"phone_number": "Phone number must contain digits"}
+                {"phone_number": "Le numéro de téléphone doit contenir des chiffres"}
             )
         if len(data["phone_number"]) != 10:
             raise serializers.ValidationError(
-                {"phone_number": "Phone number must be 10 digits"}
+                {"phone_number": "Le numéro de téléphone doit comporter 10 chiffres"}
             )
         if not (is_digits(data.get("rip", None))):
-            raise serializers.ValidationError({"rip": "RIP must contain only digits"})
+            raise serializers.ValidationError({"rip": "Le RIP doit contenir uniquement des chiffres"})
         if len(data.get("rip", None)) != 20:
-            raise serializers.ValidationError({"rip": "RIP must be 20 digits"})
+            raise serializers.ValidationError({"rip": "Le RIP doit comporter 20 chiffres"})
         if not (is_digits(data.get("bank_rib", None))):
             raise serializers.ValidationError(
-                {"bank_rib": "RIB must contain only digits"}
+                {"bank_rib": "Le RIB doit contenir des chiffres"}
             )
         if len(data.get("bank_rib", None)) != 20:
-            raise serializers.ValidationError({"bank_rib": "RIB must be 20 digits"})
+            raise serializers.ValidationError({"bank_rib": "Le RIB doit comporter 20 chiffres"})
         if not (is_digits(data.get("id_number", None))):
             raise serializers.ValidationError(
-                {"id_number": "Id number must contain only digits"}
+                {"id_number": "l'Id nationale doit contenir que des chiffres"}
             )
         if len(data.get("id_number", None)) != 18:
             raise serializers.ValidationError(
-                {"id_number": "Id number must be 18 digits"}
+                {"id_number": "L'ID nationale doit comporter 20 chiffres"}
             )
         if not (is_digits(data.get("salary", None))):
             raise serializers.ValidationError(
-                {"salary": "Salary must contain only digits"}
+                {"salary": "Le salaire doit contenir que des chiffres"}
             )
         if data.get("retired", False) and data.get("retired_at", None) is None:
             raise serializers.ValidationError(
-                {"retired_at": "Retired_at must be provided"}
+                {"retired_at": "Le champ Retired_at est obligatoire"}
             )
         else:
             data["retired_at"] = None
@@ -165,61 +171,59 @@ class EmployeeDetailsSerializer(serializers.ModelSerializer):
         # makes sure only one president is created
         if data.get("role", None) == options_role[0][0]:
             presidents = Employee.objects.filter(role=options_role[0][0])
-            if presidents.exists() and presidents.first().pk != self.instance.pk:
+            if presidents.exists():
                 raise serializers.ValidationError(
-                    {"role": "There can only be one president"}
+                    {"role": "Il ne peut y avoir qu'un seul président"}
                 )
         elif data.get("role", None) == options_role[1][0]:
             vice_presidents = Employee.objects.filter(role=options_role[1][0])
-            if (
-                vice_presidents.exists()
-                and vice_presidents.first().id != self.instance.pk
-            ):
+            if vice_presidents.exists():
                 raise serializers.ValidationError(
-                    {"role": "There can only be one vice president"}
+                    {"role": "Il ne peut y avoir qu'un seul vice-président"}
                 )
         elif data.get("role", None) == options_role[2][0]:
             tresorier = Employee.objects.filter(role=options_role[2][0])
-            if tresorier.exists() and tresorier.first().pk != self.instance.pk:
+            if tresorier.exists():
                 raise serializers.ValidationError(
-                    {"role": "There can only be one tresorier"}
+                    {"role": "Il ne peut y avoir qu'un seul trésorier"}
                 )
         if not (is_digits(data.get("phone_number", None))):
             raise serializers.ValidationError(
-                {"phone_number": "Phone number must contain digits"}
+                {"phone_number": "Le numéro de téléphone doit contenir des chiffres"}
             )
         if len(data["phone_number"]) != 10:
             raise serializers.ValidationError(
-                {"phone_number": "Phone number must be 10 digits"}
+                {"phone_number": "Le numéro de téléphone doit comporter 10 chiffres"}
             )
         if not (is_digits(data.get("rip", None))):
-            raise serializers.ValidationError({"rip": "RIP must contain only digits"})
+            raise serializers.ValidationError({"rip": "Le RIP doit contenir uniquement des chiffres"})
         if len(data.get("rip", None)) != 20:
-            raise serializers.ValidationError({"rip": "RIP must be 20 digits"})
+            raise serializers.ValidationError({"rip": "Le RIP doit comporter 20 chiffres"})
         if not (is_digits(data.get("bank_rib", None))):
             raise serializers.ValidationError(
-                {"bank_rib": "RIB must contain only digits"}
+                {"bank_rib": "Le RIB doit contenir des chiffres"}
             )
         if len(data.get("bank_rib", None)) != 20:
-            raise serializers.ValidationError({"bank_rib": "RIB must be 20 digits"})
+            raise serializers.ValidationError({"bank_rib": "Le RIB doit comporter 20 chiffres"})
         if not (is_digits(data.get("id_number", None))):
             raise serializers.ValidationError(
-                {"id_number": "Id number must contain only digits"}
+                {"id_number": "l'Id nationale doit contenir que des chiffres"}
             )
         if len(data.get("id_number", None)) != 18:
             raise serializers.ValidationError(
-                {"id_number": "Id number must be 18 digits"}
+                {"id_number": "L'ID nationale doit comporter 20 chiffres"}
             )
         if not (is_digits(data.get("salary", None))):
             raise serializers.ValidationError(
-                {"salary": "Salary must contain only digits"}
+                {"salary": "Le salaire doit contenir que des chiffres"}
             )
         if data.get("retired", False) and data.get("retired_at", None) is None:
             raise serializers.ValidationError(
-                {"retired_at": "Retired_at must be provided"}
+                {"retired_at": "Le champ Retired_at est obligatoire"}
             )
+        else:
+            data["retired_at"] = None
         return data
-
 
 class PartiallyUpdateEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -249,70 +253,60 @@ class PartiallyUpdateEmployeeSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         # makes sure only one president is created
-        if "role" in data:
-            if data.get("role", None) == options_role[0][0]:
-                presidents = Employee.objects.filter(role=options_role[0][0])
-                if presidents.exists() and presidents.first().pk != self.instance.pk:
-                    raise serializers.ValidationError(
-                        {"role": "There can only be one president"}
-                    )
-            elif data.get("role", None) == options_role[1][0]:
-                vice_presidents = Employee.objects.filter(role=options_role[1][0])
-                if (
-                    vice_presidents.exists()
-                    and vice_presidents.first().id != self.instance.pk
-                ):
-                    raise serializers.ValidationError(
-                        {"role": "There can only be one vice president"}
-                    )
-            elif data.get("role", None) == options_role[2][0]:
-                tresorier = Employee.objects.filter(role=options_role[2][0])
-                if tresorier.exists() and tresorier.first().pk != self.instance.pk:
-                    raise serializers.ValidationError(
-                        {"role": "There can only be one tresorier"}
-                    )
-        if "phone_number" in data:
-            if not (is_digits(data.get("phone_number", None))):
+        if data.get("role", None) == options_role[0][0]:
+            presidents = Employee.objects.filter(role=options_role[0][0])
+            if presidents.exists():
                 raise serializers.ValidationError(
-                    {"phone_number": "Phone number must contain digits"}
+                    {"role": "Il ne peut y avoir qu'un seul président"}
                 )
-            if len(data["phone_number"]) != 10:
+        elif data.get("role", None) == options_role[1][0]:
+            vice_presidents = Employee.objects.filter(role=options_role[1][0])
+            if vice_presidents.exists():
                 raise serializers.ValidationError(
-                    {"phone_number": "Phone number must be 10 digits"}
+                    {"role": "Il ne peut y avoir qu'un seul vice-président"}
                 )
-        if "rip" in data:
-            if not (is_digits(data.get("rip", None))):
+        elif data.get("role", None) == options_role[2][0]:
+            tresorier = Employee.objects.filter(role=options_role[2][0])
+            if tresorier.exists():
                 raise serializers.ValidationError(
-                    {"rip": "RIP must contain only digits"}
+                    {"role": "Il ne peut y avoir qu'un seul trésorier"}
                 )
-            if len(data.get("rip", None)) != 20:
-                raise serializers.ValidationError({"rip": "RIP must be 20 digits"})
-        if "bank_rib" in data:
-            if not (is_digits(data.get("bank_rib", None))):
-                raise serializers.ValidationError(
-                    {"bank_rib": "RIB must contain only digits"}
-                )
-            if len(data.get("bank_rib", None)) != 20:
-                raise serializers.ValidationError({"bank_rib": "RIB must be 20 digits"})
-        if "id_number" in data:
-            if not (is_digits(data.get("id_number", None))):
-                raise serializers.ValidationError(
-                    {"id_number": "Id number must contain only digits"}
-                )
-            if len(data.get("id_number", None)) != 18:
-                raise serializers.ValidationError(
-                    {"id_number": "Id number must be 18 digits"}
-                )
-        if "salary" in data:
-            if not (is_digits(data.get("salary", None))):
-                raise serializers.ValidationError(
-                    {"salary": "Salary must contain only digits"}
-                )
-        if "retired" in data:
-            if data.get("retired", False) and data.get("retired_at", None) is None:
-                raise serializers.ValidationError(
-                    {"retired_at": "Retired_at must be provided"}
-                )
+        if not (is_digits(data.get("phone_number", None))):
+            raise serializers.ValidationError(
+                {"phone_number": "Le numéro de téléphone doit contenir des chiffres"}
+            )
+        if len(data["phone_number"]) != 10:
+            raise serializers.ValidationError(
+                {"phone_number": "Le numéro de téléphone doit comporter 10 chiffres"}
+            )
+        if not (is_digits(data.get("rip", None))):
+            raise serializers.ValidationError({"rip": "Le RIP doit contenir uniquement des chiffres"})
+        if len(data.get("rip", None)) != 20:
+            raise serializers.ValidationError({"rip": "Le RIP doit comporter 20 chiffres"})
+        if not (is_digits(data.get("bank_rib", None))):
+            raise serializers.ValidationError(
+                {"bank_rib": "Le RIB doit contenir des chiffres"}
+            )
+        if len(data.get("bank_rib", None)) != 20:
+            raise serializers.ValidationError({"bank_rib": "Le RIB doit comporter 20 chiffres"})
+        if not (is_digits(data.get("id_number", None))):
+            raise serializers.ValidationError(
+                {"id_number": "l'Id nationale doit contenir que des chiffres"}
+            )
+        if len(data.get("id_number", None)) != 18:
+            raise serializers.ValidationError(
+                {"id_number": "L'ID nationale doit comporter 20 chiffres"}
+            )
+        if not (is_digits(data.get("salary", None))):
+            raise serializers.ValidationError(
+                {"salary": "Le salaire doit contenir que des chiffres"}
+            )
+        if data.get("retired", False) and data.get("retired_at", None) is None:
+            raise serializers.ValidationError(
+                {"retired_at": "Le champ Retired_at est obligatoire"}
+            )
+        else:
+            data["retired_at"] = None
         return data
 
 

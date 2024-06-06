@@ -98,7 +98,15 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
     },
     {
       accessorKey: "created_at",
-      header: () => <div className="text-center">Date Demande</div>,
+
+      header: ({ column }) => (
+        <div
+          className="text-center cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date Demande
+        </div>
+      ),
       cell: ({ row }) => {
         return (
           <div className="text-center font-medium">
@@ -109,30 +117,28 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
     },
     {
       accessorKey: "amount",
+      id: "debit",
       header: () => <div className="text-center">Debit</div>,
       cell: ({ row }) => (
         <div className="text-center font-medium h-full w-full flex items-center justify-center ">
           {row?.original?.type === "expense" ? (
-          <div className="w-full h-full text-red-500">
-            <p>{row.getValue("amount")}DA</p>
-            </div>
+            <p className="text-red-500">{row.getValue("debit")}DA</p>
           ) : (
-           '**'
+            "--"
           )}
         </div>
       ),
     },
     {
       accessorKey: "amount",
-      header: () => <div className="text-center">credit</div>,
+      id: "credit",
+      header: () => <div className="text-center">Credit</div>,
       cell: ({ row }) => (
-        <div className="text-center font-medium flex items-center justify-center gap-1 ">
-            {row?.original?.type === "expense" ? (
-              '**'
+        <div className="text-center font-medium flex items-center justify-center gap-1">
+          {row?.original?.type === "expense" ? (
+            "--"
           ) : (
-            <div className="w-full h-full text-green-500">
-            <p>{row.getValue("amount")}DA</p>
-            </div>
+            <p className="text-green-500">{row.getValue("credit")}DA</p>
           )}
         </div>
       ),
@@ -155,7 +161,10 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0 ">
+              <Button variant="ghost" className="h-8 w-8 p-0 " onClick={() => {
+                console.log(row);
+
+              }}>
                 <span className="sr-only">Open menu</span>
                 <DotsHorizontalIcon className="h-4 w-4" />
               </Button>
@@ -163,9 +172,7 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
             <DropdownMenuContent align="end">
               <Dialog>
                 <DialogTrigger style={{ width: "100%" }}>
-                  <div
-                    className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100"
-                  >
+                  <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
                     Details
                   </div>
                 </DialogTrigger>
@@ -197,34 +204,34 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                           </Link>
                         </h2>
                         <p className="text-sm capitalize text-gray-800 font-semibold">
-                          <table class="border w-full text-sm text-left  text-gray-500 ">
-                            <thead class=" text-xs text-gray-700 uppercase ">
+                          <table className="border w-full text-sm text-left  text-gray-500 ">
+                            <thead className=" text-xs text-gray-700 uppercase ">
                               <tr>
-                                <th scope="col" class="px-6 py-3 bg-gray-50 ">
+                                <th scope="col" className="px-6 py-3 bg-gray-50 ">
                                   id
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                   employeur
                                 </th>
-                                <th scope="col" class="px-6 py-3 bg-gray-50 ">
+                                <th scope="col" className="px-6 py-3 bg-gray-50 ">
                                   email
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                   montant
                                 </th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr class="border-b border-gray-200 dark:border-gray-700">
+                              <tr className="border-b border-gray-200 dark:border-gray-700">
                                 <th
                                   scope="row"
-                                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white "
+                                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white "
                                 >
                                   #
                                   {row.original.loan?.employee.id ||
                                     row.original.finaincial_aid?.employee.id}
                                 </th>
-                                <td class="px-6 py-4">
+                                <td className="px-6 py-4">
                                   {row.original.loan?.employee.last_name ||
                                     row.original.finaincial_aid?.employee
                                       .last_name}
@@ -232,11 +239,11 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                                     row.original.finaincial_aid?.employee
                                       .first_name}
                                 </td>
-                                <td class="px-6 py-4 bg-gray-50 ">
+                                <td className="px-6 py-4 bg-gray-50 ">
                                   {row.original.loan?.employee.email ||
                                     row.original.finaincial_aid?.employee.email}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td className="px-6 py-4">
                                   {row.original.loan?.amount ||
                                     row.original.finaincial_aid?.amount}
                                   da

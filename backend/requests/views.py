@@ -46,34 +46,34 @@ class LoanView(APIView):
                     {"error": "maximumn loan amount {} ".format(max)},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            isDraft = request.query_params.get("draft", None)
+            isDraft = request.query_params.get("brouillon", None)
             if isDraft == "true":
-                loan_status = "draft"
+                loan_status = "brouillon"
             elif isDraft == "false":
                 loan_status = "waiting"
             else:
 
                 return Response(
-                    {"error": "Invalid query param draft value"},
+                    {"error": "Valeur brouillon du paramètre de requête non valide"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
             if (
-                loan_status == "draft"
+                loan_status == "brouillon"
                 and Loan.objects.filter(
                     employee=request.user,
-                    loan_status="draft",
+                    loan_status="brouillon",
                 ).exists()
             ):
                 return Response(
-                    {"error": "you can't create draft, already have one"},
+                    {"error": "vous ne pouvez pas créer de brouillon, vous en avez déjà un"},
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
             files = request.FILES.getlist("files[]", [])
             if not files and loan_status == "waiting":
                 return Response(
-                    {"error": "you must upload files"},
+                    {"error": "vous devez télécharger des fichiers"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -90,12 +90,12 @@ class LoanView(APIView):
                 )
                 d.save()
             return Response(
-                {"sucess": "loan created succefully"}, status=status.HTTP_201_CREATED
+                {"sucess": "prêt créé avec succès"}, status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors)
 
     def get(self, request):
-        execlution_criteria = {"loan_status": "draft"}
+        execlution_criteria = {"loan_status": "brouillon"}
         loans = Loan.objects.exclude(**execlution_criteria).order_by(
             "-request_response_at", "-request_created_at"
         )
@@ -128,7 +128,7 @@ class LoanHistoryView(APIView):
         serializer = LoanSerializer(loans, many=True)
         if loans:
             return Response(serializer.data)
-        return Response("you don't have any loans")
+        return Response([])
 
 
 # This view will be used for uploading files in the financial aid functionnality
@@ -151,25 +151,25 @@ class FinancialaidView(generics.ListCreateAPIView):
             )
             else None
         )
-        isDraft = request.query_params.get("draft")
+        isDraft = request.query_params.get("brouillon")
         if isDraft == "true":
-            aid_status = "draft"
+            aid_status = "brouillon"
         elif isDraft == "false":
             aid_status = "waiting"
         else:
             return Response(
-                {"error": "Invalid query param value"},
+                {"error": "Valeur du paramètre de requête non valide"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if (
-            aid_status == "draft"
+            aid_status == "brouillon"
             and Financial_aid.objects.filter(
                 employee=request.user,
-                financial_aid_status="draft",
+                financial_aid_status="brouillon",
             ).exists()
         ):
             return Response(
-                {"error": "you can't create draft, already have one"},
+                {"error": "vous ne pouvez pas créer de brouillon, vous en avez déjà un"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
@@ -179,13 +179,13 @@ class FinancialaidView(generics.ListCreateAPIView):
             and not request.user.retired
         ):
             return Response(
-                {"error": "employee is not retired"}, status=status.HTTP_403_FORBIDDEN
+                {"error": "l'employé n'est pas à la retraite"}, status=status.HTTP_403_FORBIDDEN
             )
         try:
             amount = float(request.data["amount"])
         except Exception as e:
             return Response(
-                {"error": "amount must be a number"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "le montant doit être un nombre"}, status=status.HTTP_400_BAD_REQUEST
             )
         created_instance = serializer.save(
             employee=request.user,
@@ -198,7 +198,7 @@ class FinancialaidView(generics.ListCreateAPIView):
         files = request.FILES.getlist("files[]", [])
         if not files and aid_status == "waiting":
             return Response(
-                {"error": "you must upload files"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "vous devez télécharger des fichiers"}, status=status.HTTP_400_BAD_REQUEST
             )
         for f in files:
             d = Document(
@@ -210,11 +210,11 @@ class FinancialaidView(generics.ListCreateAPIView):
             )
             d.save()
         return Response(
-            {"success": "financial aid created"}, status=status.HTTP_201_CREATED
+            {"success": "aide financière créée"}, status=status.HTTP_201_CREATED
         )
 
     def list(self, request, *args, **kwargs):
-        execlution_criteria = {"financial_aid_status": "draft"}
+        execlution_criteria = {"financial_aid_status": "brouillon"}
         financail_aids = Financial_aid.objects.exclude(**execlution_criteria).order_by(
             "-request_response_at", "-request_created_at"
         )
@@ -238,7 +238,7 @@ class FinancialaidHistoryView(APIView):
         if financial_aids.exists():
             serializer = FinancialaidSerializer(financial_aids, many=True)
             return Response(serializer.data)
-        return Response("you don't have any financial aids")
+        return Response([])
 
 
 class FinancialaidCheckView(APIView):
@@ -260,20 +260,20 @@ class FinancialaidCheckView(APIView):
                 else:
                     return Response("True", status=status.HTTP_200_OK)
             return Response(
-                "Invalid type in the query parameter",
+                {"error": "Type invalide dans le paramètre de requête"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         else:
 
             return Response(
-                "Missing 'aid_type' parameter in the request",
+                {"error": "Paramètre 'aid_type' manquant dans la requête"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
 
 # To use this view specify request_type (loan|financial-aid) as url
-# also use draft query parameter
-# for example http://127.0.0.1:8000/api/requests/financial-aid/pk?draft=true
+# also use brouillon query parameter
+# for example http://127.0.0.1:8000/api/requests/financial-aid/pk?brouillon=true
 
 
 class UpdateRequestView(APIView):
@@ -286,16 +286,16 @@ class UpdateRequestView(APIView):
                     loan = get_object_or_404(Loan, pk=pk)
                     if loan.employee != request.user:
                         return Response(
-                            {"error": "you don't have permission to delete this loan"},
+                            {"error": "vous n'êtes pas autorisé à supprimer ce prêt"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
-                    if loan.loan_status not in ["draft"]:
+                    if loan.loan_status not in ["brouillon"]:
                         return Response(
-                            {"error": "this loan is not draft"},
+                            {"error": "this loan is not brouillon"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
                     loan.delete()
-                    return Response({"success": "loan deleted succesfully"})
+                    return Response({"success": "prêt supprimé avec succès"})
                 case "financial-aids":
                     financial_aid = get_object_or_404(Financial_aid, pk=pk)
                     if financial_aid.employee != request.user:
@@ -305,41 +305,41 @@ class UpdateRequestView(APIView):
                             },
                             status=status.HTTP_403_FORBIDDEN,
                         )
-                    if financial_aid.financial_aid_status not in ["draft"]:
+                    if financial_aid.financial_aid_status not in ["brouillon"]:
                         return Response(
-                            {"error": "this financial-aid is not draft"},
+                            {"error": "this financial-aid is not brouillon"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
                     financial_aid.delete()
-                    return Response({"success": "financial aid deleted succesfully"})
+                    return Response({"success": "aide financière supprimée avec succès"})
 
         else:
             return Response(
-                {"error": "page not found"}, status=status.HTTP_404_NOTpage_FOUND
+                {"error": "Page non trouvée"}, status=status.HTTP_404_NOTpage_FOUND
             )
 
     def patch(self, request, request_type, pk):
         # check if the url contains loan or financial-aid
         if request_type in ["loans", "financial-aids"]:
-            # check for the draft query parameter
-            isDraft = request.query_params.get("draft")
+            # check for the brouillon query parameter
+            isDraft = request.query_params.get("brouillon")
             if isDraft == "true":
-                aid_status = "draft"
+                aid_status = "brouillon"
                 request_created_at = None
             elif isDraft == "false":
                 aid_status = "waiting"
                 request_created_at = date.today()
             else:
                 return Response(
-                    "Invalid query param value", status=status.HTTP_400_BAD_REQUEST
+                    {"error": "Valeur du paramètre de requête non valide"}, status=status.HTTP_400_BAD_REQUEST
                 )
             # update the loan object
             if request_type == "loans":
                 loan = get_object_or_404(Loan, pk=pk, employee=request.user)
-                # only draft records can be updated
-                if loan.loan_status != "draft":
+                # only brouillon records can be updated
+                if loan.loan_status != "brouillon":
                     return Response(
-                        "this loan is not draft", status=status.HTTP_403_FORBIDDEN
+                        {"error": "this loan is not brouillon"}, status=status.HTTP_403_FORBIDDEN
                     )
 
                 # handling old files
@@ -376,7 +376,7 @@ class UpdateRequestView(APIView):
                     and aid_status == "waiting"
                 ):
                     return Response(
-                        {"error": "you must upload files"},
+                        {"error": "vous devez télécharger des fichiers"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
@@ -385,17 +385,17 @@ class UpdateRequestView(APIView):
                 serializer.save(
                     loan_status=aid_status, request_created_at=request_created_at
                 )
-                return Response("loan updated succesfully")
+                return Response({"success": "prêt mis à jour avec succès"})
 
             # update the financial-aid object
             elif request_type == "financial-aids":
                 financial_aid = get_object_or_404(
                     Financial_aid, pk=pk, employee=request.user
                 )
-                # only draft records can be updated
-                if financial_aid.financial_aid_status != "draft":
+                # only brouillon records can be updated
+                if financial_aid.financial_aid_status != "brouillon":
                     return Response(
-                        "this financial-aid is not draft",
+                       {"error": "this financial-aid is not brouillon"},
                         status=status.HTTP_403_FORBIDDEN,
                     )
                 # family_member can only be changed if the financial_aid_type  is family_member_death
@@ -409,7 +409,7 @@ class UpdateRequestView(APIView):
                     and aid_type != "family_member_death"
                 ):
                     return Response(
-                        "you can't change family member",
+                        {"error": "tu ne peux pas changer de membre de la famille"},
                         status=status.HTTP_403_FORBIDDEN,
                     )
 
@@ -443,7 +443,7 @@ class UpdateRequestView(APIView):
                     and aid_status == "waiting"
                 ):
                     return Response(
-                        {"error": "you must upload files"},
+                        {"error": "vous devez télécharger des fichiers"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
@@ -455,14 +455,14 @@ class UpdateRequestView(APIView):
                     financial_aid_status=aid_status,
                     request_created_at=request_created_at,
                 )
-                return Response("financial aid updated succesfully")
+                return Response({"success": "aide financière mise à jour avec succès"})
             else:
                 return Response(
-                    {"error": "page not found"}, status=status.HTTP_404_NOT_FOUND
+                    {"error": "Page non trouvée"}, status=status.HTTP_404_NOT_FOUND
                 )
         else:
             return Response(
-                {"error": "page not found"}, status=status.HTTP_404_NOT_FOUND
+                {"error": "Page non trouvée"}, status=status.HTTP_404_NOT_FOUND
             )
 
 
@@ -478,12 +478,12 @@ class UpdateRequestStatusView(APIView):
 
         if not model_class:
             return Response(
-                {"error": "page not found"}, status=status.HTTP_404_NOT_FOUND
+                {"error": "Page non trouvée"}, status=status.HTTP_404_NOT_FOUND
             )
 
         if "new_status" not in request.data:
             return Response(
-                {"error": "you must include new_status in your request"},
+                {"error": "vous devez inclure new_status dans votre demande"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -507,7 +507,7 @@ class UpdateRequestStatusView(APIView):
                 and not request.user.role == "vice_president"
             ):
                 return Response(
-                    {"error": "you don't have required permission"},
+                    {"error": "vous n'avez pas l'autorisation requise"},
                     status=status.HTTP_403_FORBIDDEN,
                 )
             if model_class == Loan:
@@ -517,7 +517,7 @@ class UpdateRequestStatusView(APIView):
             obj.request_response_at = date.today()
             obj.save()
             return Response(
-                {"success": "status updated successfully"}, status=status.HTTP_200_OK
+                {"success": "statut mis à jour avec succès"}, status=status.HTTP_200_OK
             )
         elif (
             old_status == "approved"
@@ -526,7 +526,7 @@ class UpdateRequestStatusView(APIView):
         ):
             if not request.user.role == "tresorier":
                 return Response(
-                    {"error": "you don't have required permission"},
+                    {"error": "vous n'avez pas l'autorisation requise"},
                     status=status.HTTP_403_FORBIDDEN,
                 )
             obj.loan_status = updated_status
@@ -544,10 +544,10 @@ class UpdateRequestStatusView(APIView):
                 currnt_commity.current_balance -= obj.amount
                 currnt_commity.save()
             return Response(
-                {"success": "status updated successfully"}, status=status.HTTP_200_OK
+                {"success": "statut mis à jour avec succès"}, status=status.HTTP_200_OK
             )
 
         else:
             return Response(
-                {"error": "status can't be updated"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "le statut ne peut pas être mis à jour"}, status=status.HTTP_400_BAD_REQUEST
             )

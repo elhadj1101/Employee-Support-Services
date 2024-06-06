@@ -21,14 +21,14 @@ const LoginForm = () => {
     // Validate email
     if (!email.trim()) {
       valide = false;
-      setEmailError("Email is required.");
+      setEmailError("L'Email est requis.");
     } else {
       setEmailError("");
     }
     if (!pass.trim()) {
       valide = false;
 
-      setPassError("Password is required.");
+      setPassError("Le mot de passe est requis.");
     } else {
       setPassError("");
     }
@@ -40,7 +40,7 @@ const LoginForm = () => {
     try {
       const response = await login(email, pass);
       if (response) {
-        toast.success("login success");
+        toast.success("Vous êtes connecté avec success.");
         
         localStorage.setItem("access_token", response.access);
         localStorage.setItem("refresh_token", response.refresh);
@@ -77,19 +77,19 @@ const LoginForm = () => {
       <form>
         <label
           htmlFor="email"
-          className="text flex  mx-auto sm: w-full"
+          className="text flex  w-full"
         >
           Address e-mail
         </label>
         <input
-          className="  w-full  input sm:flex sm:mx-auto sm:w-96  "
+          className="  w-full  input    "
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={"email"}
           style={{ borderColor: emailError ? "red" : "" }}
         />
-        <p className="error max-w-xs flex mx-auto sm:min-w-full">
+        <p className="error max-w-xs   sm:min-w-full">
           {emailError}
         </p>
         <label htmlFor="password" className="text flex mx-auto ">

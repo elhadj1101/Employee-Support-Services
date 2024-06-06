@@ -40,7 +40,7 @@ class LoanSerializer(serializers.ModelSerializer):
             and data.get("loan_status", None) != "approved"
         ):
             raise serializers.ValidationError(
-                "you can't pay an unapproved loan broo ?!"
+                {"error": "tu ne peux pas payer un prêt non approuvé mon frère ?!"}
             )
         return data
 
@@ -75,7 +75,7 @@ class FinancialaidSerializer(serializers.ModelSerializer):
             and data.get("family_member") is None
         ):
             raise serializers.ValidationError(
-                "you must include family_member in your request"
+                {"error": "vous devez inclure family_member dans votre demande"}
             )
         return data
 

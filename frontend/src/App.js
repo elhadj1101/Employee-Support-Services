@@ -35,10 +35,6 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         {/*      <Route path="/pop" element={<Popup />} /> */}
 
-        {/* 
-         <Route path="/test/" element={<Dashboard />} >
-            <Route path="demande-pret" element={<Loan />} /> 
-        </Route>    */}
         {/* protected routes */}
         <Route element={<RequireAuth requiredRoles={["any"]} />}>
           <Route path="/" element={<Dashboard />}>
@@ -78,6 +74,7 @@ function App() {
                 path="liste-demandes-aide-financiere/:dmId"
                 element={<SingleDemandAid employee={true} />}
               />
+              <Route path="offres/:oId" element={<SingleOffre />} />
 
               <Route
                 element={
@@ -124,7 +121,6 @@ function App() {
                   path="edit-offre/:oid"
                   element={<AddOffre edit={true} key={1} />}
                 />
-
               </Route>
               <Route
                 element={
@@ -133,9 +129,7 @@ function App() {
                     excludedRoles={["employe"]}
                   />
                 }
-              >
-                <Route path="offres/:oId" element={<SingleOffre />} />
-              </Route>
+              ></Route>
             </Route>
           </Route>
         </Route>

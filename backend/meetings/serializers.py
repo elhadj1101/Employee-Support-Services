@@ -27,10 +27,10 @@ class MeetingSerializer(serializers.ModelSerializer):
         end_time = attrs.get("end_time")
         if (start_time and not end_time) or (not start_time and end_time):
             raise serializers.ValidationError(
-                "End time and start time must change at the same time."
+                {"start_time": "L’heure de fin et l’heure de début doivent changer en même temps."}
             )
         if start_time and end_time and start_time > end_time:
-            raise serializers.ValidationError("End time must be after start time.")
+            raise serializers.ValidationError({"start_time": "L'heure de fin doit être postérieure à l'heure de début."})
 
         # checking if the meeting time is after the current time
         meeting_day = attrs.get("day")
@@ -46,7 +46,7 @@ class MeetingSerializer(serializers.ModelSerializer):
             meeting_day and day == meeting_day and (start_time < now or end_time < now)
         ) or (meeting_day and meeting_day < day):
             raise serializers.ValidationError(
-                "Meeting should be scheduled after current time."
+                {"meeting_day": "La réunion doit être programmée après l’heure actuelle."}
             )
 
         # checking that this meeting does not overlap with an existing meeting
@@ -64,7 +64,7 @@ class MeetingSerializer(serializers.ModelSerializer):
             overlaped_meetings = overlaped_meetings.exclude(pk=instance.pk)
         if overlaped_meetings:
             raise serializers.ValidationError(
-                "Meeting time overlaps with and an existing meeting"
+                {"overlap": "L’heure de la réunion chevauche une réunion existante"}
             )
 
         return super().validate(attrs)

@@ -64,6 +64,6 @@ class SingleMeetingView(generics.RetrieveUpdateDestroyAPIView):
         obj.canceled = True
         obj.save()
         return Response(
-            {"success": "meeting has been deleted succesfuly."},
+            {"success": "la réunion a été supprimée avec succès."},
             status=status.HTTP_200_OK,
         )

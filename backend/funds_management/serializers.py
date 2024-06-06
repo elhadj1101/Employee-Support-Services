@@ -19,7 +19,7 @@ class RecordViewSerializer(serializers.ModelSerializer):
             and data.get("loan", None) 
         ):
             raise serializers.ValidationError(
-                "only one of financial_aid or loan can be included in the request"
+                {"financial_aid": "juste une des deux (financial_aid ou loan) doit être incluse dans la requête"}
         )
         
         
@@ -38,7 +38,7 @@ class RecordSerializer(serializers.ModelSerializer):
             and data.get("loan", None) 
         ):
             raise serializers.ValidationError(
-                "only one of financial_aid or loan can be included in the request"
+                {"financial_aid": "juste une des deux (financial_aid ou loan) doit être incluse dans la requête"}
         )
         
         

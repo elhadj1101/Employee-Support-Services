@@ -42,10 +42,10 @@ function TresorierCharts({
   const WeeklyLabels = ["Dim", "Lun", "Mard", "Merc", "Jeu", "Ven", "Sam"];
   let days =  ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", ];
   const [currentType, setCurrentType] = useState("expenses")
-  const [currntPeriod, setCurrentPeriod] = useState("monthly");
+  const [currntPeriod, setCurrentPeriod] = useState("Mensuel");
   let incomes = [];
   let expenses = [];
-  if (currntPeriod === "weekly") {
+  if (currntPeriod === "Hebdomadaire") {
      incomes = Object.keys(monthlyData)
       .sort((a, b) => days.indexOf(a) > days.indexOf(b))
       .map((e) => {
@@ -77,9 +77,9 @@ function TresorierCharts({
     setCurrentPeriod(id);
     await fetchAnalitics(
         setAnaliticsByMonth,
-        (id ==="monthly" ? currentPeriodData.currntYear: null),
-        (id ==="weekly" ? currentPeriodData.currntWeek: null),
-        id
+        (id ==="Mensuel" ? currentPeriodData.currntYear: null),
+        (id ==="Hebdomadaire" ? currentPeriodData.currntWeek: null),
+        id === "Mensuel" ? "monthly" : "weekly"
       );
   };
   const handleChangeType = async (e) => {
@@ -187,17 +187,17 @@ function TresorierCharts({
           <div className="flex justify-start basis-[40%] items-center gap-4">
             <button
               onClick={handleChangePeriod}
-              id="weeklyBtn"
+              id="HebdomadaireBtn"
               className="analitics-btn"
             >
-              Weekly
+              Hebdomadaire
             </button>
             <button
-              id="monthlyBtn"
+              id="MensuelBtn"
               onClick={handleChangePeriod}
               className="analitics-btn  active-analitics-btn"
             >
-              Monthly
+              Mensuel
             </button>
             {/* <button
               id="yearlyBtn"
@@ -207,7 +207,7 @@ function TresorierCharts({
               Yearly
             </button> */}
           </div>
-          {currntPeriod === "weekly" && (
+          {currntPeriod === "Hebdomadaire" && (
             <div className="flex justify-between items-center basis-[60%] ">
               <div
                 id="prevBtn"
@@ -248,7 +248,7 @@ function TresorierCharts({
               </div>
             </div>
           )}
-          {currntPeriod === "monthly" && (
+          {currntPeriod === "Mensuel" && (
             <div className="flex justify-between items-center basis-[60%] ">
               <div
                 id="prevBtn"
@@ -334,7 +334,7 @@ function TresorierCharts({
             },
           }}
           data={{
-            labels: currntPeriod === "monthly" ? Monthlylabels : WeeklyLabels,
+            labels: currntPeriod === "Mensuel" ? Monthlylabels : WeeklyLabels,
             datasets: [
               {
                 label: "Income",
