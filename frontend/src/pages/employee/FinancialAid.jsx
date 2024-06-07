@@ -9,6 +9,8 @@ import {
   SelectGroup,
   SelectLabel,
 } from "components/ui/select";
+import FormInput from "../../components/utils/FormInput";
+
 import FileInput from "components/utils/FileInput";
 import { Button } from "components/ui/button";
 import { formatPrice } from "components/utils/utilFunctions";
@@ -98,8 +100,8 @@ function FinancialAid() {
     }
     const endpoint =
       !crrntAid || aidDraftId == false
-        ? "/requests/financial-aids/?draft="
-        : `/requests/financial-aids/${aidDraftId}?draft=`;
+        ? "/requests/financial-aids/?brouillon="
+        : `/requests/financial-aids/${aidDraftId}?brouillon=`;
     const formData = new FormData();
     formData.append("financial_aid_type", aidData.aidType);
     formData.append("amount", amount);
@@ -250,14 +252,16 @@ function FinancialAid() {
     setAidData(data);
   }, [aids]);
   return (
-    <div className="w-full min-h-[100vh] flex-grow flex flex-col  bg-gray-bg  pt-4 pb-6">
-      <h1 className="font-semibold text-2xl px-6 my-2">
-        {!crrntAid
-          ? "Demande d'aide financière"
-          : "Modification d'un brouillon (N°:" + crrntAid.id + ")"}
-      </h1>
+    <div className="w-full h-[90vh] overflow-y-auto flex-grow flex flex-col  bg-gray-bg  pb-6">
+      <div className="px-6 py-6 pt-8 bg-gray-bg sticky top-0 z-50">
+        <h1 className="font-semibold text-2xl ">
+          {!crrntAid
+            ? "Demande d'aide financière"
+            : "Modification d'un brouillon (N°:" + crrntAid.id + ")"}
+        </h1>
+      </div>
       {(!crrntAid && aidDraftId) ||
-      (crrntAid && crrntAid.financial_aid_status !== "draft") ? (
+      (crrntAid && crrntAid.financial_aid_status !== "brouillon") ? (
         <>
           <div className="flex  items-start">
             <p className="text-red-800 mx-6 text-lg">
@@ -455,28 +459,28 @@ function FinancialAid() {
           {aidData.aidType !== "" &&
             financial_aid_infos[typeIndMap[aidData.aidType]]?.amountNotes &&
             aidData.aidType !== "family_member_death" && (
-                <div className="text-lg font-semibold">
-                  Choisir Le Montant bénéficié :
-                  <input
-                    type="text"
-                    value={amount}
-                    className="w-20 text-center border-2 border-gray-300 rounded-md mx-2"
-                    onChange={(e) => setAmount(e.target.value)}
-                  />
-                  DA
-                  <ul className="pl-4 text-sm w- list-decimal font-light ">
-                    {financial_aid_infos[
-                      typeIndMap[aidData.aidType]
-                    ].amountNotes.map((note, ind) => {
-                      return (
-                        <li className="" key={ind}>
-                          {note}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
+              <div className="text-lg font-semibold">
+                Choisir Le Montant bénéficié :
+                <input
+                  type="text"
+                  value={amount}
+                  className="w-20 text-center border-2 border-gray-300 rounded-md mx-2"
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+                DA
+                <ul className="pl-4 text-sm w- list-decimal font-light ">
+                  {financial_aid_infos[
+                    typeIndMap[aidData.aidType]
+                  ].amountNotes.map((note, ind) => {
+                    return (
+                      <li className="" key={ind}>
+                        {note}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           {aidData.aidType !== "" && (
             <>
               <h2 className="font-semibold text-lg mt-4">
@@ -504,7 +508,7 @@ function FinancialAid() {
               files={uploadedFiles}
               setFiles={setUploadedFiles}
               accepts="application/pdf"
-              fileTypes="PDF"
+              fileTypes={["PDF"]}
               maxFiles={fileNames.length}
               multpl={true}
             />
@@ -523,7 +527,6 @@ function FinancialAid() {
               onClick={handleSubmit}
               name="draft"
               className=" bg-white py-5 text-light-blue  outline-none border-none  hover:bg-light-blue hover:text-white transition"
-
             >
               Sauvegarder comme brouillon
             </Button>

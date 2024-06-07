@@ -26,7 +26,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { updateStatus } from "api/requests";
 import { toast } from "sonner";
-import { financial_aid_infos } from "api/requests";
+import { financial_aid_infos, statusColorMap , statusTranslateMap, familyMemberTranslateMap} from "api/requests";
 let type = {};
 financial_aid_infos.forEach((e) => {
   type[e.name] = e.description;
@@ -167,9 +167,12 @@ export default function SingleDemandLoan({ employee }) {
                     ["president", "vice_president", "tresorier"].includes(
                       user?.role
                     ) &&
-                    !["approved","payment_started", "refused"].includes(
-                      requestedAid?.financial_aid_status
-                    ) && (
+                    ![
+                      "approved",
+                      "payment_started",
+                      "refused",
+                      "finished",
+                    ].includes(requestedAid?.financial_aid_status) && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" className="h-7 w-7 p-0">
@@ -273,10 +276,10 @@ export default function SingleDemandLoan({ employee }) {
                 <div
                   className={
                     "w-fit py-1 px-3 rounded-3xl mt-1 " +
-                    StatusColors[requestedAid?.financial_aid_status]
+                    statusColorMap[requestedAid?.financial_aid_status]
                   }
                 >
-                  {requestedAid?.financial_aid_status}
+                  {statusTranslateMap[requestedAid?.financial_aid_status]}
                 </div>
               </div>
 
@@ -288,13 +291,15 @@ export default function SingleDemandLoan({ employee }) {
                   {type[requestedAid?.financial_aid_type]}
                 </p>
               </div>
-              {type[requestedAid?.financial_aid_type]?.startsWith("Décès") ? (
+              {type[requestedAid?.financial_aid_type]?.startsWith(
+                "Décès d'u"
+              ) ? (
                 <div>
                   <p className="font-bold capitalize text-gray-600 ">
                     membre de la famille{" "}
                   </p>
                   <p className="pl-2 font-semibold text-gray-500 capitalize">
-                    {requestedAid?.family_member}
+                    {familyMemberTranslateMap[requestedAid?.family_member]}
                   </p>
                 </div>
               ) : (

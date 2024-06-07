@@ -20,7 +20,7 @@ import {
   DialogClose,
   DialogFooter,
 } from "../../ui/dialog";
-import { statusColorMap } from "api/requests";
+import { statusColorMap, statusTranslateMap } from "api/requests";
 
 import { useNavigate } from "react-router-dom";
 import useStore from "../../../store/index";
@@ -133,15 +133,15 @@ export const loanColumns = (
       cell: ({ row }) => {
         return (
           <div className="capitalize w-full flex justify-center">
-          <div
-            className={
-              "w-fit py-1 px-3 m-1 rounded-3xl " +
-              statusColorMap[row.getValue("loan_status").toLowerCase()]
-            }
-          >
-            {row.getValue("loan_status")}
+            <div
+              className={
+                "w-fit py-1 px-3 m-1 rounded-3xl " +
+                statusColorMap[row.getValue("loan_status").toLowerCase()]
+              }
+            >
+              {statusTranslateMap[row.getValue("loan_status")]}
+            </div>
           </div>
-        </div>
         );
       },
     },

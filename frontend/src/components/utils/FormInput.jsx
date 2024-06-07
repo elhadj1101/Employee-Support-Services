@@ -1,6 +1,6 @@
 import React from 'react'
 
-function FormInput(
+function  FormInput(
     {handleValueChange = (e)=> e.preventDefault(),
     name = "",
     label=  true,
@@ -23,9 +23,9 @@ function FormInput(
         <label
           htmlFor={name}
           className={
-            "block mb-2 text-sm font-medium " +
+            "block text-sm font-medium " +
             labelClassName +
-            (error ? " text-red-700 " : "")
+            (error ? "  mb-2  text-red-700 " : "")
           }
         >
           {inputLabel}
@@ -39,14 +39,13 @@ function FormInput(
           value={value}
           onChange={handleValueChange}
           className={
-            "w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base " +
+            "w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-transparent border-2 border-gray-200 outline-none h-12 rounded-lg px-4 text-base " +
             inputClassName +
             (error
               ? " bg-red-50 border border-red-500 text-red-900  placeholder-red-700  focus:ring-red-500 focus:border-red-500"
               : "")
           }
           placeholder={placeholder}
-
         />
       ) : (
         <textarea

@@ -28,6 +28,8 @@ import { Button } from "components/ui/button";
 import { addRecord, fetchAnalitics, fetchDoghnouts } from "api/records";
 import { formatPrice, weekNumber } from "components/utils/utilFunctions";
 import { Link } from "react-router-dom";
+import {getRecords} from "api/records";
+
 
 function TresaurierDashboard() {
   const recordCol = recordsColumns([], true) || [];
@@ -67,7 +69,7 @@ function TresaurierDashboard() {
   const [error, setError] = useState(false);
   const [type, setType] = useState("");
   const [RecordType, setRecordType] = useState("");
-  const { Records, allLoans, allAids , Commity } = useStore();
+  const { Records, allLoans, allAids, Commity, updated,setFetchedRecords, setUpdated, setRecords } = useStore();
   const all =[...allLoans , ...allAids]
 
   const handleSubmit = async (e) => {
@@ -100,6 +102,8 @@ function TresaurierDashboard() {
         setDemmandeSelecter({});
       }
     }
+    setUpdated("records");
+
   };
 
   const handleComboBox = (currentValue, demmande, conection) => {
@@ -134,7 +138,17 @@ const handelTopSectionAddRecord =(demmande)=>{
   useEffect(() => {
     fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear);
     fetchDoghnouts(setDoughnoutData, new Date().getFullYear(), true);
-  }, []);
+    async function fetchRecords() {
+      const dat = await getRecords();
+      setRecords(dat);
+      setFetchedRecords(true);
+      setUpdated(false);
+    }
+    if (updated === "records") {
+      fetchRecords();
+    }
+
+  }, [updated]);
   return (
     <div className="mt-6">
       <div className="flex gap-6 ">

@@ -20,7 +20,7 @@ import {
   DialogClose,
   DialogFooter,
 } from "../../ui/dialog";
-import { statusColorMap } from "api/requests";
+import { statusColorMap, statusTranslateMap } from "api/requests";
 import { financial_aid_infos, deleteAid, getAids } from "api/requests";
 
 import { useNavigate } from "react-router-dom";
@@ -127,17 +127,16 @@ export const aidsColumns = (colsToHide = [], hideDelete = false, role="any") => 
       header: () => <div className="text-center">Status</div>,
       cell: ({ row }) => {
         return (
-
           <div className="capitalize w-full  flex items-center justify-center">
-          <div
-            className={
-              "w-fit py-1 px-3 rounded-3xl " +
-              statusColorMap[row.getValue("financial_aid_status")]
-            }
-          >
-            {row.getValue("financial_aid_status")}
+            <div
+              className={
+                "w-fit py-1 px-3 rounded-3xl " +
+                statusColorMap[row.getValue("financial_aid_status")]
+              }
+            >
+              {statusTranslateMap[row.getValue("financial_aid_status")]}
+            </div>
           </div>
-        </div>
         );
       },
     },
@@ -179,13 +178,13 @@ export const aidsColumns = (colsToHide = [], hideDelete = false, role="any") => 
                     text={"Payement de la demande"}
                   />
                 )}
-              {row.original.financial_aid_status === "draft" && (
+              {row.original.financial_aid_status === "brouillon" && (
                 <NavigateDropdownMenuItem
                   id={"/demande-aide-financiere/" + row.original.id}
                   text={"Modifier le broullion"}
                 />
               )}
-              {["draft"].includes(row.original.financial_aid_status) &&
+              {["brouillon"].includes(row.original.financial_aid_status) &&
                 !hideDelete && (
                   <Dialog>
                     <DialogTrigger style={{ width: "100%" }}>

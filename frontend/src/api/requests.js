@@ -1,6 +1,22 @@
 import Axios from "./axios";
 import {  toast } from 'sonner'
 
+const statusTranslateMap = {
+  approved: "Approuvé",
+  waiting: "En attente",
+  refused: "Refusé",
+  admin: "Admin",
+  brouillon:"brouillon",
+  finished: "Terminé",
+  payment_started: "Paiement commencé",
+
+}
+const familyMemberTranslateMap  = {
+  wife: "Épouse/Mari",
+  son: "Fils",
+  parent: "Parent",
+
+}
 const statusColorMap = {
   approved: "text-green-900 bg-green-100",
   waiting: "text-yellow-900 bg-yellow-100",
@@ -8,6 +24,7 @@ const statusColorMap = {
   admin: "text-gray-900 bg-gray-100",
   finished: "text-blue-900 bg-blue-100",
   payment_started: "text-teal-900 bg-teal-100",
+  brouillon: "text-gray-900 bg-gray-100",
 };
 const financial_aid_infos = [
     {
@@ -201,6 +218,7 @@ const getAids = async () => {
   try {
     const response = await Axios.get('/requests/financial-aids/history/');
     const data = response.data;
+    console.log(data);
     if (data.map ){
       return data;
     }else {
@@ -416,7 +434,18 @@ const getCommity = async ()=>{
   }
 
 }
-export { getLoans , getAids, financial_aid_infos,
-    statusColorMap, getAllAids, getAllLoans,
-    canApplyForLoan, deleteLoan, deleteAid,
-    updateStatus , getCommity};
+export {
+  getLoans,
+  getAids,
+  financial_aid_infos,
+  statusColorMap,
+  getAllAids,
+  getAllLoans,
+  canApplyForLoan,
+  deleteLoan,
+  deleteAid,
+  updateStatus,
+  getCommity,
+  statusTranslateMap,
+  familyMemberTranslateMap,
+};

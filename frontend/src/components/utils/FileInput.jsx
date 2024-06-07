@@ -15,7 +15,7 @@ function FileInput({
   setFiles = null,
   setSingleFile = null,
   accepts = "application/pdf",
-  fileTypes = "PDF",
+  fileTypes = ["PDF"],
   multpl = false,
 }) {
   const uploadInputEltest = useRef(null);
@@ -55,7 +55,7 @@ function FileInput({
         const accpted = fileTypes.includes(ext.toUpperCase());
         if (!accpted) {
           toast.warning(
-            `le fichier ${file.name} n'est pas accepté car l'extemsion n'est pas supporter, seulement les fichiers de type ${fileTypes} sont acceptés`
+            `le fichier ${file.name} n'est pas accepté car l'extemsion n'est pas supporter, seulement les fichiers de type ${fileTypes.join(", ")} sont acceptés`
           );
         }
         return accpted;
@@ -125,11 +125,11 @@ function FileInput({
       }
       const acceptedFiles = accptedF.filter((file) => {
         const ext = file.name.split(".").pop();
-        const accpted = fileTypes.includes(ext.toUpperCase().trim() +" ");
+        const accpted = fileTypes.includes(ext.toUpperCase().trim());
 
         if (!accpted) {
           toast.warning(
-            `le fichier ${file.name} n'est pas accepté car l'extemsion n'est pas supporter, seulement les fichiers de type ${fileTypes} sont acceptés`
+            `le fichier ${file.name} n'est pas accepté car l'extemsion n'est pas supporter, seulement les fichiers de type ${fileTypes.join(", ")} sont acceptés`
           );
         }
         return accpted;

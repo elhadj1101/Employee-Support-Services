@@ -261,7 +261,7 @@ function AddOffre({edit = false}) {
                 files={filee}
                 accepts="image/*"
                 maxFiles={1}
-                fileTypes={["PNG ", "JPG ", "JPEG "]}
+                fileTypes={["PNG", "JPG", "JPEG"]}
                 multpl={false}
                 iconSrc="/icons/png.png"
               />

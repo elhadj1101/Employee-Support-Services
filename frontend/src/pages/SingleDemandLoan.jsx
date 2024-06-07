@@ -12,7 +12,11 @@ import {
 } from "../components/ui/dropdown-menu";
 import { FiEdit3 } from "react-icons/fi";
 import { Button } from "../components/ui/button";
-import { updateStatus } from "api/requests";
+import {
+  updateStatus,
+  statusColorMap,
+  statusTranslateMap,
+} from "api/requests";
 import {
   Dialog,
   DialogContent,
@@ -31,7 +35,7 @@ export default function SingleDemandLoan({ employee }) {
     approved: "text-green-900 bg-green-100",
     waiting: "text-yellow-900 bg-yellow-100",
     refused: "text-red-900 bg-red-100",
-    payment_started: "text-blue-900 bg-blue-100",
+    // payment_started: "text-blue-900 bg-blue-100",
     // draft: "text-gray-500 bg-gray-100 border border-gray-200",
   };
   // I will not store the requestedLoan because some of its information may change  and the user will not know.
@@ -181,9 +185,12 @@ export default function SingleDemandLoan({ employee }) {
                     statut du prêt
                   </p>
                   {!employee &&
-                    ["president", "vice_president", "tresorier"].includes(user?.role)
-                    &&
-                    !["approved","payment_started", "refused"].includes(requestedLoan?.loan_status) && (
+                    ["president", "vice_president", "tresorier"].includes(
+                      user?.role
+                    ) &&
+                    !["approved", "payment_started", "refused"].includes(
+                      requestedLoan?.loan_status
+                    ) && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" className="h-7 w-7 p-0">
@@ -284,10 +291,10 @@ export default function SingleDemandLoan({ employee }) {
                 <div
                   className={
                     "w-fit py-1 px-3 rounded-3xl mt-1 " +
-                    StatusColors[requestedLoan?.loan_status]
+                    statusColorMap[requestedLoan?.loan_status]
                   }
                 >
-                  {requestedLoan?.loan_status}
+                  {statusTranslateMap[requestedLoan?.loan_status]}
                 </div>
               </div>
               <div>
