@@ -51,10 +51,15 @@ export default function AddUser() {
         break;
       case "rip":
         formattedValue = value.replace(/[^0-9]/g, "");
-        formattedValue = formattedValue.replace(/(\d{10})/, "$1 ");
+
+        // Format the value (e.g., add a space after the first 10 digits)
+        if (formattedValue.length > 10) {
+          formattedValue = formattedValue.replace(/(\d{10})(\d+)/, "$1 $2");
+        }
+    
         break;
       case "retired":
-        formattedValue = (!AddUserData?.retired)
+        formattedValue = !AddUserData?.retired;
         break;
 
       case "phone_number":
@@ -166,15 +171,13 @@ export default function AddUser() {
       newErrors.id_number =
         "Le numéro d'identification doit comporter exactement 18 caractères.";
     }
-    
 
     // retired and retired_at
-    if(formData.retired && formData.retired_at ===''){
-      newErrors.retired_at  =
-      "date de Retirement est requis.";
+    if (formData.retired && formData.retired_at === "") {
+      newErrors.retired_at = "date de Retirement est requis.";
     }
     if (formData.retired_at === "" && !formData.retired) {
-      formData.retired_at = null
+      formData.retired_at = null;
     }
     Object.keys(formData).forEach((key) => {
       if (newErrors.key) delete newErrors.key;
@@ -186,10 +189,7 @@ export default function AddUser() {
       ) {
         newErrors[key] = `${key.replace("_", " ")} est requis.`;
       }
-
-     
     });
-
 
     // Check if any errors occurred
     if (Object.keys(newErrors).length !== 0) {
@@ -198,7 +198,7 @@ export default function AddUser() {
     }
 
     Object.keys(formData).forEach((key) => {
-      if (formData[key] && key !== "is_active" && key !=='retired') {
+      if (formData[key] && key !== "is_active" && key !== "retired") {
         formData[key] = formData[key].replace(/ /g, "");
       }
     });
@@ -208,7 +208,7 @@ export default function AddUser() {
         rip: "00799999" + AddUserData?.rip.replace(/ /g, ""),
         salary: AddUserData?.salary.replace(/,/g, ""),
       });
-      
+
       if (newUser.status === 201) {
         toast.success("Utilisateur créé avec succès");
         Object.keys(sessionStorage).forEach((key) => {
@@ -220,17 +220,14 @@ export default function AddUser() {
 
         try {
           const updatedUsers = await getUsers();
-          
+
           if (updatedUsers) {
             setAdminUsers(updatedUsers);
             navigate("/utilisateurs");
           }
-        } catch (err) {
-          
-        }
+        } catch (err) {}
       }
     } catch (error) {
-      
       if (error.response) {
         if (error.status === 400) {
           for (const key in error.data) {
@@ -245,34 +242,33 @@ export default function AddUser() {
   return (
     <div className="w-full h-full px-6 pb-4 flex-grow flex flex-col  bg-lightgray overflow-y-auto">
       <div className="flex items-center justify-between">
-        
-            <h1 className=" sticky top-[60px] pt-5 pb-6 bg-lightgray text-xl lg:text-2xl text-black font-bold capitalize">
-              Remplir les données du nouveau utilisateur
-            </h1>
-            <div className="flex gap-2 justify-center items-center">
-              <div
-                onClick={(e) => {
-                  handleSubmit(e, AddUserData);
-                }}
-                className=" bg-light-blue cursor-pointer rounded-lg px-5 py-2 text-white hover:bg-white hover:text-light-blue transition "
-              >
-                <p className="capitalize">Enregister</p>
-              </div>
-              <div
-                onClick={() => {
-                  Object.keys(sessionStorage).forEach((key) => {
-                    if (key.startsWith("form/")) {
-                      sessionStorage.removeItem(key);
-                    }
-                  });
-                }}
-                className=" text-light-blue  cursor-pointer bg-white rounded-lg  px-5 py-2 hover:bg-light-blue hover:text-white transition  "
-              >
-                <p className="capitalize">Annuler</p>
-              </div>
-            </div>
+        <h1 className=" sticky top-[60px] pt-5 pb-6 bg-lightgray text-xl lg:text-2xl text-black font-bold capitalize">
+          Remplir les données du nouveau utilisateur
+        </h1>
+        <div className="flex gap-2 justify-center items-center">
+          <div
+            onClick={(e) => {
+              handleSubmit(e, AddUserData);
+            }}
+            className=" bg-light-blue cursor-pointer rounded-lg px-5 py-2 text-white hover:bg-white hover:text-light-blue transition "
+          >
+            <p className="capitalize">Enregister</p>
           </div>
-        
+          <div
+            onClick={() => {
+              Object.keys(sessionStorage).forEach((key) => {
+                if (key.startsWith("form/")) {
+                  sessionStorage.removeItem(key);
+                }
+              });
+            }}
+            className=" text-light-blue  cursor-pointer bg-white rounded-lg  px-5 py-2 hover:bg-light-blue hover:text-white transition  "
+          >
+            <p className="capitalize">Annuler</p>
+          </div>
+        </div>
+      </div>
+
       <div className="relative w-full bg-white p-4 pt-0 lg:p-6 rounded-lg">
         <p className="mb-4 font-medium ">
           Remplir les données du nouveau utilisateur
@@ -292,7 +288,7 @@ export default function AddUser() {
                 name="first_name"
                 type="text"
                 placeholder="Nom"
-                className=" w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                className=" w-full bg-transparent border border-lightgray outline-none   h-12 rounded-lg px-4 text-base"
                 value={AddUserData?.first_name}
                 onChange={(e) => handleChange(e)}
                 style={{
@@ -314,7 +310,7 @@ export default function AddUser() {
                 name="last_name"
                 type="text"
                 placeholder="Prénom"
-                className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                 value={AddUserData?.last_name}
                 onChange={(e) => handleChange(e)}
                 style={{
@@ -339,7 +335,7 @@ export default function AddUser() {
                 type="text"
                 placeholder="XX XX XX XX XX XX XX XX XX"
                 maxLength={26}
-                className=" relative w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                className=" relative w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                 value={AddUserData?.id_number}
                 onChange={(e) => handleChange(e)}
                 style={{
@@ -362,7 +358,7 @@ export default function AddUser() {
                 name="email"
                 type="email"
                 placeholder="example@gmail.com"
-                className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                 value={AddUserData?.email}
                 onChange={(e) => handleChange(e)}
                 style={{
@@ -385,7 +381,7 @@ export default function AddUser() {
                 type="text"
                 placeholder="0X XXXX XXXX"
                 maxLength={12}
-                className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                 value={AddUserData?.phone_number}
                 onChange={(e) => handleChange(e)}
                 style={{
@@ -407,7 +403,7 @@ export default function AddUser() {
                 name="password"
                 type="text"
                 placeholder="mot de passe"
-                className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                 value={AddUserData?.password}
                 onChange={(e) => handleChange(e)}
                 style={{
@@ -450,7 +446,7 @@ export default function AddUser() {
                 }}
                 value={AddUserData?.role}
               >
-                <SelectTrigger className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
+                <SelectTrigger className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
                   <SelectValue placeholder="Choisir un rôle" />
                 </SelectTrigger>
                 <SelectContent>
@@ -511,7 +507,7 @@ export default function AddUser() {
                 name="salary"
                 type="text"
                 placeholder="XXXXXX"
-                className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                 value={AddUserData?.salary}
                 onChange={(e) => handleChange(e)}
                 style={{
@@ -535,7 +531,7 @@ export default function AddUser() {
                   type="text"
                   maxLength={13}
                   placeholder="XXXXXXXXXX XX"
-                  className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base pl-20"
+                  className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base pl-[91px]"
                   value={AddUserData?.rip}
                   onChange={(e) => handleChange(e)}
                   style={{
@@ -564,7 +560,7 @@ export default function AddUser() {
                 type="text"
                 placeholder="XXXX XXXX XXXX XXXX"
                 maxLength={24}
-                className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                 value={AddUserData?.bank_rib}
                 onChange={(e) => handleChange(e)}
                 style={{
@@ -595,7 +591,7 @@ export default function AddUser() {
                   setAddUserData(prev);
                 }}
               >
-                <SelectTrigger className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
+                <SelectTrigger className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
                   <SelectValue placeholder="Choisir le sexe" />
                 </SelectTrigger>
                 <SelectContent>
@@ -622,7 +618,7 @@ export default function AddUser() {
                   setAddUserData(prev);
                 }}
               >
-                <SelectTrigger className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
+                <SelectTrigger className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base">
                   <SelectValue placeholder="Choisir la situation familiale" />
                 </SelectTrigger>
                 <SelectContent>
@@ -645,7 +641,7 @@ export default function AddUser() {
                 name="birth_adress"
                 type="text"
                 placeholder="Lieu de naissance"
-                className="w-full bg-transparent border-1 border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
+                className="w-full bg-transparent border border-gray-200 outline-none h-12 rounded-lg px-4 text-base"
                 value={AddUserData?.birth_adress}
                 onChange={(e) => handleChange(e)}
                 style={{
@@ -699,7 +695,6 @@ export default function AddUser() {
           </div>
         </form>
       </div>
-     
     </div>
   );
 }

@@ -32,7 +32,7 @@ export default function SingleDemandLoan({ employee }) {
     waiting: "text-yellow-900 bg-yellow-100",
     refused: "text-red-900 bg-red-100",
     payment_started: "text-blue-900 bg-blue-100",
-    // draft: "text-gray-500 bg-gray-100 border border-gray-200",
+    draft: "text-gray-500 bg-gray-100",
   };
   // I will not store the requestedLoan because some of its information may change  and the user will not know.
   const [requestedLoan, setReqeustedLoan] = useState({});

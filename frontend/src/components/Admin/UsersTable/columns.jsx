@@ -22,7 +22,7 @@ import {
   DialogFooter,
 } from "../../ui/dialog";
 import { useNavigate } from "react-router-dom";
-import { deleteUser, getUsers } from "../../../api/auth";
+import {activateUser, deleteUser, getUsers } from "../../../api/auth";
 import useStore from "../../../store/index";
 import { toast } from "sonner";
 const roleColors = {
@@ -33,6 +33,41 @@ const roleColors = {
   "membre commute": "text-red-900 bg-red-100",
   admin: "text-gray-900 bg-gray-100",
 };
+
+const UserActivateButton = ({ id }) => {
+  const { setAdminUsers } = useStore();
+
+  const handleDeleteClick = async (e) => {
+    try {
+      const response = await activateUser(id);
+      if (response.success) {
+        toast.success("Le compte utilisateur a été activé avec succès.");
+      }
+      const updatedUsers = await getUsers();
+      setAdminUsers(updatedUsers);
+    } catch (error) {
+      if (error.detail) {
+        toast.error(error.detail);
+      } else if (error.error) {
+        toast.error(error.error);
+      } else {
+        toast.error(
+          "Une erreur s'est produite lors de l'activation du compte."
+        );
+      }
+    }
+  };
+  return (
+    <Button
+    
+      className="bg-green-600  hover:bg-white border border-white hover:border-green-800 text-white hover:text-green-800"
+      onClick={(e) => handleDeleteClick(e)}
+    >
+      Activé
+    </Button>
+  );
+};
+
 
 const UserDeleteButton = ({ id }) => {
   const { setAdminUsers } = useStore();
@@ -197,8 +232,7 @@ export const columns = [
               id={row.original.id}
               text={"Détails / Modifier"}
             />
-
-            <Dialog>
+       {row.original.is_active ?  <Dialog>
               <DialogTrigger style={{ width: "100%" }}>
                 <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
                   Désactiver
@@ -219,7 +253,32 @@ export const columns = [
                   </DialogClose>
                 </DialogFooter>
               </DialogContent>
-            </Dialog>
+            </Dialog>: 
+            //  <Dialog>
+            //   <DialogTrigger style={{ width: "100%" }}>
+            //     <div className=" w-full cursor-pointer text-left  px-2 py-1.5 text-sm transition-colors hover:bg-slate-100">
+            //     Activé
+            //     </div>
+            //   </DialogTrigger>
+            //   <DialogContent>
+            //     <DialogHeader>
+            //       <DialogTitle>
+            //         Êtes-vous sûr de Activé le compte de cet utilisateur?
+            //       </DialogTitle>
+            //       <DialogDescription>
+            //         Cette action va Activera le compte de utilisateur
+            //       </DialogDescription>
+            //     </DialogHeader>
+            //     <DialogFooter>
+            //       <DialogClose>
+            //         <UserActivateButton id={row.original.id} />
+            //       </DialogClose>
+            //     </DialogFooter>
+            //   </DialogContent>
+            // </Dialog>
+            ""
+            }
+           
           </DropdownMenuContent>
         </DropdownMenu>
       );

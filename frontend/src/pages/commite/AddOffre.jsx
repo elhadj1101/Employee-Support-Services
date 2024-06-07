@@ -222,6 +222,7 @@ function AddOffre({edit = false}) {
                 error={error.start_date !== ""}
                 errMsg={error.start_date}
                 handleValueChange={handleInputChange}
+              
               />
               <FormInput
                 name={"title"}

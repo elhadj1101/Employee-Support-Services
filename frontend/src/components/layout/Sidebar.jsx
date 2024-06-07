@@ -1,12 +1,16 @@
 import React from "react";
 import SideButton from "./SideButton";
 import { HiOutlineUserGroup, HiOutlineUserPlus } from "react-icons/hi2";
+import { HiClipboardList } from "react-icons/hi";
+import { TbLayoutDashboard } from "react-icons/tb";
 import { FaCircleCheck } from "react-icons/fa6";
 import { FaHandsHelping, FaPiggyBank } from "react-icons/fa";
 import useStore from "../../store/index.js";
 import { canViewRequests } from "api/auth";
 import { Link } from "react-router-dom";
-
+import { GrList } from "react-icons/gr";
+import { GiTabletopPlayers } from "react-icons/gi";
+import { MdOutlineSell } from "react-icons/md";
 export default function Sidebar() {
   const { user } = useStore();
   return (
@@ -35,7 +39,7 @@ export default function Sidebar() {
             <Link to="/">
               <SideButton
                 title="Dashboard"
-                icon={HiOutlineUserGroup}
+                icon={TbLayoutDashboard}
                 nestedBtns={[]}
                 to="/"
               />
@@ -47,7 +51,7 @@ export default function Sidebar() {
                 {
                   titleBtn: "Faire une Demande",
                   path: "demande-pret",
-                  Icon: HiOutlineUserPlus,
+                  Icon: HiClipboardList,
                 },
                 {
                   titleBtn: "Votre Demandes",
@@ -63,7 +67,7 @@ export default function Sidebar() {
                 {
                   titleBtn: "Faire une Demande",
                   path: "demande-aide-financiere",
-                  Icon: HiOutlineUserPlus,
+                  Icon: HiClipboardList,
                 },
                 {
                   titleBtn: "Votre Demandes",
@@ -79,7 +83,7 @@ export default function Sidebar() {
             <Link to="/demandes-employe">
               <SideButton
                 title="Demande Des Employés"
-                icon={HiOutlineUserGroup}
+                icon={GrList}
                 nestedBtns={[]}
                 to="/demandes-employe"
               />
@@ -90,7 +94,7 @@ export default function Sidebar() {
           <Link to="/reunions">
             <SideButton
               title="Les Réunions"
-              icon={HiOutlineUserGroup}
+              icon={GiTabletopPlayers}
               nestedBtns={[]}
               to="/reunions"
             />
@@ -101,12 +105,12 @@ export default function Sidebar() {
             <Link to="/offres">
               <SideButton
                 title="Les offres"
-                icon={HiOutlineUserGroup}
+                icon={MdOutlineSell}
                 nestedBtns={[
                   {
                     titleBtn: "Creer Un Offre",
                     path: "/create-offre",
-                    Icon: HiOutlineUserPlus,
+                    Icon: HiClipboardList,
                   },
                   {
                     titleBtn: "Liste Des Offres",

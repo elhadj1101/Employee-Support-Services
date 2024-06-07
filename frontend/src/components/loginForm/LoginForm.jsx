@@ -65,7 +65,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="h-full w-full p-4">
+    <div className="h-full w-full p-4  ">
       <div className="header">
         <div className="logo">
           <img src="./assets/esi sba 3.png" alt="icon" />
@@ -106,11 +106,11 @@ const LoginForm = () => {
         <p className="error max-w-xs flex mx-auto sm:min-w-full">
           {emailError}
         </p>
-        <div className="resetpass justify-center">
+        {/* <div className="resetpass justify-center">
           <Link to={"/email"}>Mot de passe oublié ?</Link>
-        </div>
+        </div> */}
         <div
-          className="inscri cursor-pointer bg-blue-700 flex mx-auto max-w-xs  sm:min-w-full sm:mx-auto"
+          className="inscri cursor-pointer bg-light-blue flex mx-auto max-w-xs  sm:min-w-full sm:mx-auto"
           onClick={handleSubmit}
         >
           Se connecte
@@ -121,9 +121,9 @@ const LoginForm = () => {
 Vous n’avez pas de compte ?
 
 </div>
-<span className="  text-blue-700 underline flex justify-center sm:flex sm:justify-center">
+<span className=" pl-1 text-blue-700 underline flex justify-center sm:flex sm:justify-center">
 {" "}
-<Link to={"/signup"}>activer votre compte</Link>
+<Link to={"/signup"}> activer votre compte</Link>
 </span>{" "}
 </div>
       </form>

@@ -121,7 +121,7 @@ const SignUpForm = () => {
 
         <div className=" sm:flex sm:justify-center mt-2  ">
 
-          <div className=" flex justify-center sm:flex sm:justify-center   ">
+          <div className=" pr-1 flex justify-center sm:flex sm:justify-center   ">
             Vous avez déjà activer votre compte?
           </div>
           <Link to="/">

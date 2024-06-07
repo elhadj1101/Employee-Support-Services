@@ -158,6 +158,16 @@ const deleteUser = async (id) => {
   }
 };
 
+const activateUser = async (id) => {
+ 
+
+  try {
+    const response = await Axios.post(`/users/${id}/activate`);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
 const createUser = async (data) => {
   try {
     const response = await Axios.post("users/", data);
@@ -176,6 +186,7 @@ const createUser = async (data) => {
 };
 
 export {
+  activateUser,
   getUsers,
   login,
   logout,

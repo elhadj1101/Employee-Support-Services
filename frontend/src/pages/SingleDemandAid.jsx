@@ -36,7 +36,8 @@ export default function SingleDemandLoan({ employee }) {
     approved: "text-green-900 bg-green-100",
     waiting: "text-yellow-900 bg-yellow-100",
     refused: "text-red-900 bg-red-100",
-    // draft: "text-gray-500 bg-gray-100 border border-gray-200",
+    finished: "text-blue-900 bg-blue-100",
+    draft: "text-gray-900 bg-gray-100 ",
   };
   // I will not store the requestedAid because some of its information may change  and the user will not know.
   const [requestedAid, setReqeustedAid] = useState({});

@@ -242,8 +242,10 @@ Object.keys(formData).forEach((key) => {
     try {
       const upUser = await updateUser({ ...user, rip:"00799999" + user.rip , salary: user.salary.replace(/,/g, '') }, profileRequsted);
       if(upUser){
-      window.location.reload()
+      // window.location.reload();
+      // toast.success('Les informations de l\'utilisateur sont mises à jour correctement')
      }
+
     } catch (error) {
       if (error.response) {
         console.log("errror", error.data);
@@ -296,7 +298,7 @@ Object.keys(formData).forEach((key) => {
                   name="first_name"
                   type="text"
                   placeholder="Nom"
-                  className={`w-full bg-transparent border-1 ${
+                  className={`w-full bg-transparent border ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -321,7 +323,7 @@ Object.keys(formData).forEach((key) => {
                   name="last_name"
                   type="text"
                   placeholder="Prénom"
-                  className={` w-full bg-transparent border-1 ${
+                  className={` w-full bg-transparent border ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -348,7 +350,7 @@ Object.keys(formData).forEach((key) => {
                   type="text"
                   placeholder="XX XX XX XX XX XX XX XX XX"
                   maxLength={26}
-                  className={` w-full bg-transparent border-1 ${
+                  className={` w-full bg-transparent border ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -373,7 +375,7 @@ Object.keys(formData).forEach((key) => {
                   name="email"
                   type="email"
                   placeholder="example@gmail.com"
-                  className={`w-full bg-transparent border-1 ${
+                  className={`w-full bg-transparent border ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -399,7 +401,7 @@ Object.keys(formData).forEach((key) => {
                   type="text"
                   placeholder="0X XXXX XXXX"
                   maxLength={12}
-                  className={`w-full bg-transparent border-1 ${
+                  className={`w-full bg-transparent border ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -424,7 +426,7 @@ Object.keys(formData).forEach((key) => {
                   <input
                     placeholder="date"
                     value={UserProfileData?.recruted_at}
-                    className={`w-full bg-transparent border-1 ${
+                    className={`w-full bg-transparent border ${
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
@@ -449,7 +451,7 @@ Object.keys(formData).forEach((key) => {
                 {readOnly ? (
                   <input
                     placeholder="Role"
-                    className={`w-full bg-transparent border-1 ${
+                    className={`w-full bg-transparent border ${
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
@@ -467,7 +469,7 @@ Object.keys(formData).forEach((key) => {
                     value={UserProfileData?.role}
                   >
                     <SelectTrigger
-                      className={`w-full bg-transparent border-1 ${
+                      className={`w-full bg-transparent border ${
                         readOnly ? "border-none" : "border-gray-200"
                       } outline-none h-12 rounded-lg px-4 text-base`}
                       readOnly={readOnly}
@@ -521,7 +523,7 @@ Object.keys(formData).forEach((key) => {
                     <input
                       placeholder="date"
                       value={UserProfileData?.retired_at}
-                      className={`w-full bg-transparent border-1 ${
+                      className={`w-full bg-transparent border ${
                         readOnly ? "border-none" : "border-gray-200"
                       } outline-none h-12 rounded-lg px-4 text-base`}
                       readOnly={readOnly}
@@ -554,7 +556,7 @@ Object.keys(formData).forEach((key) => {
                   type="text"
                   placeholder="XXXXXX"
                   min="0"
-                  className={`w-full bg-transparent border-1 ${
+                  className={`w-full bg-transparent border ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -581,7 +583,7 @@ Object.keys(formData).forEach((key) => {
                     type="text"
                     maxLength={13}
                     placeholder="XXXXXXXXXX XX"
-                    className={` pl-20 w-full bg-transparent border-1 ${
+                    className={` pl-[91px] w-full bg-transparent border ${
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
@@ -613,7 +615,7 @@ Object.keys(formData).forEach((key) => {
                   type="text"
                   placeholder="XXXX XXXX XXXX XXXX"
                   maxLength={24}
-                  className={`w-full bg-transparent border-1 ${
+                  className={`w-full bg-transparent border ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -640,7 +642,7 @@ Object.keys(formData).forEach((key) => {
                 {readOnly ? (
                   <input
                     placeholder="Sexe"
-                    className={`w-full bg-transparent border-1 ${
+                    className={`w-full bg-transparent border ${
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
@@ -658,7 +660,7 @@ Object.keys(formData).forEach((key) => {
                     }}
                   >
                     <SelectTrigger
-                      className={`w-full bg-transparent border-1 ${
+                      className={`w-full bg-transparent border ${
                         readOnly ? "border-none" : "border-gray-200"
                       } outline-none h-12 rounded-lg px-4 text-base`}
                     >
@@ -682,7 +684,7 @@ Object.keys(formData).forEach((key) => {
                 {readOnly ? (
                   <input
                     placeholder="situation ..."
-                    className={`w-full bg-transparent border-1 ${
+                    className={`w-full bg-transparent border ${
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}
@@ -701,7 +703,7 @@ Object.keys(formData).forEach((key) => {
                     }}
                   >
                     <SelectTrigger
-                      className={`w-full bg-transparent border-1 ${
+                      className={`w-full bg-transparent border ${
                         readOnly ? "border-none" : "border-gray-200"
                       } outline-none h-12 rounded-lg px-4 text-base`}
                       readOnly={readOnly}
@@ -730,7 +732,7 @@ Object.keys(formData).forEach((key) => {
                   name="birth_adress"
                   type="text"
                   placeholder="Lieu de naissance"
-                  className={`w-full bg-transparent border-1 ${
+                  className={`w-full bg-transparent border ${
                     readOnly ? "border-none" : "border-gray-200"
                   } outline-none h-12 rounded-lg px-4 text-base`}
                   readOnly={readOnly}
@@ -763,7 +765,7 @@ Object.keys(formData).forEach((key) => {
                   <input
                     placeholder="date"
                     value={UserProfileData?.birth_date}
-                    className={`w-full bg-transparent border-1 ${
+                    className={`w-full bg-transparent border ${
                       readOnly ? "border-none" : "border-gray-200"
                     } outline-none h-12 rounded-lg px-4 text-base`}
                     readOnly={readOnly}

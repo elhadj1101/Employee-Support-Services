@@ -44,7 +44,7 @@
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 120px;
+  width: 130px;
   background-color: rgb(15 23 42 / 0.9);
   color: #fff;
   text-align: center;

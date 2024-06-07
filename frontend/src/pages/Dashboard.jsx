@@ -136,7 +136,7 @@ function Dashboard() {
           />
           <Navbar />
         </div>
-        <div onClick={hideSidebar} className="h-full overflow-hidden ">
+        <div onClick={hideSidebar} className="h-full">
           <Outlet />
         </div>
       </div>

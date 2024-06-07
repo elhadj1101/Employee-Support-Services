@@ -250,7 +250,7 @@ function FinancialAid() {
     setAidData(data);
   }, [aids]);
   return (
-    <div className="w-full min-h-[100vh] flex-grow flex flex-col  bg-gray-bg  pt-4 pb-6">
+    <div className="w-full overflow-auto flex-grow flex flex-col  bg-gray-bg  pt-4 pb-6 ">
       <h1 className="font-semibold text-2xl px-6 my-2">
         {!crrntAid
           ? "Demande d'aide financière"

@@ -199,7 +199,7 @@ function MeetingsCalendar({ meetings, refresh }) {
                           onClick={handleUploadPv}
                         />
                         <div
-                          className="tooltiptext"
+                          className="tooltiptext "
                         >
                           {showPopup.pv ? "Modifier le " : "Telecharger un "} PV
                         </div>
@@ -235,7 +235,7 @@ function MeetingsCalendar({ meetings, refresh }) {
                       <>
                         <p className="font-semibold">Lien:</p>
                         <span className="text-black"> {showPopup?.link}</span>
-                        <a href={showPopup?.link}>
+                        <a href={showPopup?.link && !showPopup?.link.startsWith('http') ? `http://${showPopup?.link}` : showPopup?.link} target="_blank">
                           <FaExternalLinkAlt
                             className="cursor-pointer "
                             size={12}

@@ -376,7 +376,7 @@ const Loan = () => {
       {((!crrntLoan && loanDraftId) ||
         (crrntLoan && crrntLoan.loan_status !== "draft")) && (
         <div className="flex  items-start">
-          <p className="text-red-800 mx-6 text-lg">
+          <p className="text-red-800 mx-6 text-lg ">
             Vous n'avez aucun brouillon de demande de prêt avec le numéro:{" "}
             {loanDraftId}
             <br />

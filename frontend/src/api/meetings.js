@@ -36,7 +36,7 @@ const addMeeting = async ({
     refresh();
     return response.data;
   } catch (error) {
-    toast.error(error.response.data["non_field_errors"][0])
+    toast.error(error.response.data["error"])
   }
 };
 

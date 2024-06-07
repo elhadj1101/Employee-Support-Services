@@ -16,9 +16,11 @@ import { Input } from "components/ui/input";
 import { DatePickerMeetings } from "components/ui/DatePikerMeetings";
 import MeetingsCalendar from "components/employee/MeetingsCalendar";
 import { Button } from "components/ui/button";
+import { toast } from "sonner";
 export default function Meetings() {
   const { Meetings, user, setMeetings } = useStore();
   const [date, setDate] = useState();
+  const [errors, setErrors] = useState({});
   const [hourStart, setHourStart] = useState();
   const [minuteStart, setMinuteStart] = useState();
   const [hourEnd, setHourEnd] = useState();
@@ -58,7 +60,30 @@ export default function Meetings() {
       month: "numeric",
       year: "numeric",
     };
+    let newErrors = {};
+    if (!title) {
+      newErrors = { ...newErrors, title: "Le champ titre est obligatoire" };
+    }
+    if (!date) {
+      newErrors = { ...newErrors, date: "Le champ date est obligatoire" };
+     }
+  
+    if(!hourStart ||!minuteStart ){
+      newErrors = { ...newErrors, tempsDebut: "Le champ temps debut est obligatoire" };
 
+    }
+    if(!hourEnd ||!minuteEnd ){
+      newErrors = { ...newErrors, tempsFin: "Le champ temps fin est obligatoire" };
+
+    }
+   
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      const errorMessages = Object.values(newErrors).map(error => `-- ${error}`);
+      const errorMessage = errorMessages.join("\n");
+      toast.error(errorMessage);
+      return;
+    }
     const formattedDate = date
       .toLocaleDateString("en-US", options)
       .split("/")
@@ -84,6 +109,7 @@ export default function Meetings() {
       refresh
     );
   };
+
   const firstMinuteInputRef = useRef(null);
   const secondMinuteInputRef = useRef(null);
   const secondHourInputRef = useRef(null);
@@ -109,7 +135,7 @@ export default function Meetings() {
                   <div className="p-3">
                     <div className="flex flex-col">
                       <h2 className="mt-5 mb-2">
-                        Title
+                        Titre
                         <span className="text-red-600 ml-1">*</span>
                       </h2>
                       <Input
@@ -122,16 +148,25 @@ export default function Meetings() {
                         }}
                         className="placeholder:text-slate-500 disabled:opacity-50 "
                       />
-                      <h2 className="mt-5 mb-2">date</h2>
+
+                      <h2 className="mt-5 mb-2">
+                        date
+                        <span className="text-red-600 ml-1">*</span>
+                      </h2>
                       <DatePickerMeetings
-                        className="placeholder:text-slate-500  "
+                        className={`placeholder:text-slate-500  ${
+                          errors?.date ? "border-red" : ""
+                        }`}
                         selectedDate={date}
                         setSelectedDate={setDate}
                       />
 
                       <div className="flex items-center justify-between gap-3">
                         <div>
-                          <h2 className="mt-5 mb-2">temp début</h2>
+                          <h2 className="mt-5 mb-2">
+                            temp début
+                            <span className="text-red-600 ml-1">*</span>
+                          </h2>
                           <div className="grid grid-cols-2 gap-2">
                             <div className="space-y-2">
                               <Input
@@ -231,7 +266,10 @@ export default function Meetings() {
                         </div>
 
                         <div>
-                          <h2 className="mt-5 mb-2 ">temp fin</h2>
+                          <h2 className="mt-5 mb-2 ">
+                            temp fin
+                            <span className="text-red-600 ml-1">*</span>
+                          </h2>
                           <div className="grid grid-cols-2 gap-2">
                             <div className="space-y-2">
                               <Input
@@ -356,13 +394,26 @@ export default function Meetings() {
                       <textarea
                         className="placeholder:text-slate-500 outline-none focus:outline-none resize-none w-full shadow-sm   max-h-20 h-20 border border-gray-200  rounded-md  p-2    "
                         type="text"
-                        placeholder="Décriver qulque chose ....."
+                        placeholder="Décriver quelque chose ....."
                         value={description}
                         onChange={(e) => {
                           const text = e.target.value;
                           setDescription(text);
                         }}
                       />
+
+                      {/* {Object.keys(errors).length !== 0 && (
+                        <>
+                          <h2
+                            className={`mt-4 mb-2  text-red-500 `}
+                          >
+                            Attention
+                          </h2>
+                          {Object.entries(errors).map(([key , value]) => (
+                            <p className="text-red-500 ">- {key} : {value}</p>
+                          ))}
+                        </>
+                      )} */}
                     </div>
                   </div>
                 </DialogDescription>
