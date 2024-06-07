@@ -1,6 +1,6 @@
 import { getUser } from "api/auth";
 import React, { useEffect, useState } from "react";
-
+import {formatPrice} from "../components/utils/utilFunctions";
 import useStore from "store";
 import UserCard from "components/UserCard";
 import {
@@ -41,7 +41,7 @@ export default function SingleDemandLoan({ employee }) {
   // I will not store the requestedLoan because some of its information may change  and the user will not know.
   const [requestedLoan, setReqeustedLoan] = useState({});
   const [Usr, setUsr] = useState(
-    JSON.parse(sessionStorage.getItem("requestedLoanUser")) || {}
+     {}
   );
 
   const {
@@ -87,6 +87,7 @@ export default function SingleDemandLoan({ employee }) {
             allLoans.filter((loan) => loan.id === Number(LoanId))[0]
           );
         } else {
+          console.log(allLoans);
           navigate("/");
           toast.error("La page demandée n'existe pas.");
         }
@@ -104,12 +105,10 @@ export default function SingleDemandLoan({ employee }) {
     ) {
       if (!employee && LoanRequestedId !== LoanId) {
         setLoanRequestedId(LoanId);
-        sessionStorage.setItem("requestedLoanId", LoanId);
         const u = async () => {
           try {
             const usr = await getUser(requestedLoan?.employee.id);
             if (usr) {
-              sessionStorage.setItem("requestedLoanUser", JSON.stringify(usr));
               setUsr(usr);
             }
           } catch (err) {
@@ -153,11 +152,15 @@ export default function SingleDemandLoan({ employee }) {
             <div className="grid grid-cols-3 gap-3">
               <div className="">
                 <h3 className="font-bold capitalize text-gray-600 ">
-                  montant Total du prêt
+                  montant Total du prêt (payé)
                 </h3>
                 <p className="pl-2 font-semibold text-gray-500">
                   {" "}
-                  {requestedLoan?.amount * requestedLoan?.loan_period} DA
+                  {formatPrice(
+                    requestedLoan?.amount * requestedLoan?.loan_period,
+                    ","
+                  )}{" "}
+                  DA ({formatPrice(requestedLoan?.paid_amount, ",")} DA payé)
                 </p>
               </div>
               <div className="">
@@ -166,7 +169,7 @@ export default function SingleDemandLoan({ employee }) {
                 </h3>
                 <p className="pl-2 font-semibold text-gray-500">
                   {" "}
-                  {requestedLoan?.amount} DA
+                  {formatPrice(requestedLoan?.amount,",")} DA
                 </p>
               </div>
 
@@ -366,9 +369,10 @@ export default function SingleDemandLoan({ employee }) {
         </div>
 
         {/* employee card */}
-        {!employee && user?.role !== "employee" && Usr && (
-          <UserCard user={Usr} />
-        )}
+        {!employee &&
+          user?.role !== "employee" &&
+          requestedLoan &&
+          requestedLoan.employee && <UserCard user={requestedLoan.employee} />}
       </div>
     </div>
   );

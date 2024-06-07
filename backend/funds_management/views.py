@@ -29,16 +29,13 @@ class RecordView(generics.ListCreateAPIView):
         return Response(serializer.data)
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        print(request.data)
         serializer.is_valid(raise_exception=True)
         # alter loan paid_amount if the record is income and have loan
         if serializer.validated_data.get('type') == "income" and serializer.validated_data.get('loan', None) is not None:
             loan = serializer.validated_data.get('loan')
-            print(loan.loan_status)
-            if loan.loan_status != "approved" and loan.loan_status != "payment_started":
-                
+            if loan.loan_status != "approved" and loan.loan_status != "payment_started": 
                 return Response({"error": "vous ne pouvez pas payer un prêt non approuvé"}, status=status.HTTP_400_BAD_REQUEST)
-            if loan.paid_amount + serializer.validated_data.get('amount') > loan.amount:
+            if loan.paid_amount + serializer.validated_data.get('amount') > loan.amount*loan.loan_period:
                 return Response({"error": "vous ne pouvez pas payer plus que le montant du prêt"}, status=status.HTTP_400_BAD_REQUEST)  
             if (loan.paid_amount + serializer.validated_data.get('amount') == loan.amount*loan.loan_period):
                 loan.loan_status = "finished"        
@@ -68,10 +65,10 @@ class RecordView(generics.ListCreateAPIView):
             else:
                 commity.current_year_income += serializer.validated_data.get('amount')
         commity.save()
-        print("ggg: ", serializer.validated_data)
         if serializer.validated_data.get('type') == "expense": 
             financial_aid = serializer.validated_data.get('financial_aid', None)
             if financial_aid is not None:
+                print(financial_aid.financial_aid_status)
                 if (financial_aid.financial_aid_status == "approved") :
                     financial_aid.financial_aid_status = "finished"
                     financial_aid.save()
@@ -100,6 +97,10 @@ class SingleRecordView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.type == "income" and obj.loan is not None:
+            if (obj.loan.paid_amount - obj.amount < 0):
+                return Response({"error": "vous ne pouvez pas supprimer un paiement qui n'existe pas"}, status=400)
+            if (obj.loan.paid_amount - obj.amount== 0):
+                obj.loan.loan_status = "approved"
             obj.loan.paid_amount -= obj.amount
             obj.loan.save()
         commity = Commity.objects.all().first()

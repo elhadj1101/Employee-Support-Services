@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {
   flexRender,
   getCoreRowModel,
@@ -24,13 +23,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Input } from "../ui/input";
+
 import {
   Table,
   TableBody,
@@ -40,7 +33,6 @@ import {
   TableRow,
 } from "../ui/table";
 import { recordsColumns } from "./RecordsColumns";
-import useStore from "../../store/index";
 
 export default function RecordsTable({
   data = [],

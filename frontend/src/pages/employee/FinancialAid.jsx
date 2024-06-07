@@ -125,7 +125,7 @@ function FinancialAid() {
         .then((res) => {
           setUpdated("aids");
           toast.success(
-            (isDraft === "true" ? "La demande" : "Le brouillon") +
+            (isDraft === "false" ? "La demande" : "Le brouillon") +
               " a été envoyée avec succès"
           );
         })
@@ -135,16 +135,10 @@ function FinancialAid() {
               toast.error(err.response.data?.detail);
             } else if (err.response.data?.error) {
               toast.error(err.response.data.error);
-            } else if (
-              err.response.data.errors ===
-              "you don't have permission to create financial-aid"
-            ) {
+            
+            } else if (err.response.data.errors) {
               toast.error(
-                "Vous avez une demande de meme type en cours de traitement."
-              );
-            } else if (err.response.data) {
-              toast.error(
-                err.response.data[Object.keys(err.response.data)[0]][0]
+                err.response.data.errors
               );
             } else {
               toast.error(
@@ -177,12 +171,8 @@ function FinancialAid() {
             } else if (err.response.data?.error) {
               toast.error(err.response.data.error);
             } else if (
-              err.response.data.errors ===
-              "you don't have permission to create financial-aid"
-            ) {
-              toast.error(
-                "Vous avez une demande de meme type en cours de traitement."
-              );
+              err.response.data.errors) {
+             toast.error(err.response.data.errors);
             } else {
               toast.error(
                 "Une erreur s'est produite lors de l'envoi de la demande"

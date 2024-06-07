@@ -324,6 +324,13 @@ class PartialEmployeeSerializer(serializers.ModelSerializer):
             "email",
             "first_name",
             "last_name",
+            "role",
+            "bank_rib",
+            "phone_number",
+            "salary",
+            "rip",
+            "birth_adress",
+            
         ]
 
 

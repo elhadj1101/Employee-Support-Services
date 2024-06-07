@@ -1,6 +1,6 @@
 import * as React from "react";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-
+import {formatPrice} from "../utils/utilFunctions"
 import { cn } from "../../lib/utils";
 import { Button } from "../ui/button";
 import {
@@ -42,10 +42,10 @@ export function ComboBox({
                 {demmandeSelecter?.employee?.email ||
                   demmandeSelecter?.employee?.email}{" "}
               </p>
-              <p className="ml-auto">{demmandeSelecter?.amount} da</p>
-              {demmandeSelecter?.paid_amount && (
-                <>({demmandeSelecter?.paid_amount})</>
-              )}
+              <p className="ml-auto">
+                {formatPrice(demmandeSelecter?.amount, ",")} DA{" "}
+                {demmandeSelecter?.loan_status ? "(par mois)" : ""}
+              </p>
             </div>
           )) ||
             "Select demmande..."}
@@ -85,7 +85,8 @@ export function ComboBox({
                             demmande?.employee?.email}
                         </p>
                         <p className="ml-auto">
-                          {demmande?.amount} da ({demmande?.paid_amount} )
+                          {formatPrice(demmande?.amount, ",")} DA
+                          {demmandeSelecter?.loan_status ? "(par mois)" : ""}
                         </p>
                       </div>
                       <CheckIcon
@@ -123,7 +124,9 @@ export function ComboBox({
                           {demmande?.employee?.email ||
                             demmande?.employee?.email}{" "}
                         </p>
-                        <p className="ml-auto">{demmande?.amount} da</p>
+                        <p className="ml-auto">
+                          {formatPrice(demmande?.amount, ",")} DA
+                        </p>
                       </div>
                       <CheckIcon
                         className={cn(

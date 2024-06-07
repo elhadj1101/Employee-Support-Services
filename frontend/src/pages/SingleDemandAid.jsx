@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useStore from "store";
 import UserCard from "components/UserCard";
+import { formatPrice } from "components/utils/utilFunctions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,10 +35,10 @@ financial_aid_infos.forEach((e) => {
 export default function SingleDemandLoan({ employee }) {
   const StatusColors = {
     approved: "text-green-900 bg-green-100",
-    waiting: "text-yellow-900 bg-yellow-100",
     refused: "text-red-900 bg-red-100",
-    finished: "text-blue-900 bg-blue-100",
-    draft: "text-gray-900 bg-gray-100 ",
+    // waiting: "text-yellow-900 bg-yellow-100",
+    // finished: "text-blue-900 bg-blue-100",
+    // draft: "text-gray-900 bg-gray-100 ",
   };
   // I will not store the requestedAid because some of its information may change  and the user will not know.
   const [requestedAid, setReqeustedAid] = useState({});
@@ -146,7 +147,7 @@ export default function SingleDemandLoan({ employee }) {
                   montant Total de l'aide
                 </h3>
                 <p className="pl-2 font-semibold text-gray-500">
-                  {requestedAid?.amount} DA
+                  {formatPrice(requestedAid?.amount, ",")} DA
                 </p>
               </div>
 

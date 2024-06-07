@@ -65,7 +65,7 @@ export default function UserCard({ user }) {
         </ul>
       </div>
       <div className="my-2">
-        <h3 className="font-bold capitalize text-gray-600 ">Adress</h3>
+        <h3 className="font-bold capitalize text-gray-600 ">Adresse</h3>
         <p className="pl-2  text-gray-500">{user?.birth_adress}</p>
       </div>
       <div className="my-2">

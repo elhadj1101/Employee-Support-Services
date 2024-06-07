@@ -28,11 +28,15 @@ import { Button } from "components/ui/button";
 import { addRecord, fetchAnalitics, fetchDoghnouts } from "api/records";
 import { formatPrice, weekNumber } from "components/utils/utilFunctions";
 import { Link } from "react-router-dom";
-import {getRecords} from "api/records";
-
-
+import { getRecords, deleteRecord } from "api/records";
+import {
+  getLoans,
+  getAids,
+  getAllAids,
+  getAllLoans,
+  canApplyForLoan,
+} from "api/requests";
 function TresaurierDashboard() {
-  const recordCol = recordsColumns([], true) || [];
   const [analiticsByMonth, setAnaliticsByMonth] = useState({});
   const [doughnoutData, setDoughnoutData] = useState({});
   const [currentPeriodData, setCurrentPeriodData] = useState({
@@ -69,43 +73,99 @@ function TresaurierDashboard() {
   const [error, setError] = useState(false);
   const [type, setType] = useState("");
   const [RecordType, setRecordType] = useState("");
-  const { Records, allLoans, allAids, Commity, updated,setFetchedRecords, setUpdated, setRecords } = useStore();
-  const all =[...allLoans , ...allAids]
+  const {
+    Records,
+    allLoans,
+    allAids,
+    Commity,
+    setUpdate,
+    setFetchedRecords,
+    setRecords,
+    setLoans,
+    setFetchedLoans,
+    setAids,
+    setFetchedAids,
+    setAllAids,
+    setFetchedAllAids,
+    setAllLoans,
+    setFetchedAllLoans,
+    setCanApplyLoan,
+  } = useStore();
+  const all = [...allLoans, ...allAids];
+  async function fetchall() {
+    const dat = await getRecords();
+    setRecords(dat);
+    setFetchedRecords(true);
+    if (newRecord.conection === 'loan'){
+      const dat1 = await getLoans();
+      const canApply = await canApplyForLoan();
+      const cond = canApply === "True";
+      setCanApplyLoan(cond);
+  
+      setLoans(dat1);
+      setFetchedLoans(true);
+      
+      const dat2 = await getAllLoans();
+      
+      setAllLoans(dat2);
+      setFetchedAllLoans(true);
+    }else if (newRecord.conection === "financial_aid")
+      {
 
+        const dat3 = await getAids();
+    
+        setAids(dat3);
+        setFetchedAids(true);
+    
+        const dat4 = await getAllAids();
+    
+        setAllAids(dat4);
+        setFetchedAllAids(true);
+      } 
+
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newRecord.type === "expense") {
       if (!newRecord.conection) {
         setError(true);
       } else {
-        addRecord({
+        await addRecord({
           type: newRecord.type,
-          amount: newRecord.amount,
+          amount:
+          newRecord.conection === "loan"
+              ? newRecord.amount * demmandeSelecter.loan_period
+              : newRecord.amount,
           motif: newRecord.motif,
           [newRecord.conection]: newRecord.id,
         });
-        
+
         HandleOpen();
         setDemmandeSelecter({});
       }
     } else {
       // type=income
       if (newRecord.amount !== 0) {
-        addRecord({
+        await addRecord({
           type: newRecord.type,
           amount: newRecord.amount,
           motif: newRecord.motif,
           ...(newRecord.conection && { [newRecord.conection]: newRecord.id }),
         });
-        
+
         HandleOpen();
         setDemmandeSelecter({});
       }
     }
-    setUpdated("records");
-
+    //refresh the page
+    setTimeout(async () => {
+      await fetchall();
+      await fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear);
+      await fetchDoghnouts(setDoughnoutData, new Date().getFullYear(), true);
+      setUpdate("aids");
+    }, 4000);
   };
-
+  
   const handleComboBox = (currentValue, demmande, conection) => {
     if (Number(currentValue.split(" ")[0].slice(1)) === demmandeSelecter.id) {
       setDemmandeSelecter({});
@@ -124,31 +184,30 @@ function TresaurierDashboard() {
       });
     }
   };
-const handelTopSectionAddRecord =(demmande)=>{
-  setOpen(true);
-  setNewRecord({
-    type: "expense",
-    amount: "",
-    motif: "",
-    conection: null,
-    id: "",
-  });
-  setDemmandeSelecter(demmande);
-}
+  const handelTopSectionAddRecord = (demmande) => {
+    setOpen(true);
+    setNewRecord({
+      type: "expense",
+      amount: demmande.amount,
+      motif: "",
+      conection: demmande.loan_status ? "loan" : "financial_aid",
+      id: demmande.id,
+    });
+    setDemmandeSelecter(demmande);
+  };
+  
+  const deleteFunc = async (id) => {
+    await deleteRecord(id);
+    fetchall();
+    await fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear);
+    await fetchDoghnouts(setDoughnoutData, new Date().getFullYear(), true);
+    
+  }
+  const recordCol = recordsColumns([], true, deleteFunc) || [];
   useEffect(() => {
     fetchAnalitics(setAnaliticsByMonth, currentPeriodData.currntYear);
     fetchDoghnouts(setDoughnoutData, new Date().getFullYear(), true);
-    async function fetchRecords() {
-      const dat = await getRecords();
-      setRecords(dat);
-      setFetchedRecords(true);
-      setUpdated(false);
-    }
-    if (updated === "records") {
-      fetchRecords();
-    }
-
-  }, [updated]);
+  }, []);
   return (
     <div className="mt-6">
       <div className="flex gap-6 ">
@@ -176,8 +235,11 @@ const handelTopSectionAddRecord =(demmande)=>{
         setCurrentPeriodData={setCurrentPeriodData}
         setAnaliticsByMonth={setAnaliticsByMonth}
       />
-      
-      <div id="records" className=" w-full  flex flex-grow flex-wrap h-full lg:flex-nowrap gap-6   ">
+
+      <div
+        id="records"
+        className=" w-full  flex flex-grow flex-wrap h-full lg:flex-nowrap gap-6   "
+      >
         <div className="shadoww  w-full lg:max-w-[66%] flex-grow bg-white p-4 rounded-lg">
           <div className="flex justify-between items-center">
             <h1 className=" pt-2 text-[#262b40] text-xl font-bold capitalize">
@@ -205,8 +267,7 @@ const handelTopSectionAddRecord =(demmande)=>{
                                 conection: null,
                               };
                             });
-                          setDemmandeSelecter({});
-
+                            setDemmandeSelecter({});
                           }}
                           className={` shadow-sm cursor-pointer flex items-center gap-3 px-5 py-[14.1px] w-1/2 rounded-lg border   text-[#262b40]  ${
                             newRecord.type === "expense"
@@ -225,7 +286,7 @@ const handelTopSectionAddRecord =(demmande)=>{
                               type: prev.type === "income" ? "" : "income",
                               conection: null,
                             }));
-                            setDemmandeSelecter({})
+                            setDemmandeSelecter({});
                           }}
                           className={` shadow-sm cursor-pointer flex items-center gap-3 p-5  w-1/2 rounded-lg border   text-[#262b40]  ${
                             newRecord.type === "income"
@@ -262,7 +323,11 @@ const handelTopSectionAddRecord =(demmande)=>{
                           <Input
                             type="number"
                             placeholder="100000"
-                            value={newRecord?.amount}
+                            value={
+                              newRecord?.amount *
+                                demmandeSelecter?.loan_period ||
+                              newRecord?.amount
+                            }
                             disabled
                             className="placeholder:text-slate-500 disabled:opacity-50 "
                           />
@@ -287,7 +352,18 @@ const handelTopSectionAddRecord =(demmande)=>{
                         <div className="flex flex-col">
                           <h2 className="mt-5">
                             Sélectionner la demande correspondant à
-                            l'enregistrement.
+                            l'enregistrement. <br />
+                            {demmandeSelecter &&
+                              demmandeSelecter.loan_status &&
+                              "il a payé: " +
+                                formatPrice(demmandeSelecter.paid_amount, ",") +
+                                "DA du :" +
+                                formatPrice(
+                                  demmandeSelecter.amount *
+                                    demmandeSelecter.loan_period,
+                                  ","
+                                ) +
+                                "DA"}
                           </h2>
                           <ComboBox
                             newRecord={newRecord}
@@ -303,8 +379,11 @@ const handelTopSectionAddRecord =(demmande)=>{
                             <span className="text-xs ml-1">
                               ( Le montant doit être inférieur au total de la
                               demande.{" "}
-                              {demmandeSelecter.amount *
-                                demmandeSelecter.loan_period}
+                              {formatPrice(
+                                demmandeSelecter.amount *
+                                  demmandeSelecter.loan_period,
+                                ","
+                              )}
                               )
                             </span>
                           </h2>
@@ -410,6 +489,7 @@ const handelTopSectionAddRecord =(demmande)=>{
           {Records.length !== 0 && (
             <div className=" ">
               <RecordsTable
+                deleteFunc={deleteFunc}
                 data={Records}
                 columns={recordCol}
                 RecordType={RecordType}

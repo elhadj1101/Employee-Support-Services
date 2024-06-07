@@ -1,17 +1,13 @@
 import * as React from "react";
 import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
+
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { IoArrowUpSharp } from "react-icons/io5";
 import { FaExternalLinkAlt } from "react-icons/fa";
-
+import { formatPrice } from "components/utils/utilFunctions";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
@@ -20,13 +16,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
   DialogFooter,
 } from "../ui/dialog";
-import { Link, useNavigate } from "react-router-dom";
-import useStore from "../../store/index";
-import { toast } from "sonner";
-import { deleteLoan, getLoans, canApplyForLoan } from "api/requests";
+import { Link} from "react-router-dom";
+
+
+
+
 // const DeleteButton = ({ id }) => {
 //   const { setLoans, setCanApplyLoan } = useStore();
 //   const handleDeleteClick = async (e) => {
@@ -85,7 +81,7 @@ import { deleteLoan, getLoans, canApplyForLoan } from "api/requests";
 //   return <DropdownMenuItem onClick={handleNavigate}>{text}</DropdownMenuItem>;
 // };
 
-export const recordsColumns = (colsToHide = [], hideDelete = false) => {
+export const recordsColumns = (colsToHide = [], hideDelete = false, deleteFunc = () => {}) => {
   const cols = [
     {
       accessorKey: "id",
@@ -122,7 +118,9 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
       cell: ({ row }) => (
         <div className="text-center font-medium h-full w-full flex items-center justify-center ">
           {row?.original?.type === "expense" ? (
-            <p className="text-red-500">{row.getValue("debit")}DA</p>
+            <p className="text-red-500">
+              {formatPrice(row.getValue("debit"), ",")}DA
+            </p>
           ) : (
             "--"
           )}
@@ -138,7 +136,9 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
           {row?.original?.type === "expense" ? (
             "--"
           ) : (
-            <p className="text-green-500">{row.getValue("credit")}DA</p>
+            <p className="text-green-500">
+              {formatPrice(row.getValue("credit"),",")}DA
+            </p>
           )}
         </div>
       ),
@@ -158,13 +158,17 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
 
       enableHiding: false,
       cell: ({ row }) => {
+        console.log(row.original);
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0 " onClick={() => {
-                console.log(row);
-
-              }}>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 "
+                onClick={() => {
+                  console.log(row);
+                }}
+              >
                 <span className="sr-only">Open menu</span>
                 <DotsHorizontalIcon className="h-4 w-4" />
               </Button>
@@ -195,8 +199,13 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                         </p>
                         <h2 className="mt-5 text-base flex gap-2 items-center">
                           la demande correspondant à l'enregistrement.
-                          <Link to={`${row.original.finaincial_aid?.employee.id ?`demandes-employe/aid/${row.original.finaincial_aid?.employee.id}`:`demandes-employe/pret/${row.original.loan?.employee.id}`}`}>
-                        
+                          <Link
+                            to={`${
+                              row.original.financial_aid?.employee.id
+                                ? `demandes-employe/aid/${row.original.financial_aid?.id}`
+                                : `demandes-employe/pret/${row.original.loan?.id}`
+                            }`}
+                          >
                             {" "}
                             <FaExternalLinkAlt
                               size={15}
@@ -208,13 +217,19 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                           <table className="border w-full text-sm text-left  text-gray-500 ">
                             <thead className=" text-xs text-gray-700 uppercase ">
                               <tr>
-                                <th scope="col" className="px-6 py-3 bg-gray-50 ">
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 bg-gray-50 "
+                                >
                                   id
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                   employeur
                                 </th>
-                                <th scope="col" className="px-6 py-3 bg-gray-50 ">
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 bg-gray-50 "
+                                >
                                   email
                                 </th>
                                 <th scope="col" className="px-6 py-3">
@@ -230,23 +245,24 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                                 >
                                   #
                                   {row.original.loan?.employee.id ||
-                                    row.original.finaincial_aid?.employee.id}
+                                    row.original.financial_aid?.employee.id}
                                 </th>
                                 <td className="px-6 py-4">
                                   {row.original.loan?.employee.last_name ||
-                                    row.original.finaincial_aid?.employee
+                                    row.original.financial_aid?.employee
                                       .last_name}
                                   {row.original.loan?.employee.first_name ||
-                                    row.original.finaincial_aid?.employee
+                                    row.original.financial_aid?.employee
                                       .first_name}
                                 </td>
                                 <td className="px-6 py-4 bg-gray-50 ">
                                   {row.original.loan?.employee.email ||
-                                    row.original.finaincial_aid?.employee.email}
+                                    row.original.financial_aid?.employee.email}
                                 </td>
                                 <td className="px-6 py-4">
-                                  {row.original.loan?.amount  * row.original.loan?.laon_period ||
-                                    row.original.finaincial_aid?.amount}
+                                  {row.original.loan?.amount *
+                                    row.original.loan?.laon_period ||
+                                    row.original.financial_aid?.amount}
                                   da
                                 </td>
                               </tr>
@@ -282,8 +298,15 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
-                    <Button id={row.original.id}>Oui</Button>
-                    <Button id={row.original.id}>Non</Button>
+                    <Button
+                      onClick={async () => {
+                        await deleteFunc(row.original.id);
+                      }}
+                      id={row.original.id}
+                    >
+                      Oui
+                    </Button>
+                    <Button >Non</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

@@ -180,11 +180,9 @@ const Loan = () => {
               toast.error(err.response.data.detail);
             } else if (err.response.data?.error) {
               toast.error(err.response.data.error);
-            } else if (err.response.data) {
+            } else if (err.response.data.errors) {
               toast.error(
-                Object.keys(err.response.data)[0] +
-                  ": " +
-                  err.response.data[Object.keys(err.response.data)[0]]
+                err.response.data.errors
               );
             }
           } else {
@@ -209,12 +207,8 @@ const Loan = () => {
               toast.error(err.response.data.detail);
             } else if (err.response.data?.error) {
               toast.error(err.response.data.error);
-            } else if (err.response.data) {
-              toast.error(
-                Object.keys(err.response.data)[0] +
-                  ": " +
-                  err.response.data[Object.keys(err.response.data)[0]]
-              );
+            } else if (err.response.data.errors) {
+              toast.error(err.response.data.errors);
             }
           } else {
             toast.error(
@@ -256,8 +250,8 @@ const Loan = () => {
         <div className=" sm:flex md:flex lg:flex mx-6 mb-6">
           <span className=" font-semibold">Remarque:</span>
           <p className=" text-md ml-2">
-            Ces chiffres et informations basés sur votre salaire et le fonds de
-            la commité{" "}
+            Ces chiffres et informations sont basés sur votre salaire et le fonds de
+            la commité (Votre salaire est: {user && formatPrice(user.salary, ",")}DA)
           </p>
         </div>
       </div>

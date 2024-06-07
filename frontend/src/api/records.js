@@ -75,4 +75,23 @@ async function fetchDoghnouts(setDoghnoutsData,year=null,total=true,aid=false) {
       let dat = await getAnalitics(year,"" ,"",total,aid);
       setDoghnoutsData(dat)
     }
-export  {getRecords , addRecord, getAnalitics, fetchAnalitics,fetchDoghnouts}
+
+  
+async function deleteRecord(id) {
+  try {
+    const response = await Axios.delete(`funds/${id}`);
+    toast.success('Enregistrement supprimé avec succès');
+    return response.data ;
+  } catch (error) {
+    toast.error(error.response.data.error);
+  }
+
+}
+export {
+  getRecords,
+  addRecord,
+  getAnalitics,
+  fetchAnalitics,
+  fetchDoghnouts,
+  deleteRecord,
+};
