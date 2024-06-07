@@ -51,7 +51,9 @@ function EmployeesRequests() {
         <RequestsTable
           data={
             user.role === "tresorier"
-              ? allAids.filter((aid) => aid.financial_aid_status === "approved")
+              ? allAids.filter((aid) =>
+                  ["approved", "finished"].includes(aid.financial_aid_status)
+                )
               : allAids
           }
           columns={aidscols}
@@ -67,10 +69,8 @@ function EmployeesRequests() {
         <RequestsTable
           data={
             user.role === "tresorier"
-              ? allLoans.filter(
-                  (loan) =>
-                    loan.loan_status === "approved" ||
-                    loan.loan_status === "payment_started"
+              ? allLoans.filter((loan) =>
+                  ["approved", "payment_started", "finished"].includes(loan.loan_status)
                 )
               : allLoans
           }
