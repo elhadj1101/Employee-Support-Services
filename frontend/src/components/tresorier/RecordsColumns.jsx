@@ -195,7 +195,8 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                         </p>
                         <h2 className="mt-5 text-base flex gap-2 items-center">
                           la demande correspondant à l'enregistrement.
-                          <Link to="">
+                          <Link to={`${row.original.finaincial_aid?.employee.id ?`demandes-employe/aid/${row.original.finaincial_aid?.employee.id}`:`demandes-employe/pret/${row.original.loan?.employee.id}`}`}>
+                        
                             {" "}
                             <FaExternalLinkAlt
                               size={15}
@@ -217,7 +218,7 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                                   email
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                  montant
+                                  montant total
                                 </th>
                               </tr>
                             </thead>
@@ -244,7 +245,7 @@ export const recordsColumns = (colsToHide = [], hideDelete = false) => {
                                     row.original.finaincial_aid?.employee.email}
                                 </td>
                                 <td className="px-6 py-4">
-                                  {row.original.loan?.amount ||
+                                  {row.original.loan?.amount  * row.original.loan?.laon_period ||
                                     row.original.finaincial_aid?.amount}
                                   da
                                 </td>

@@ -270,7 +270,7 @@ const handelTopSectionAddRecord =(demmande)=>{
                           <textarea
                             className="placeholder:text-slate-500 outline-none focus:outline-none resize-none w-full shadow-sm   max-h-20 h-20 border border-gray-200  rounded-md  p-2    "
                             type="text"
-                            placeholder="Décriver qulque chose ....."
+                            placeholder="Décriver quelque chose ....."
                             value={newRecord.motif}
                             onChange={(e) =>
                               setNewRecord((prev) => {
