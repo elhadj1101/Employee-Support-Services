@@ -9,6 +9,8 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('users/' , CreateUserView.as_view() ),
     path('users/<int:pk>/' , UserDetailsView.as_view()),
+    path('users/<int:pk>/activate' , UserDetailsView.as_view()),
+    
     path('user/' , UserDataView.as_view()),
     path('signup/' , SignupView.as_view() ),
     # endpoints for the tokens

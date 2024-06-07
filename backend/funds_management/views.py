@@ -157,6 +157,7 @@ class GeneralAnalitics(APIView):
         end_date = request.GET.get('end_date', "2024-12-31")
         aids = True if request.GET.get('aids', False) == "true" else False
         total = True if request.GET.get('total', False) == "true" else False
+        new_records = []
         if (aids):
             records = Record.objects.filter(created_at__year=year, type="expense", financial_aid__isnull=False)
             new_records = records.values('financial_aid__financial_aid_type').annotate(**financial_aid_by_type)

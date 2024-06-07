@@ -22,18 +22,18 @@ function TresorierCharts({
   setDoughnoutData,
 }) {
   const Monthlylabels = [
-    "January",
-    "February",
-    "March",
-    "April",
+    "Janvier",
+    "Fevrier",
+    "Mars",
+    "Avril",
     "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Decembre",
   ];
   const doughnoutLabels = [
     "Depenses des Prets",
@@ -90,7 +90,7 @@ function TresorierCharts({
     e.target.classList.toggle("active-doghnout-btn");
 
     const id = e.target.id.replace("Btn", "");
-    setCurrentType(id);
+    setCurrentType(id === "Hebdomadaire" ? "weekly" : "monthly");
     await fetchDoghnouts(setDoughnoutData, currentPeriodData.currntYear,id === "expenses" ? true : false, id === "aids" ? true : false)
   };
   const handleMonthlyChange = async (e) => {
@@ -119,6 +119,7 @@ function TresorierCharts({
   };
   const handleWeeklyChange = async(e) => {
     const { id } = e.currentTarget;
+    console.log(id, currntPeriod);
     if (id === "prevBtn") {
       setCurrentPeriodData({
         ...currentPeriodData,
@@ -128,7 +129,7 @@ function TresorierCharts({
         setAnaliticsByMonth,
         null,
         currentPeriodData.currntWeek - 1,
-        currntPeriod
+        currntPeriod === "Mensuel" ? "monthly" : "weekly"
       );
     } else {
       if (currentPeriodData.currntWeek + 1 > weekNumber()) {
@@ -143,7 +144,7 @@ function TresorierCharts({
         setAnaliticsByMonth,
         null,
         currentPeriodData.currntWeek + 1,
-        currntPeriod
+        currntPeriod === "Mensuel" ? "monthly" : "weekly"
       );
 
     }
@@ -337,12 +338,12 @@ function TresorierCharts({
             labels: currntPeriod === "Mensuel" ? Monthlylabels : WeeklyLabels,
             datasets: [
               {
-                label: "Income",
+                label: "Revenue",
                 data: incomes,
                 backgroundColor: ["#1F2868"],
               },
               {
-                label: "Expense",
+                label: "Depenses",
                 data: expenses,
                 backgroundColor: ["#4256D0"],
               },

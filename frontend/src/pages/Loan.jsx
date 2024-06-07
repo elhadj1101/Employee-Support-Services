@@ -151,8 +151,8 @@ const Loan = () => {
     }
     const endpoint =
       !crrntLoan || loanDraftId == false
-        ? "/requests/loans/?draft="
-        : `/requests/loans/${loanDraftId}?draft=`;
+        ? "/requests/loans/?brouillon="
+        : `/requests/loans/${loanDraftId}?brouillon=`;
     const formData = new FormData();
     formData.append("amount", parseFloat(Montant));
     formData.append("loan_period", Duration);

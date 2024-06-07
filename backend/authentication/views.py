@@ -46,14 +46,14 @@ class UserDetailsView(generics.RetrieveUpdateDestroyAPIView):
         user = self.get_object()
         if not (user.is_active):
             return Response(
-                {"error": "L'utilisateur est déjà supprimé"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "L'utilisateur est déjà desactiver"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         user.is_active = False
         user.save()
 
         return Response(
-            {"success": "Utilisateur supprimé avec succès"}, status=status.HTTP_200_OK
+            {"success": "L'utilisateur desactiver avec succès"}, status=status.HTTP_200_OK
         )
 
     def partial_update(self, request, pk, *args, **kwargs):
@@ -70,7 +70,20 @@ class UserDetailsView(generics.RetrieveUpdateDestroyAPIView):
             status=status.HTTP_403_FORBIDDEN,
         )
 
-
+class ActivateUserView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated, canViewDetails]
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeDetailsSerializer
+    
+    def post(self, request, pk):
+        user = self.get_object()
+        if (user.is_active):
+            return Response({"error":"L'utilisateur est deja activer"}, status=status.HTTP_200_OK)
+        user.is_active = True
+        user.save()
+        return Response(
+            {"success": "L'utilisateur est activer avec succès"}, status=status.HTTP_200_OK
+        )
 class UserDataView(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -33,6 +33,7 @@ const getAnalitics = async(year,week="", period="monthly", total=false, aid=fals
   }
 };
 async function fetchAnalitics(setAnaliticsByMonth,year=null, week=null, period="monthly") {
+  console.log(year, week, period);
       let dat = await getAnalitics(year, week, period);
       if (period === "monthly") {
         dat = groupBy(dat, "created_at__month");

@@ -54,7 +54,7 @@ class LoanView(APIView):
             else:
 
                 return Response(
-                    {"error": "Valeur brouillon du paramètre de requête non valide"},
+                    {"error": "Valeur du paramètre 'brouillon' de requête non valide"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -78,7 +78,9 @@ class LoanView(APIView):
                 )
 
             created_instance = serializer.save(
-                employee=request.user, loan_status=loan_status
+                employee=request.user, loan_status=loan_status,
+            request_created_at=(date.today() if loan_status == "waiting" else None),
+                
             )
             for f in files:
                 d = Document(
@@ -158,7 +160,7 @@ class FinancialaidView(generics.ListCreateAPIView):
             aid_status = "waiting"
         else:
             return Response(
-                {"error": "Valeur du paramètre de requête non valide"},
+                {"error": "Valeur du paramètre de brouillon non valide"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if (
@@ -301,13 +303,13 @@ class UpdateRequestView(APIView):
                     if financial_aid.employee != request.user:
                         return Response(
                             {
-                                "error": "you don't have permission to delete this financial-aid"
+                                "error": "Vous n'êtes pas autorisé à supprimer cette aide financière"
                             },
                             status=status.HTTP_403_FORBIDDEN,
                         )
                     if financial_aid.financial_aid_status not in ["brouillon"]:
                         return Response(
-                            {"error": "this financial-aid is not brouillon"},
+                            {"error": "Cette aide financière n'est pas brouillon"},
                             status=status.HTTP_403_FORBIDDEN,
                         )
                     financial_aid.delete()
@@ -331,7 +333,7 @@ class UpdateRequestView(APIView):
                 request_created_at = date.today()
             else:
                 return Response(
-                    {"error": "Valeur du paramètre de requête non valide"}, status=status.HTTP_400_BAD_REQUEST
+                    {"error": "Valeur du paramètre de brouillon non valide"}, status=status.HTTP_400_BAD_REQUEST
                 )
             # update the loan object
             if request_type == "loans":
@@ -339,7 +341,7 @@ class UpdateRequestView(APIView):
                 # only brouillon records can be updated
                 if loan.loan_status != "brouillon":
                     return Response(
-                        {"error": "this loan is not brouillon"}, status=status.HTTP_403_FORBIDDEN
+                        {"error": "Ce pret n'est pas un brouillon"}, status=status.HTTP_403_FORBIDDEN
                     )
 
                 # handling old files

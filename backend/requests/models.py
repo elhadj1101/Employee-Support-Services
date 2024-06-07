@@ -15,7 +15,7 @@ from authentication.models import Employee
 # Loan
 class Loan(models.Model):
     status_options = [
-        ("draft", "brouillon"),
+        ("brouillon", "brouillon"),
         ("waiting", "En attente"),
         ("refused", "Rejeté"),
         ("approved", "Approuvé"),
@@ -57,7 +57,7 @@ class Financial_aid(models.Model):
         ("social_and_health_aid", "Aide aux conditions sociales et sanitaires"),
     ]
     financial_aid_status_options = [
-        ("draft", "brouillon"),
+        ("brouillon", "brouillon"),
         ("waiting", "en attente"),
         ("refused", "refusé"),
         ("approved", "approuvé"),

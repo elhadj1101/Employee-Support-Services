@@ -73,7 +73,7 @@ const Popup = ({
             setFiles={setUploadedFiles}
             maxFiles={requiredFiles.length}
             accepts="application/pdf"
-            fileTypes="PDF"
+            fileTypes={["PDF"]}
             multpl={true}
           />
         </div>
