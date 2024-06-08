@@ -57,7 +57,7 @@ function FinancialAid() {
     const { name } = e.target;
     let isDraft = "false";
     if (name === "draft") isDraft = "true";
-    if (amount === 0) {
+    if (amount <= 0) {
       toast.error("Veuillez choisir le montant que vous voulez bénéficié");
       return;
     }
@@ -441,7 +441,34 @@ function FinancialAid() {
                   type="text"
                   value={amount}
                   className="w-20 text-center border-2 border-gray-300 rounded-md mx-2"
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e) => {
+                    let v = e.target.value;
+                    console.log(parseInt(v));
+                    let notNum = true;
+                    Array.from(v).forEach((c) => {
+                      if (
+                        ![
+                          "0",
+                          "1",
+                          "2",
+                          "3",
+                          "4",
+                          "5",
+                          "6",
+                          "7",
+                          "8",
+                          "9",
+                        ].includes(c)
+                      ) {
+                        notNum = false;
+                        return;
+                      }
+                    });
+
+                    if (notNum) {
+                      setAmount(parseInt(v));
+                    }
+                  }}
                 />
                 DA
               </p>
@@ -455,7 +482,37 @@ function FinancialAid() {
                   type="text"
                   value={amount}
                   className="w-20 text-center border-2 border-gray-300 rounded-md mx-2"
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e) => {
+                    let v = e.target.value;
+                    if (v.trim()   === "") {
+                      setAmount("");
+                      return;
+                    }
+                    let notNum = true;
+                    Array.from(v).forEach((c) => {
+                      if (
+                        ![
+                          "0",
+                          "1",
+                          "2",
+                          "3",
+                          "4",
+                          "5",
+                          "6",
+                          "7",
+                          "8",
+                          "9",
+                        ].includes(c)
+                      ) {
+                        notNum = false;
+                        return;
+                      }
+                    });
+
+                    if (notNum) {
+                      setAmount(parseInt(v));
+                    }
+                  }}
                 />
                 DA
                 <ul className="pl-4 text-sm w- list-decimal font-light ">

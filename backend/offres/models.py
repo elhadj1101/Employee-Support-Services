@@ -39,32 +39,33 @@ post_delete.connect(file_cleanup, sender=Offre, dispatch_uid="offre.file_cleanup
 @receiver(post_save, sender=Offre)
 def new_offre(sender, instance, created, **kwargs):
     if created:
-        subject = "Exciting new employee offer alert! 🚀🎉"
+        subject = "Un nouveau offre a été ajouté !"
         message = f"""
-We are excited to announce a new employee benefit that has just become available to all team members.
+Nous sommes ravis d'annoncer un nouvel avantage pour les employés qui vient de devenir disponible pour tous les membres de l'équipe.
 
-As valued members of our team, we are constantly looking for ways to enhance your experience here at ESI-SBA. We are thrilled to introduce our latest offering: {instance.title}.
+En tant que membres précieux de notre équipe, nous cherchons constamment des moyens d'améliorer votre expérience ici à ESI-SBA. Nous sommes donc ravis de vous présenter notre dernière offre : {instance.title}.
 
-{instance.title} is designed to {instance.description}.
+{instance.title} est conçu pour {instance.description}.
 
-To take advantage of this fantastic opportunity, simply visit our website.
+Pour profiter de cette opportunité fantastique, il vous suffit de visiter notre site web.
 
-We hope you will make the most of this exciting new benefit! If you have any questions or need assistance, please don't hesitate to reach out to us.
+Nous espérons que vous profiterez pleinement de ce nouvel avantage passionnant ! Si vous avez des questions ou besoin d'assistance, n'hésitez pas à nous contacter.
 
-Thank you for all your hard work and dedication to [Your Company Name].
+Merci pour tout votre travail acharné et votre dévouement à ESI-SBA.
 
-Best regards,
+Cordialement,
 """
+
         employee_emails = list(Employee.objects.values_list("email", flat=True))
         send_mail(
             subject,
             message,
             EMAIL_HOST_USER,
-            # employee_emails
-            [
-                "pj0pj0pj000@gmail.com"
-                # Because we don't have real  employee emails , I used this email to check ,
-                # you can add your email here to check
-            ],
+            employee_emails,
+            # [
+            #     "pj0pj0pj000@gmail.com"
+            #     # Because we don't have real  employee emails , I used this email to check ,
+            #     # you can add your email here to check
+            # ],
             fail_silently=False,
         )

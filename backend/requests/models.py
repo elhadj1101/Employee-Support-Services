@@ -125,31 +125,32 @@ def post_save_loan(sender, instance, created, **kwargs):
         ):
             instance.cached_status = instance.loan_status
         else:
-            subject = "Loan status update"
+            subject = "Le statut de votre prêt a été mis à jour !"
             message = f"""
-Dear {instance.employee.first_name},
+Cher/Chère {instance.employee.first_name},
 
-We hope this email finds you well.
+Nous espérons que ce courriel vous trouve bien.
 
-We wanted to inform you that there has been a change in the status of your loan. Below are the details of the change:
+Nous souhaitions vous informer qu'il y a eu un changement dans le statut de votre prêt. Voici les détails du changement :
 
-Previous Status: {instance.cached_status}
-New Status: {instance.loan_status}
+Statut précédent : {instance.cached_status}
+Nouveau statut : {instance.loan_status}
 
-If you have any questions or need further clarification regarding this change, please don't hesitate to reach out to us.
+Si vous avez des questions ou besoin de plus de précisions concernant ce changement, n'hésitez pas à nous contacter.
 
-Thank you for your attention to this matter.
+Merci de votre attention à cette affaire.
 
-Best regards,
+Cordialement,
 """
+            employee_email = instance.employee.email
             try:
                 send_mail(
                     subject,
                     message,
                     EMAIL_HOST_USER,
                     [
-                        # employee_email ,
-                        "pj0pj0pj000@gmail.com"
+                        employee_email ,
+                        #"pj0pj0pj000@gmail.com"
                         # Because we don't have real committe emails , I used this email to check ,
                         # you can add your email here to check
                     ],
@@ -170,31 +171,33 @@ def post_save_financial_aid(sender, instance, created, **kwargs):
             instance.cached_status = instance.financial_aid_status
         else:
 
-            subject = "Financial aid status update"
+            subject = "Le statut de votre aide financière a été mis à jour !"
             message = f"""
-Dear {instance.employee.first_name},
+Cher/Chère {instance.employee.first_name},
 
-We hope this email finds you well.
+Nous espérons que ce courriel vous trouve bien.
 
-We wanted to inform you that there has been a change in the status of your loan. Below are the details of the change:
+Nous souhaitions vous informer qu'il y a eu un changement dans le statut de votre prêt. Voici les détails du changement :
 
-Previous Status: {instance.cached_status}
-New Status: {instance.financial_aid_status}
+Statut précédent : {instance.cached_status}
+Nouveau statut : {instance.financial_aid_status}
 
-If you have any questions or need further clarification regarding this change, please don't hesitate to reach out to us.
+Si vous avez des questions ou besoin de plus de précisions concernant ce changement, n'hésitez pas à nous contacter.
 
-Thank you for your attention to this matter.
+Merci de votre attention à cette affaire.
 
-Best regards,
+Cordialement,
 """
 
+
             try:
+                employee_email = instance.employee.email
                 send_mail(
                     subject,
                     message,
                     EMAIL_HOST_USER,
-                    [  # employee_email ,
-                        "pj0pj0pj000@gmail.com"
+                    [  employee_email ,
+                       # "pj0pj0pj000@gmail.com"
                         # Because we don't have real committe emails , I used this email to check ,
                         # you can add your email here to check
                     ],

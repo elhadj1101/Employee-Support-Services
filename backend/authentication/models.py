@@ -107,26 +107,27 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 def email_post_save(sender, instance, created, **kwargs):
     if created:
 
-        subject = "Your Account is Ready! Welcome to the our website"
+        subject = "Votre Compte a été créé! Bienvenu sur les OeuvreSociale ESI-SBA"
         message = f"""
-Dear {instance.first_name} {instance.last_name},
+Cher/Chère {instance.first_name} {instance.last_name},
 
-We are pleased to inform you that your account has been successfully created on the example.com website.
-You can now log in using the following credentials: 
+Nous avons le plaisir de vous informer que votre compte a été créé avec succès sur le site example.com.
+Vous pouvez maintenant vous connecter en utilisant les identifiants suivants : 
 
-Email: {instance.email}
-Password: {instance.cached_plain_pass}
+Email : {instance.email}
+Mot de passe : {instance.cached_plain_pass}
 
-Please follow the link below to access the website:
+Veuillez suivre le lien ci-dessous pour accéder au site :
 
 example.com
 
-Once logged in, you will have access to all the features and resources available to you as an employee of ESI-SBA.
+Une fois connecté(e), vous aurez accès à toutes les fonctionnalités et ressources disponibles en tant qu'employé(e) de ESI-SBA.
 
-If you have any questions or need further assistance, please don't hesitate to contact us.
+Si vous avez des questions ou besoin d'aide, n'hésitez pas à nous contacter.
 
-Best regards,
+Cordialement,
 """
+
         try:
             send_mail(
                 subject,

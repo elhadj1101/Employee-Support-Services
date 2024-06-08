@@ -48,15 +48,16 @@ def post_save(sender, instance, created, **kwargs):
             or instance.end_time != instance.cached_end_time
             or instance.day != instance.cached_day
         ):
-            subject = "Change in Meeting Time"
+            subject = "Un changement de date pour la réunion !"
             message = f"""
-Dear Committee Member,
+Cher Membre du Comité,
 
-I hope this email finds you well. I am writing to inform you that the meeting time for {instance.day} has been changed. Please find the updated details below:
+J'espère que ce courriel vous trouve bien. Je vous écris pour vous informer que l'heure de la réunion pour {instance.day} a été modifiée. Veuillez trouver les détails mis à jour ci-dessous :
 
-Previous Date and Time: {instance.cached_day} {instance.cached_start_time} to {instance.cached_end_time}
-New Date and Time: {instance.day} {instance.start_time} to {instance.end_time}
-                        """
+Date et heure précédentes : {instance.cached_day} {instance.cached_start_time} à {instance.cached_end_time}
+Nouvelle date et heure : {instance.day} {instance.start_time} à {instance.end_time}
+"""
+
             committe_roles = ["president", "vice_president", "tresorier", "membre"]
             committe_emails = Employee.objects.filter(
                 role__in=committe_roles
@@ -67,12 +68,12 @@ New Date and Time: {instance.day} {instance.start_time} to {instance.end_time}
                     subject,
                     message,
                     EMAIL_HOST_USER,
-                    # committe_emails,
-                    [
-                        "pj0pj0pj000@gmail.com"
-                        # Because we don't have real committe emails , I used this email to check ,
-                        # you can add your email here to check
-                    ],
+                    committe_emails,
+                    # [
+                    #     "pj0pj0pj000@gmail.com"
+                    #     # Because we don't have real committe emails , I used this email to check ,
+                    #     # you can add your email here to check
+                    # ],
                     fail_silently=False,
                 )
             except:

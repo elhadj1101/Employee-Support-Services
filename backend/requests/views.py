@@ -114,7 +114,7 @@ class LoanCheckView(APIView):
     def get(self, request):
         loan = Loan.objects.filter(employee=request.user).last()
         if loan:
-            if (loan.loan_status == "waiting") or (loan.loan_status == "approved"):
+            if (loan.loan_status == "waiting") or (loan.loan_status == "approved") or (loan.loan_status == "payment_started"):
                 return Response("False", status=status.HTTP_200_OK)
         return Response("True", status=status.HTTP_200_OK)
 
