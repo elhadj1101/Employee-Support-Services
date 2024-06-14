@@ -19,13 +19,14 @@ Database: [SQL]
 Other Technologies: []
 
 ## Installation
-Clone the repository: git clone https://github.com/your-username/your-repository.git
-Install dependencies:
-Front-end: cd frontend && npm install
-Back-end: cd backend && pip install -r requirements.txt
-## Usage
-Start the development server:
-Back-end: cd backend && python manage.py runserver
-Front-end: cd frontend && npm start
+Clone the repository: `git clone https://github.com/elhadj1101/oeuvres-sociales.git`.<br>
 
-Open your browser and navigate to http://localhost:3000 to view the application.
+Install dependencies:
+Front-end: `cd frontend && npm install`<br>
+Back-end: `cd backend && pip install -r requirements.txt`<br>
+## Usage
+Start the development server:<br>
+Back-end: `cd backend && python manage.py runserver`<br>
+Front-end: `cd frontend && npm start`<br>
+
+Open your browser and navigate to `http://localhost:3000` to view the application.
