@@ -23,7 +23,13 @@ Clone the repository: `git clone https://github.com/elhadj1101/oeuvres-sociales.
 
 Install dependencies:
 Front-end: `cd frontend && npm install`<br>
-Back-end: `cd backend && pip install -r requirements.txt`<br>
+
+Back-end: 
+  - create the virtual environment: `cd backend && python -m venv .venv` <br>
+  - activate it:
+        - on windows: `.\venv\Scripts\activate.bat` <br>
+        - on linux/mac: `source .venv/bin/activate` <br>
+  - install requirements: `pip install -r requirements.txt`<br>
 ## Usage
 Start the development server:<br>
 Back-end: `cd backend && python manage.py runserver`<br>
