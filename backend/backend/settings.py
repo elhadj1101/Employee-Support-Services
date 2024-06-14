@@ -204,8 +204,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "django.tester.1cp@gmail.com"
-EMAIL_HOST_PASSWORD = "ttnjivaioczytcpw "
+# EMAIL_HOST_USER = "PUT YOUR EMAIL HERE"
+# EMAIL_HOST_PASSWORD = "PUT YOUR EMAIL APP PASSWORD HERE"
 
 
 TIME_ZONE = "Africa/Algiers"
