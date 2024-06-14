@@ -19,9 +19,10 @@ Other Technologies: []
 Clone the repository: git clone https://github.com/your-username/your-repository.git
 Install dependencies:
 Front-end: cd frontend && npm install
-Back-end: cd backend && npm install
+Back-end: cd backend && pip install -r requirements.txt
 ## Usage
 Start the development server:
+Back-end: cd backend && python manage.py runserver
 Front-end: cd frontend && npm start
-Back-end: cd backend && npm start
+
 Open your browser and navigate to http://localhost:3000 to view the application.
