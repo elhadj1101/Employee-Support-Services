@@ -11,7 +11,7 @@ from django.contrib.auth.models import (
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
-from backend.settings import EMAIL_HOST_USER
+# from backend.settings import EMAIL_HOST_USER
 
 
 options_familliale = [
@@ -103,43 +103,52 @@ class Employee(AbstractBaseUser, PermissionsMixin):
         return self.first_name + " " + self.last_name
 
 
-@receiver(post_save, sender=Employee)
-def email_post_save(sender, instance, created, **kwargs):
-    if created:
 
-        subject = "Votre Compte a été créé! Bienvenu sur les OeuvreSociale ESI-SBA"
-        message = f"""
-Cher/Chère {instance.first_name} {instance.last_name},
+#uncomment this to add the  send email functionnality 
+#uncomment the import EMAIL_HOST_USER
+# important : you need to configure your email in backend/settings.py
 
-Nous avons le plaisir de vous informer que votre compte a été créé avec succès sur le site example.com.
-Vous pouvez maintenant vous connecter en utilisant les identifiants suivants : 
 
-Email : {instance.email}
-Mot de passe : {instance.cached_plain_pass}
+# sending email to new employees containing their credentials
 
-Veuillez suivre le lien ci-dessous pour accéder au site :
 
-example.com
+# @receiver(post_save, sender=Employee)
+# def email_post_save(sender, instance, created, **kwargs):
+#     if created:
 
-Une fois connecté(e), vous aurez accès à toutes les fonctionnalités et ressources disponibles en tant qu'employé(e) de ESI-SBA.
+#         subject = "Votre Compte a été créé! Bienvenu sur les OeuvreSociale ESI-SBA"
+#         message = f"""
+# Cher/Chère {instance.first_name} {instance.last_name},
 
-Si vous avez des questions ou besoin d'aide, n'hésitez pas à nous contacter.
+# Nous avons le plaisir de vous informer que votre compte a été créé avec succès sur le site example.com.
+# Vous pouvez maintenant vous connecter en utilisant les identifiants suivants : 
 
-Cordialement,
-"""
+# Email : {instance.email}
+# Mot de passe : {instance.cached_plain_pass}
 
-        try:
-            send_mail(
-                subject,
-                message,
-                EMAIL_HOST_USER,
-                [
-                    instance.email
-                    # Because we don't have real employee emails , I used this email to check ,
-                    # you can add your email here to check
-                ],
-                fail_silently=False,
-            )
-        except:
-            pass
-        instance.cached_plain_pass = ""
+# Veuillez suivre le lien ci-dessous pour accéder au site :
+
+# example.com
+
+# Une fois connecté(e), vous aurez accès à toutes les fonctionnalités et ressources disponibles en tant qu'employé(e) de ESI-SBA.
+
+# Si vous avez des questions ou besoin d'aide, n'hésitez pas à nous contacter.
+
+# Cordialement,
+# # """
+
+#         try:
+#             send_mail(
+#                 subject,
+#                 message,
+#                 EMAIL_HOST_USER,
+#                 [
+#                     instance.email
+#                     # Because we don't have real employee emails , I used this email to check ,
+#                     # you can add your email here to check
+#                 ],
+#                 fail_silently=False,
+#             )
+#         except:
+#             pass
+#         instance.cached_plain_pass = ""

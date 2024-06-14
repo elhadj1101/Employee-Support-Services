@@ -6,7 +6,7 @@ from backend.utils import file_cleanup, get_path
 
 from django.dispatch import receiver
 from django.core.mail import send_mail
-from backend.settings import EMAIL_HOST_USER
+# from backend.settings import EMAIL_HOST_USER
 from authentication.models import Employee
 
 # Create your models here.
@@ -112,96 +112,108 @@ class Document(models.Model):
         return self.document_name + str(self.employee.pk)
 
 
-post_delete.connect(file_cleanup, sender=Document, dispatch_uid="document.file_cleanup")
 
 
-@receiver(post_save, sender=Loan)
-def post_save_loan(sender, instance, created, **kwargs):
-    # only update instance
-    if not created:
-        if (
-            instance.cached_status != instance.loan_status
-            and instance.cached_status == "draft"
-        ):
-            instance.cached_status = instance.loan_status
-        else:
-            subject = "Le statut de votre prêt a été mis à jour !"
-            message = f"""
-Cher/Chère {instance.employee.first_name},
 
-Nous espérons que ce courriel vous trouve bien.
-
-Nous souhaitions vous informer qu'il y a eu un changement dans le statut de votre prêt. Voici les détails du changement :
-
-Statut précédent : {instance.cached_status}
-Nouveau statut : {instance.loan_status}
-
-Si vous avez des questions ou besoin de plus de précisions concernant ce changement, n'hésitez pas à nous contacter.
-
-Merci de votre attention à cette affaire.
-
-Cordialement,
-"""
-            employee_email = instance.employee.email
-            try:
-                send_mail(
-                    subject,
-                    message,
-                    EMAIL_HOST_USER,
-                    [
-                        employee_email ,
-                        #"pj0pj0pj000@gmail.com"
-                        # Because we don't have real committe emails , I used this email to check ,
-                        # you can add your email here to check
-                    ],
-                    fail_silently=False,
-                )
-            except:
-                pass
+#uncomment this to add the  send email functionnality 
+#uncomment the import EMAIL_HOST_USER
+# important : you need to configure your email in backend/settings.py
 
 
-@receiver(post_save, sender=Financial_aid)
-def post_save_financial_aid(sender, instance, created, **kwargs):
-    # only update instance
-    if not created:
-        if (
-            instance.cached_status != instance.financial_aid_status
-            and instance.cached_status == "draft"
-        ):
-            instance.cached_status = instance.financial_aid_status
-        else:
-
-            subject = "Le statut de votre aide financière a été mis à jour !"
-            message = f"""
-Cher/Chère {instance.employee.first_name},
-
-Nous espérons que ce courriel vous trouve bien.
-
-Nous souhaitions vous informer qu'il y a eu un changement dans le statut de votre prêt. Voici les détails du changement :
-
-Statut précédent : {instance.cached_status}
-Nouveau statut : {instance.financial_aid_status}
-
-Si vous avez des questions ou besoin de plus de précisions concernant ce changement, n'hésitez pas à nous contacter.
-
-Merci de votre attention à cette affaire.
-
-Cordialement,
-"""
+# sending email to notify employees about their loans/financial_aids status 
 
 
-            try:
-                employee_email = instance.employee.email
-                send_mail(
-                    subject,
-                    message,
-                    EMAIL_HOST_USER,
-                    [  employee_email ,
-                       # "pj0pj0pj000@gmail.com"
-                        # Because we don't have real committe emails , I used this email to check ,
-                        # you can add your email here to check
-                    ],
-                    fail_silently=False,
-                )
-            except:
-                pass
+
+# post_delete.connect(file_cleanup, sender=Document, dispatch_uid="document.file_cleanup")
+
+
+# @receiver(post_save, sender=Loan)
+# def post_save_loan(sender, instance, created, **kwargs):
+#     # only update instance
+#     if not created:
+#         if (
+#             instance.cached_status != instance.loan_status
+#             and instance.cached_status == "draft"
+#         ):
+#             instance.cached_status = instance.loan_status
+#         else:
+#             subject = "Le statut de votre prêt a été mis à jour !"
+#             message = f"""
+# Cher/Chère {instance.employee.first_name},
+
+# Nous espérons que ce courriel vous trouve bien.
+
+# Nous souhaitions vous informer qu'il y a eu un changement dans le statut de votre prêt. Voici les détails du changement :
+
+# Statut précédent : {instance.cached_status}
+# Nouveau statut : {instance.loan_status}
+
+# Si vous avez des questions ou besoin de plus de précisions concernant ce changement, n'hésitez pas à nous contacter.
+
+# Merci de votre attention à cette affaire.
+
+# Cordialement,
+# """
+#             employee_email = instance.employee.email
+#             try:
+#                 send_mail(
+#                     subject,
+#                     message,
+#                     EMAIL_HOST_USER,
+#                     [
+#                         employee_email ,
+#                         #"pj0pj0pj000@gmail.com"
+#                         # Because we don't have real committe emails , I used this email to check ,
+#                         # you can add your email here to check
+#                     ],
+#                     fail_silently=False,
+#                 )
+#             except:
+#                 pass
+
+
+# @receiver(post_save, sender=Financial_aid)
+# def post_save_financial_aid(sender, instance, created, **kwargs):
+#     # only update instance
+#     if not created:
+#         if (
+#             instance.cached_status != instance.financial_aid_status
+#             and instance.cached_status == "draft"
+#         ):
+#             instance.cached_status = instance.financial_aid_status
+#         else:
+
+#             subject = "Le statut de votre aide financière a été mis à jour !"
+#             message = f"""
+# Cher/Chère {instance.employee.first_name},
+
+# Nous espérons que ce courriel vous trouve bien.
+
+# Nous souhaitions vous informer qu'il y a eu un changement dans le statut de votre prêt. Voici les détails du changement :
+
+# Statut précédent : {instance.cached_status}
+# Nouveau statut : {instance.financial_aid_status}
+
+# Si vous avez des questions ou besoin de plus de précisions concernant ce changement, n'hésitez pas à nous contacter.
+
+# Merci de votre attention à cette affaire.
+
+# Cordialement,
+# """
+
+
+#             try:
+#                 employee_email = instance.employee.email
+#                 send_mail(
+#                     subject,
+#                     message,
+#                     EMAIL_HOST_USER,
+#                     [  employee_email ,
+#                        # "pj0pj0pj000@gmail.com"
+#                         # Because we don't have real committe emails , I used this email to check ,
+#                         # you can add your email here to check
+#                     ],
+#                     fail_silently=False,
+#                 )
+#             except:
+#                 pass

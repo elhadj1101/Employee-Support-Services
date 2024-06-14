@@ -198,14 +198,14 @@ CAN_PUBLISH_OFFRE = ["president", "vice_president"]
 CAN_VIEW_REQUESTS = ["president", "vice_president", "membre", "tresorier"]
 
 
-# email configurations
+# # email configurations
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-# EMAIL_HOST_USER = "PUT YOUR EMAIL HERE"
-# EMAIL_HOST_PASSWORD = "PUT YOUR EMAIL APP PASSWORD HERE"
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# # EMAIL_HOST_USER = "PUT YOUR EMAIL HERE"
+# # EMAIL_HOST_PASSWORD = "PUT YOUR EMAIL APP_PASSWORD HERE"
 
 
 TIME_ZONE = "Africa/Algiers"

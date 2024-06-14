@@ -5,7 +5,7 @@ from backend.utils import file_cleanup
 
 from django.dispatch import receiver
 from django.core.mail import send_mail
-from backend.settings import EMAIL_HOST_USER
+# from backend.settings import EMAIL_HOST_USER
 from authentication.models import Employee
 
 
@@ -33,39 +33,47 @@ class Offre(models.Model):
         return reverse("offre_detail", kwargs={"pk": self.pk})
 
 
-post_delete.connect(file_cleanup, sender=Offre, dispatch_uid="offre.file_cleanup")
+
+#uncomment this to add the  send email functionnality 
+#uncomment the import EMAIL_HOST_USER
+# important : you need to configure your email in backend/settings.py
 
 
-@receiver(post_save, sender=Offre)
-def new_offre(sender, instance, created, **kwargs):
-    if created:
-        subject = "Un nouveau offre a été ajouté !"
-        message = f"""
-Nous sommes ravis d'annoncer un nouvel avantage pour les employés qui vient de devenir disponible pour tous les membres de l'équipe.
+# sending email to notify employees about new offers
 
-En tant que membres précieux de notre équipe, nous cherchons constamment des moyens d'améliorer votre expérience ici à ESI-SBA. Nous sommes donc ravis de vous présenter notre dernière offre : {instance.title}.
 
-{instance.title} est conçu pour {instance.description}.
 
-Pour profiter de cette opportunité fantastique, il vous suffit de visiter notre site web.
+# post_delete.connect(file_cleanup, sender=Offre, dispatch_uid="offre.file_cleanup")
+# @receiver(post_save, sender=Offre)
+# def new_offre(sender, instance, created, **kwargs):
+#     if created:
+#         subject = "Un nouveau offre a été ajouté !"
+#         message = f"""
+# Nous sommes ravis d'annoncer un nouvel avantage pour les employés qui vient de devenir disponible pour tous les membres de l'équipe.
 
-Nous espérons que vous profiterez pleinement de ce nouvel avantage passionnant ! Si vous avez des questions ou besoin d'assistance, n'hésitez pas à nous contacter.
+# En tant que membres précieux de notre équipe, nous cherchons constamment des moyens d'améliorer votre expérience ici à ESI-SBA. Nous sommes donc ravis de vous présenter notre dernière offre : {instance.title}.
 
-Merci pour tout votre travail acharné et votre dévouement à ESI-SBA.
+# {instance.title} est conçu pour {instance.description}.
 
-Cordialement,
-"""
+# Pour profiter de cette opportunité fantastique, il vous suffit de visiter notre site web.
 
-        employee_emails = list(Employee.objects.values_list("email", flat=True))
-        send_mail(
-            subject,
-            message,
-            EMAIL_HOST_USER,
-            employee_emails,
-            # [
-            #     "pj0pj0pj000@gmail.com"
-            #     # Because we don't have real  employee emails , I used this email to check ,
-            #     # you can add your email here to check
-            # ],
-            fail_silently=False,
-        )
+# Nous espérons que vous profiterez pleinement de ce nouvel avantage passionnant ! Si vous avez des questions ou besoin d'assistance, n'hésitez pas à nous contacter.
+
+# Merci pour tout votre travail acharné et votre dévouement à ESI-SBA.
+
+# Cordialement,
+# """
+
+#         employee_emails = list(Employee.objects.values_list("email", flat=True))
+#         send_mail(
+#             subject,
+#             message,
+#             EMAIL_HOST_USER,
+#             employee_emails,
+#             # [
+#             #     "pj0pj0pj000@gmail.com"
+#             #     # Because we don't have real  employee emails , I used this email to check ,
+#             #     # you can add your email here to check
+#             # ],
+#             fail_silently=False,
+#         )
