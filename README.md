@@ -1,4 +1,4 @@
-# oeuvres-sociales
+# Employee Support Services
 ## Description
 Nearly every organization provide its employees the ability to request Loans or Financilal aids i case of (new birth , marriage, death of a member of family...etc ), However the process is a bit long and frustrating both for the employee and the commity of the entreprise itself , So what we did is create an full solution for organizations to manage its employees requests online.
 
@@ -11,12 +11,12 @@ with that we offered a solution for organizations to get rid of the paper work a
 ### Front-end
 Framework: [React]
 Languages: [ HTML, CSS, JavaScript]
-Libraries/Tools: [react query ,]
+Libraries/Tools: [zustand ,]
 ### Back-end
 Framework: [Django]
 Languages: [Python]
 Database: [SQL]
-Other Technologies: []
+Other Technologies: [DRF]
 
 ## Installation
 Clone the repository: `git clone https://github.com/elhadj1101/oeuvres-sociales.git`.<br>
